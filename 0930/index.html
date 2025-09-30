@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI第二人生學習平台 - 桃園社大 (視覺優化版)</title>
+    <!-- NEW: Google Fonts for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #E67E22;
+            --primary-hover: #d35400;
+            --background-color: #f8f9fa; /* Lighter background */
+            --card-background: #ffffff;
+            --text-color: #212529;
+            --text-secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            
+            /* NEW: Accent colors for sections */
+            --accent-1: #3498db; /* Blue */
+            --accent-2: #2ecc71; /* Green */
+            --accent-3: #9b59b6; /* Purple */
+            --accent-4: #e74c3c; /* Red */
+            --accent-5: #1abc9c; /* Teal */
+            --accent-6: #f1c40f; /* Yellow */
+
+            /* NEW: Font Families */
+            --font-family-sans-serif: 'Noto Sans TC', sans-serif;
+            --font-family-heading: 'Poppins', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font-family-sans-serif);
+            line-height: 1.7; /* Increased for readability */
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 20px;
+        }
+        header {
+            background: var(--card-background);
+            color: var(--text-color);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-heading);
+            font-weight: 700;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.8em;
+        }
+        header p {
+            margin: 0;
+            font-size: 1.2em;
+            color: var(--text-secondary-color);
+        }
+        nav {
+            background: #333;
+            color: #fff;
+            padding: 0.5rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        nav a {
+            color: #fff;
+            padding: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s;
+            font-family: var(--font-family-heading);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        nav a:hover {
+            background: var(--primary-color);
+        }
+        #fullscreen-btn {
+            margin-left: auto;
+            margin-right: 20px;
+            padding: 0.8rem 1rem;
+            border-left: 1px solid #555;
+        }
+        .section {
+            padding: 40px 25px;
+            margin-bottom: 25px;
+            background: var(--card-background);
+            border-radius: 12px; /* Smoother radius */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Enhanced shadow */
+            border-left: 7px solid var(--primary-color); /* Default border color */
+            transition: transform 0.3s;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        /* NEW: Applying different accent colors to each section */
+        #resources { border-color: var(--accent-1); }
+        #plan-generator { border-color: var(--accent-2); }
+        #prompt-generator { border-color: var(--accent-3); }
+        #gemini-lab { border-color: var(--accent-4); }
+        #templates { border-color: var(--accent-5); }
+        #ai-comparison { border-color: var(--accent-6); }
+
+        .section h2 {
+            text-align: center;
+            color: var(--text-color); /* Changed from primary to black for better contrast */
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        .section h3 {
+            color: var(--text-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        /* --- START: UPDATED STYLES FOR RESOURCES SECTION --- */
+        #resources {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center items horizontally */
+        }
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 800px; /* Constrain max width for very large screens */
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (height/width) */
+            margin-bottom: 25px; /* Add space between video and button */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #000; /* Black background for loading */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        #resources .button-style {
+             display: inline-block;
+             text-align: center;
+        }
+        /* --- END: UPDATED STYLES FOR RESOURCES SECTION --- */
+
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .prompt-list li, .card li {
+            position: relative;
+            margin-bottom: 10px;
+            padding: 12px 50px 12px 15px;
+            color: var(--text-secondary-color);
+            background: #e9ecef;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.25);
+        }
+        .custom-input {
+            margin-top: 10px;
+        }
+        button, .button-style {
+            padding: 12px 20px;
+            border: none;
+            background: var(--primary-color);
+            color: white !important;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.3s, transform 0.2s;
+            font-family: var(--font-family-heading);
+            font-weight: 600;
+            text-decoration: none; /* Ensure links styled as buttons don't have underlines */
+        }
+        button:hover, .button-style:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .result-box {
+            margin-top: 20px;
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 15px; /* Adjusted position */
+            transform: none;
+            right: 15px;
+            padding: 6px 12px;
+            background: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            width: auto;
+            transition: background-color 0.3s;
+        }
+        .copy-btn:hover { background: #000; }
+        .table-container { overflow-x: auto; }
+        footer { text-align: center; padding: 20px; background: #333; color: white; margin-top: 40px; }
+
+        /* --- NEW: Back to Top Button --- */
+        #back-to-top-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
+            z-index: 1001;
+        }
+        #back-to-top-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        #back-to-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Card toggle style */
+        .card .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding: 0 15px;
+        }
+        .card.active .content {
+            max-height: 500px; /* Adjust as needed */
+            transition: max-height 0.7s ease-in, padding 0.7s ease-in;
+            padding: 15px;
+        }
+
+        /* Simple Grid for Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-family: var(--font-family-heading);
+        }
+        tbody tr:nth-of-type(even) {
+            background-color: #f9f9f9;
+        }
+        td a {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        td a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>用AI玩出第二人生</h1>
+            <p>講師：張雪芳 Sabrina | 桃園社區大學課程平台</p>
+        </div>
+    </header>
+
+    <nav>
+        <a href="#resources">課程資源</a>
+        <a href="#plan-generator">學習計畫</a>
+        <a href="#prompt-generator">提示詞產生器</a>
+        <a href="#gemini-lab">GEMINI實驗室</a>
+        <a href="#templates">情境範本</a>
+        <a href="#ai-comparison">AI模型比較</a>
+        <a href="#" id="fullscreen-btn" onclick="toggleFullScreen(event)">&#x26F6; 全螢幕</a>
+    </nav>
+
+    <div class="container">
+
+        <section id="resources" class="section">
+            <h2>課程資源</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/Od6YlWeBUNc" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <a href="0930.PDF" target="_blank" class="button-style">下載課程講義 (PDF)</a>
+        </section>
+
+        <section id="plan-generator" class="section">
+            <h2>個人化學習計畫生成器</h2>
+            <p>填寫您的學習需求，將為您生成一段專屬的AI提示詞，複製後即可讓AI為您規劃學習路徑！</p>
+            <div class="plan-example">
+                <h3>👇 開始規劃您的學習計畫</h3>
+                <div id="plan-form-1">
+                    <div class="form-group">
+                        <label for="learn-topic-1">📚 學習主題</label>
+                        <select id="learn-topic-1" onchange="handleCustomInput(this)">
+                            <option value="GPT提示工程">GPT提示工程</option>
+                            <option value="AI繪圖與影像編輯">AI繪圖與影像編輯</option>
+                            <option value="AI影片生成與剪輯">AI影片生成與剪輯</option>
+                            <option value="用AI整理生活與回憶">用AI整理生活與回憶</option>
+                            <option value="AI與健康生活應用">AI與健康生活應用</option>
+                            <option value="AI理財與市場分析">AI理財與市場分析</option>
+                            <option value="custom">自訂...</option>
+                        </select>
+                        <input type="text" id="learn-topic-1-custom" class="custom-input" placeholder="請輸入您的學習主題" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="level-1">📈 目前程度</label>
+                        <select id="level-1" onchange="handleCustomInput(this)">
+                            <option value="完全新手">完全新手</option>
+                            <option value="有一點ChatGPT使用經驗">有一點ChatGPT使用經驗</option>
+                            <option value="已懂基本程式但想進階">已懂基本程式但想進階</option>
+                             <option value="custom">自訂...</option>
+                        </select>
+                         <input type="text" id="level-1-custom" class="custom-input" placeholder="請描述您的程度" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="time-1">⏰ 每週投入時間</label>
+                        <select id="time-1" onchange="handleCustomInput(this)">
+                           <option value="每週1-2小時">每週1-2小時</option>
+                           <option value="每週3-5小時">每週3-5小時</option>
+                           <option value="每天30分鐘">每天30分鐘</option>
+                           <option value="custom">自訂...</option>
+                        </select>
+                        <input type="text" id="time-1-custom" class="custom-input" placeholder="請輸入您預計投入的時間" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration-1">📅 學習期間</label>
+                        <select id="duration-1" onchange="handleCustomInput(this)">
+                           <option value="1個月">1個月</option>
+                           <option value="3個月">3個月</option>
+                           <option value="半年">半年</option>
+                           <option value="custom">自訂...</option>
+                        </select>
+                        <input type="text" id="duration-1-custom" class="custom-input" placeholder="請輸入您預計的學習期間" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="learn-goal-1">🎯 學習目標</label>
+                         <select id="learn-goal-1" onchange="handleCustomInput(this)">
+                           <option value="提升生活效率與品質">提升生活效率與品質</option>
+                           <option value="培養新的興趣愛好">培養新的興趣愛好</option>
+                           <option value="整理家族故事與回憶錄">整理家族故事與回憶錄</option>
+                           <option value="與家人朋友分享AI的樂趣">與家人朋友分享AI的樂趣</option>
+                           <option value="探索副業或微創業機會">探索副業或微創業機會</option>
+                           <option value="custom">自訂...</option>
+                        </select>
+                        <input type="text" id="learn-goal-1-custom" class="custom-input" placeholder="請輸入您的學習目標" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="learn-style-1">🎨 偏好學習方式</label>
+                         <select id="learn-style-1" onchange="handleCustomInput(this)">
+                            <option value="逐步實作練習">逐步實作練習</option>
+                            <option value="看案例拆解">看案例拆解</option>
+                            <option value="系統化課程大綱">系統化課程大綱</option>
+                            <option value="問題導向學習">問題導向學習</option>
+                            <option value="觀看影片教學為主">觀看影片教學為主</option>
+                            <option value="custom">自訂...</option>
+                        </select>
+                         <input type="text" id="learn-style-1-custom" class="custom-input" placeholder="請輸入您偏好的學習方式" style="display:none;">
+                    </div>
+                    <button class="button-style" onclick="generatePlan(1)">生成學習計畫提示詞</button>
+                    <div class="result-box" id="learning-plan-result-1" style="display:none;">
+                        <button class="copy-btn" onclick="copyById('plan-output-1')">複製提示詞</button>
+                        <pre id="plan-output-1"></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="prompt-generator" class="section">
+            <h2>通用的提示詞架構</h2>
+            <p>根據簡報中的萬用範本，填寫以下欄位，快速生成一段結構化、高效率的提示詞！</p>
+            <div id="prompt-form">
+                <div class="form-group"><label for="role">你是一個 [角色]</label><input type="text" id="role" placeholder="例如：資深人資顧問"></div>
+                <div class="form-group"><label for="task">我想讓你幫我 [任務]</label><input type="text" id="task" placeholder="例如：撰寫軟體工程師的履歷"></div>
+                <div class="form-group"><label for="style">請用 [風格/格式] 回答</label><input type="text" id="style" placeholder="例如：清晰專業的語氣, 用繁體中文撰寫"></div>
+                <div class="form-group"><label for="topic">主題是 [主題]</label><input type="text" id="topic" placeholder="例如：軟體工程師履歷"></div>
+                <div class="form-group"><label for="goal">目的是 [目標]</label><input type="text" id="goal" placeholder="例如：申請前端工程師的職缺"></div>
+                <div class="form-group"><label for="constraints">限制或要求 [限制條件]</label><input type="text" id="constraints" placeholder="例如：不超過2頁, 要有量化成果"></div>
+                <div class="form-group"><label for="output">請提供 [希望獲得的結果]</label><textarea id="output" rows="3" placeholder="例如：完整履歷草稿, 包括自我介紹、技能、工作經驗、學歷等段落"></textarea></div>
+                <button class="button-style" onclick="generatePrompt()">生成提示詞</button>
+                <div class="result-box" id="generated-prompt" style="display:none;"><button class="copy-btn" onclick="copyById('prompt-output')">複製</button><p id="prompt-output"></p></div>
+            </div>
+        </section>
+        
+        <section id="gemini-lab" class="section">
+            <h2>GEMINI 創意視覺化實驗室</h2>
+            <p>以下提示詞範本適用於 Gemini 的進階生圖模式(Nano Banana)，點擊複製按鈕，可把複製之提示詞至Gemini開始您的創意之旅！</p>
+            <ul class="prompt-list">
+                <li>請將相片改成穿上正裝，講師的形象照。背景為白色，圖中不要有文字<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>製作一張圖片，讓相片中的兩位女子在台北街頭漫步<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>請將相片中的衣服改為黑色西裝<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>請將人物表情改為生氣<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>請將相片中的人設計為Q版手遊的NPC, 手上要拿著魔法球<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>一個台灣穿著西裝的高階主管喝著這瓶可樂<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>請將這瓶可樂巨大化，立在台灣101旁的街頭<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+                <li>請將上面拉麵製作成雜誌風格圖，上面寫 "羅賓拉麵館"<button class="copy-btn" onclick="copyText(event, this)">複製</button></li>
+            </ul>
+        </section>
+
+        <section id="templates" class="section">
+            <h2>提示詞範本庫 (點擊展開)</h2>
+            <div class="grid">
+                 <div class="card" onclick="toggleCard(this)"><h3>生活記錄與寫作</h3><div class="content"><ul><li>請幫我把以下的故事，寫成300字的散文，用溫暖簡單的文字，好像分享給孫子聽。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請把我提供的日記內容，整理成一首四行小詩。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>你是一位寫作老師，請幫我修飾以下文章，讓它更有文學味道，但不要太艱深。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li></ul></div></div>
+                <div class="card" onclick="toggleCard(this)"><h3>學習與知識理解</h3><div class="content"><ul><li>你是一位耐心的老師，請用生活化的例子，簡單解釋『區塊鏈』，不要超過200字。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請幫我解釋『AI 語音辨識』，用三個比喻，適合 60歲以上的人聽得懂。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請幫我整理一份 10 個常見的英文旅遊單字，用表格列出單字、中文翻譯和例句。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li></ul></div></div>
+                <div class="card" onclick="toggleCard(this)"><h3>健康與生活建議</h3><div class="content"><ul><li>請幫我設計一週的低糖飲食菜單，用表格列出每天三餐。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請幫我整理10分鐘的居家運動流程，適合 65歲以上的人，不需要器材。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請幫我設計一份5天旅遊行程，適合60歲以上族群，重點是舒適、慢活、不趕路。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li></ul></div></div>
+                <div class="card" onclick="toggleCard(this)"><h3>社群互動與祝福</h3><div class="content"><ul><li>請幫我寫一則 LINE 貼文，100字左右，祝朋友中秋節快樂，要溫馨幽默。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請幫我設計三句適合 Facebook 貼文的金句，主題是『人生第二春』。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li><li>請幫我寫一段生日祝福，適合對孫子說，要有鼓勵與愛。<button class="copy-btn" onclick="copyText(event, this)">複製</button></li></ul></div></div>
+            </div>
+        </section>
+
+        <section id="ai-comparison" class="section">
+            <h2>主流AI模型比較 (2025年9月更新)</h2>
+             <div class="table-container">
+                <table><thead><tr><th>項目</th><th>ChatGPT (GPT-5.0)</th><th>Gemini (2.5 Pro/Flash)</th><th>Perplexity AI</th><th>Grok (Grok-4)</th></tr></thead><tbody><tr><th>最新功能/特性</th><td>- 具備先進的自主代理(Agent)能力，能獨立完成多步驟複雜任務<br>- 深度個人化與長期記憶功能已成熟<br>- 邏輯推理與跨學科問題解決能力達到新標竿</td><td>- 標準配備百萬級Token上下文視窗，實現對長篇影片和程式碼庫的深度理解<br>- 與Android和Google生態系原生整合，實現高效的端側AI運算<br>- 即時影音串流分析能力</td><td>- 對話式搜尋引擎，以答案為核心<br>- Pro Search功能提供由GPT-5或Gemini 2.5驅動的深度研究報告<br>- "Focus"模式可指定搜尋學術、影音等垂直領域</td><td>- 整合X、新聞等多個即時數據源，提供對當前事件的即時合成分析<br>- 具備強大的趨勢預測與輿情分析能力<br>- 提供高度客製化且風格鮮明的對話體驗</td></tr><tr><th>圖像生成能力</th><td>內建新一代DALL-E模型，在圖像的真實感、細節控制力上表現卓越，並支援基礎的影片生成</td><td>Imagen模型系列已支援高解析度圖像編輯與3D資產生成，圖像品質與真實性領先業界</td><td>Pro版本整合了業界最頂尖的文生圖模型(如GPT-5內建模型)，提供高品質的圖像生成服務</td><td>內建xAI自家的圖像生成模型，風格獨特，尤其擅長生成與時事、社群文化相關的創意圖像</td></tr><tr><th>搜尋能力</th><td>搜尋能力與核心功能無縫整合，能自動連網驗證資訊，並生成包含即時數據的複雜報告</td><td>依託Google搜尋，搜尋結果的即時性、準確性與深度摘要能力持續保持領先</td><td>本身即是核心功能，提供精準、附帶詳盡來源引用的即時搜尋結果，是事實查核與學術研究的首選</td><td>核心優勢，對 X (Twitter) 及其他即時資訊流的即時抓取與深度理解能力無可匹敵</td></tr><tr><th>優點</th><td>- 通用能力(AGI)最強，應用場景最廣<br>- 極強的邏輯推理與創意寫作<br>- 成熟的API與龐大的開發者生態系</td><td>- 頂尖的多模態處理能力<br>- 與Google服務和Android裝置無縫整合<br>- 在處理超長上下文內容時效率極高</td><td>- 答案精準、可靠且附帶來源<br>- 極度適合學術研究與專業寫作<br>- 介面簡潔，專注於提供答案</td><td>- 資訊時效性無與倫比<br>- 能提供獨特、不迴避敏感問題的觀點<br>- 對社群趨勢與網路文化的洞察力強</td></tr><tr><th>官網網址</th><td><a href="https://chat.openai.com" target="_blank">chat.openai.com</a></td><td><a href="https://gemini.google.com" target="_blank">gemini.google.com</a></td><td><a href="https://www.perplexity.ai" target="_blank">perplexity.ai</a></td><td><a href="https://grok.x.ai" target="_blank">grok.x.ai</a></td></tr></tbody></table>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>以AI數位轉型 創造三贏 | 山穎科技 AI Solutions</p>
+    </footer>
+
+    <!-- NEW: Back to Top Button HTML -->
+    <a href="#" id="back-to-top-btn" title="回到頂部">&uarr;</a>
+
+    <script>
+        function generatePrompt() {
+            const role = document.getElementById('role').value;
+            const task = document.getElementById('task').value;
+            const style = document.getElementById('style').value;
+            const topic = document.getElementById('topic').value;
+            const goal = document.getElementById('goal').value;
+            const constraints = document.getElementById('constraints').value;
+            const output = document.getElementById('output').value;
+            const promptText = `你是一個 ${role}, 我想讓你幫我 ${task}。\n\n請用 ${style} 回答。具體需求如下：\n主題是：${topic}\n目的是：${goal}\n限制或要求：${constraints}\n請提供：${output}`;
+            const outputDiv = document.getElementById('generated-prompt');
+            document.getElementById('prompt-output').innerText = promptText;
+            outputDiv.style.display = 'block';
+        }
+
+        function handleCustomInput(selectElement) {
+            const customInput = selectElement.nextElementSibling;
+            if (selectElement.value === 'custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+
+        function generatePlan(exampleNum) {
+            const getValue = (baseId) => {
+                const select = document.getElementById(baseId);
+                if (select.value === 'custom') {
+                    return document.getElementById(`${baseId}-custom`).value;
+                }
+                return select.value;
+            };
+
+            const topic = getValue(`learn-topic-${exampleNum}`);
+            const level = getValue(`level-${exampleNum}`);
+            const time = getValue(`time-${exampleNum}`);
+            const duration = getValue(`duration-${exampleNum}`);
+            const goal = getValue(`learn-goal-${exampleNum}`);
+            const style = getValue(`learn-style-${exampleNum}`);
+            
+            const planText = `「請依據以下資訊，幫我規劃一份詳細的學習計畫：\n\n主題：${topic}\n程度：${level}\n每週時間：${time}\n學習期限：${duration}\n目標：${goal}\n偏好學習方式：${style}\n\n請以表格或條列式，提供每週的學習重點、學習資源建議、以及可實作的練習項目。」`;
+            
+            const resultDiv = document.getElementById(`learning-plan-result-${exampleNum}`);
+            document.getElementById(`plan-output-${exampleNum}`).innerText = planText;
+            resultDiv.style.display = 'block';
+        }
+        
+        function copyById(elementId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('提示詞已複製！');
+            }).catch(err => {
+                console.error('複製失敗:', err);
+                alert('複製失敗，請手動複製。');
+            });
+        }
+        
+        function copyText(event, element) {
+            event.stopPropagation();
+            const textToCopy = element.parentNode.firstChild.textContent.trim();
+             navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('範本已複製！');
+            }).catch(err => {
+                console.error('複製失敗:', err);
+                alert('複製失敗，請手動複製。');
+            });
+        }
+
+        function toggleCard(cardElement) {
+            // This allows only one card to be open at a time
+            if (!cardElement.classList.contains('active')) {
+                document.querySelectorAll('.card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+            }
+            cardElement.classList.toggle('active');
+        }
+
+
+        function updateFullscreenButton() {
+            const btn = document.getElementById('fullscreen-btn');
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                btn.innerHTML = '&#x274E; 退出全螢幕';
+            } else {
+                btn.innerHTML = '&#x26F6; 全螢幕';
+            }
+        }
+
+        function toggleFullScreen(event) {
+            event.preventDefault();
+            const docEl = document.documentElement;
+            const isInFullScreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+
+            if (!isInFullScreen) {
+                const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
+                if (requestFullScreen) {
+                    requestFullScreen.call(docEl);
+                }
+            } else {
+                const cancelFullScreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+                if (cancelFullScreen) {
+                    cancelFullScreen.call(document);
+                }
+            }
+        }
+        
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+        document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+
+        // --- NEW: Back to Top Button Logic ---
+        const backToTopBtn = document.getElementById('back-to-top-btn');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        };
+
+    </script>
+
+</body>
+</html>
