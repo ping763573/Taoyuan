@@ -50,10 +50,32 @@
         header {
             background: var(--card-background);
             color: var(--text-color);
-            padding: 2rem 1rem;
-            text-align: center;
+            padding: 1.5rem 1rem; /* Adjusted padding */
             border-bottom: 5px solid var(--primary-color);
         }
+
+        /* --- START: MODIFIED HEADER STYLES --- */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 20px;
+        }
+
+        .header-logo {
+            height: 70px; /* Control image size */
+            width: auto;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+        /* --- END: MODIFIED HEADER STYLES --- */
+
         h1, h2, h3, h4, h5, h6 {
             font-family: var(--font-family-heading);
             font-weight: 700;
@@ -334,10 +356,15 @@
 <body>
 
     <header>
-        <div class="container">
-            <h1>用AI玩出第二人生</h1>
-            <p>講師：張雪芳 Sabrina | 桃園社區大學課程平台</p>
+        <!-- --- START: MODIFIED HEADER HTML --- -->
+        <div class="container header-container">
+            <img src="01.jpeg" alt="課程 Logo" class="header-logo">
+            <div class="header-text">
+                <h1>用AI玩出第二人生</h1>
+                <p>講師：張雪芳 Sabrina | 桃園社區大學課程平台</p>
+            </div>
         </div>
+        <!-- --- END: MODIFIED HEADER HTML --- -->
     </header>
 
     <nav>
