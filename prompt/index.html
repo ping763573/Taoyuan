@@ -149,7 +149,18 @@
         #work-prompt-generator-page select, #work-prompt-generator-page textarea, #work-prompt-generator-page button { transition: all 0.3s ease; }
         #work-prompt-generator-page .custom-select { appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.2em 1.2em; padding-right: 2.5rem; }
         #work-prompt-generator-page #promptOutput:empty::before { content: "請選擇分類與情境以產生提示詞..."; color: #9ca3af; }
-        #work-prompt-generator-page .prose pre { background-color: #f3f4f6; color: #1f2937; padding: 1rem; border-radius: 0.5rem; white-space: pre-wrap; word-wrap: break-word; }
+        
+        /* === FIX: 將樣式應用到 home-page 和 work-prompt-generator-page === */
+        #home-page .prose pre,
+        #work-prompt-generator-page .prose pre { 
+            background-color: #f3f4f6; 
+            color: #1f2937; 
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            white-space: pre-wrap; /* 確保長內容會換行 */
+            word-wrap: break-word;   /* 輔助換行 */
+            word-break: break-all; /* 強制斷詞，防止溢出 */
+        }
         /* --- END: 來自 index.html 的樣式 --- */
 
     </style>
@@ -639,7 +650,7 @@
                     ],
                     "除錯與優化": [
                         { "scenario": "生產環境故障排除", "prompt": "生產環境系統間歇性故障，根因難以定位。根據以下日誌、指標、與近期變更：［貼上脈絡］，請協助辨識最可能的原因並提出緩解建議。" },
-                        { "scenario": "分析效能瓶頸", "prompt": "我們的服務在尖峰時段出現延遲與效能下降。以下是指標、日誌、與相關追蹤：［貼上脈絡］。請協助找出瓶頸並提出具體優化建議。" },
+                        { "scenario": "分析效能瓶頸", "prompt": "我們的服務在尖峰時段出現延遲與效納下降。以下是指標、日誌、與相關追蹤：［貼上脈絡］。請協助找出瓶頸並提出具體優化建議。" },
                         { "scenario": "分析資料管線失敗", "prompt": "昨天的一次執行中，關鍵資料管線失敗。以下為日誌、資料量趨勢、與錯誤輸出：［貼上脈絡］。請分析可能原因並提出避免再發的建議。" },
                         { "scenario": "提出觀測性改進", "prompt": "我們目前使用［工具名稱］監控［服務名稱］。請檢視觀測性設計，並在指標、日誌、警示、與儀表板方面提出改進，以提升問題偵測與除錯效率。" },
                         { "scenario": "腦力激盪測試邊界情境", "prompt": "我們正為［功能／系統］設計測試案例。請腦力激盪可能未涵蓋的邊界情境與故障場景，包括不尋常的使用者輸入、系統狀態變化、與併發問題。" }
