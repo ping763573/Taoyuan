@@ -3,121 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>提示詞產生器 V1.2.0</title>
+    <title>萬用提示詞庫互動視覺化網頁</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     <style>
+        /* 全域樣式 */
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f8fafc;
+            transition: background-color 0.3s ease;
         }
-        .container {
-            max-width: 1200px;
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+            font-weight: 500;
         }
-        select, textarea, button {
-            transition: all 0.3s ease;
+        .nav-link.active {
+            background-color: #4f46e5; /* indigo-600 */
+            color: white;
         }
-        .custom-select {
-            appearance: none;
-            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1.2em 1.2em;
-            padding-right: 2.5rem;
+        .nav-link:not(.active):hover {
+            background-color: #e0e7ff; /* indigo-100 */
         }
-        #promptOutput:empty::before {
-            content: "請選擇分類與情境以產生提示詞...";
-            color: #9ca3af;
+        .page-content {
+            display: none; /* 預設隱藏所有頁面 */
         }
-        .prose pre {
-            background-color: #f3f4f6;
-            color: #1f2937;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .page-content.active {
+            display: block; /* 只顯示當前活動的頁面 */
         }
+
+        /* --- START: 來自 index01.html 的樣式 --- */
+        #ai-flavor-remover-page {
+            /* 變數定義 */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --radius-base: 8px;
+            --radius-sm: 6px;
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --duration-fast: 150ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* 將樣式限定在 #ai-flavor-remover-page 容器內 */
+            background: var(--color-background, var(--color-cream-50));
+            color: var(--color-text, var(--color-slate-900));
+            font-family: var(--font-family-base);
+        }
+        #ai-flavor-remover-page h1, #ai-flavor-remover-page h2, #ai-flavor-remover-page h3, #ai-flavor-remover-page h4 {
+            color: var(--color-text, var(--color-slate-900));
+        }
+        #ai-flavor-remover-page .btn {
+            display: inline-flex; align-items: center; justify-content: center; padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-base); font-size: 14px; font-weight: 500; cursor: pointer; transition: all var(--duration-fast) var(--ease-standard);
+            border: none;
+        }
+        #ai-flavor-remover-page .btn--primary { background: var(--color-primary, var(--color-teal-500)); color: var(--color-btn-primary-text, var(--color-cream-50)); }
+        #ai-flavor-remover-page .btn--primary:hover { background: var(--color-primary-hover, var(--color-teal-600)); }
+        #ai-flavor-remover-page .btn--secondary { background: var(--color-secondary, rgba(var(--color-brown-600-rgb), 0.12)); color: var(--color-text, var(--color-slate-900)); }
+        #ai-flavor-remover-page .btn--secondary:hover { background: var(--color-secondary-hover, rgba(var(--color-brown-600-rgb), 0.2)); }
+        #ai-flavor-remover-page .form-control { display: block; width: 100%; padding: var(--space-8) var(--space-12); color: var(--color-text, var(--color-slate-900)); background-color: var(--color-surface, var(--color-cream-100)); border: 1px solid var(--color-border, rgba(var(--color-brown-600-rgb), 0.2)); border-radius: var(--radius-base); }
+        #ai-flavor-remover-page textarea.form-control { resize: vertical; min-height: 100px; }
+        #ai-flavor-remover-page select.form-control { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right var(--space-12) center; background-size: 16px; padding-right: 32px; }
+        #ai-flavor-remover-page .form-label { display: block; margin-bottom: var(--space-8); font-weight: 500; font-size: 12px; }
+        #ai-flavor-remover-page .form-group { margin-bottom: var(--space-16); }
+        #ai-flavor-remover-page .app-container { min-height: 100vh; background: linear-gradient(135deg, var(--color-bg-3, rgba(34, 197, 94, 0.08)) 0%, var(--color-bg-1, rgba(59, 130, 246, 0.08)) 100%); }
+        #ai-flavor-remover-page .app-title { font-size: 20px; font-weight: 600; color: var(--color-primary, var(--color-teal-500)); margin: 0; }
+        #ai-flavor-remover-page .main-content { padding: var(--space-24, 24px); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-24, 24px); max-width: 1400px; margin: 0 auto; }
+        #ai-flavor-remover-page .section { background: var(--color-surface, var(--color-cream-100)); border-radius: 12px; padding: var(--space-24, 24px); border: 1px solid var(--color-card-border, rgba(var(--color-brown-600-rgb), 0.12)); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02); height: fit-content; }
+        #ai-flavor-remover-page .section-title { font-size: 18px; font-weight: 550; margin-bottom: 20px; color: var(--color-text, var(--color-slate-900)); border-bottom: 2px solid var(--color-primary, var(--color-teal-500)); padding-bottom: var(--space-8, 8px); }
+        #ai-flavor-remover-page .input-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-12, 12px); margin-bottom: var(--space-16, 16px); }
+        #ai-flavor-remover-page .technique-category { background: var(--color-bg-1, rgba(59, 130, 246, 0.08)); border-radius: var(--radius-base, 8px); padding: var(--space-16, 16px); }
+        #ai-flavor-remover-page .category-title { font-weight: 550; margin-bottom: var(--space-12, 12px); color: var(--color-primary, var(--color-teal-500)); display: flex; justify-content: space-between; align-items: center; }
+        #ai-flavor-remover-page .technique-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8, 8px); }
+        #ai-flavor-remover-page .technique-item { display: flex; align-items: center; gap: var(--space-8, 8px); padding: 6px; border-radius: var(--radius-sm, 6px); transition: background var(--duration-fast, 150ms) var(--ease-standard, cubic-bezier(0.16, 1, 0.3, 1)); cursor: pointer; }
+        #ai-flavor-remover-page .technique-item:hover { background: var(--color-secondary, rgba(var(--color-brown-600-rgb), 0.12)); }
+        #ai-flavor-remover-page .technique-checkbox { cursor: pointer; }
+        #ai-flavor-remover-page .technique-label { cursor: pointer; font-size: 12px; user-select: none; }
+        #ai-flavor-remover-page .output-versions { display: grid; gap: var(--space-16, 16px); margin-top: var(--space-16, 16px); }
+        #ai-flavor-remover-page .version-item { background: var(--color-bg-2, rgba(245, 158, 11, 0.08)); border: 1px solid var(--color-border, rgba(var(--color-brown-600-rgb), 0.2)); border-radius: var(--radius-base, 8px); padding: var(--space-16, 16px); position: relative; }
+        #ai-flavor-remover-page .version-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-12, 12px); }
+        #ai-flavor-remover-page .version-title { font-weight: 500; color: var(--color-text, var(--color-slate-900)); }
+        #ai-flavor-remover-page .version-text { font-size: 14px; line-height: 1.6; color: var(--color-text, var(--color-slate-900)); white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+        #ai-flavor-remover-page .controls { display: flex; gap: var(--space-12, 12px); margin-top: var(--space-16, 16px); flex-wrap: wrap; }
+        #ai-flavor-remover-page .word-count { font-size: 12px; color: var(--color-text-secondary, var(--color-slate-500)); margin-top: var(--space-8, 8px); }
+        #ai-flavor-remover-page .parameter-controls { margin-top: var(--space-16, 16px); padding: var(--space-16, 16px); background: var(--color-bg-3, rgba(34, 197, 94, 0.08)); border-radius: var(--radius-base, 8px); }
+        #ai-flavor-remover-page .parameter-row { display: flex; align-items: center; gap: var(--space-12, 12px); margin-bottom: var(--space-12, 12px); }
+        #ai-flavor-remover-page .parameter-label { min-width: 80px; font-size: 12px; font-weight: 500; }
+        #ai-flavor-remover-page .parameter-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 9999px; background: var(--color-border, rgba(var(--color-brown-600-rgb), 0.2)); outline: none; }
+        #ai-flavor-remover-page .parameter-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--color-primary, var(--color-teal-500)); cursor: pointer; }
+        #ai-flavor-remover-page .parameter-value { min-width: 40px; text-align: center; font-size: 12px; color: var(--color-text-secondary, var(--color-slate-500)); }
+        #ai-flavor-remover-page .templates-section { margin-top: 20px; padding: var(--space-16, 16px); background: var(--color-bg-4, rgba(239, 68, 68, 0.08)); border-radius: var(--radius-base, 8px); }
+        #ai-flavor-remover-page .templates-title { font-weight: 550; margin-bottom: var(--space-12, 12px); color: var(--color-text, var(--color-slate-900)); }
+        #ai-flavor-remover-page .template-grid { display: grid; gap: var(--space-12, 12px); }
+        #ai-flavor-remover-page .template-item { padding: var(--space-12, 12px); background: var(--color-surface, var(--color-cream-100)); border: 1px solid var(--color-border, rgba(var(--color-brown-600-rgb), 0.2)); border-radius: var(--radius-sm, 6px); cursor: pointer; transition: all var(--duration-fast, 150ms) var(--ease-standard, cubic-bezier(0.16, 1, 0.3, 1)); }
+        #ai-flavor-remover-page .template-item:hover { background: var(--color-secondary, rgba(var(--color-brown-600-rgb), 0.12)); transform: translateY(-1px); }
+        #ai-flavor-remover-page .template-name { font-weight: 500; margin-bottom: 6px; color: var(--color-text, var(--color-slate-900)); }
+        #ai-flavor-remover-page .template-preview { font-size: 12px; color: var(--color-text-secondary, var(--color-slate-500)); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        #ai-flavor-remover-page .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(var(--color-primary-rgb, 33, 128, 141), 0.3); border-radius: 50%; border-top-color: var(--color-primary, var(--color-teal-500)); animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #ai-flavor-remover-page .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #ai-flavor-remover-page .select-all-btn { padding: var(--space-4) var(--space-8); font-size: 11px; background: var(--color-secondary, rgba(var(--color-brown-600-rgb), 0.12)); color: var(--color-text, var(--color-slate-900)); border: 1px solid var(--color-border, rgba(var(--color-brown-600-rgb), 0.2)); border-radius: var(--radius-sm, 6px); cursor: pointer; }
+        #ai-flavor-remover-page .select-all-btn:hover { background: var(--color-secondary-hover, rgba(var(--color-brown-600-rgb), 0.2)); }
+        #ai-flavor-remover-page .tooltip { position: relative; display: inline-block; }
+        #ai-flavor-remover-page .tooltip .tooltiptext { visibility: hidden; width: 200px; background-color: var(--color-charcoal-800, #262828); color: var(--color-gray-200, #f5f5f5); text-align: center; border-radius: var(--radius-sm, 6px); padding: var(--space-8, 8px); position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -100px; font-size: 11px; opacity: 0; transition: opacity var(--duration-fast, 150ms); }
+        #ai-flavor-remover-page .tooltip .tooltiptext::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-charcoal-800, #262828) transparent transparent transparent; }
+        #ai-flavor-remover-page .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        @media (max-width: 1200px) { #ai-flavor-remover-page .main-content { grid-template-columns: 1fr 1fr; } #ai-flavor-remover-page .techniques-section { grid-column: 1 / -1; } }
+        @media (max-width: 768px) { #ai-flavor-remover-page .main-content { grid-template-columns: 1fr; gap: 16px; padding: 16px; } }
+        /* --- END: 來自 index01.html 的樣式 --- */
+
+        /* --- START: 來自 index.html 的樣式 --- */
+        #work-prompt-generator-page .container { max-width: 1200px; }
+        #work-prompt-generator-page select, #work-prompt-generator-page textarea, #work-prompt-generator-page button { transition: all 0.3s ease; }
+        #work-prompt-generator-page .custom-select { appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.2em 1.2em; padding-right: 2.5rem; }
+        #work-prompt-generator-page #promptOutput:empty::before { content: "請選擇分類與情境以產生提示詞..."; color: #9ca3af; }
+        #work-prompt-generator-page .prose pre { background-color: #f3f4f6; color: #1f2937; padding: 1rem; border-radius: 0.5rem; white-space: pre-wrap; word-wrap: break-word; }
+        /* --- END: 來自 index.html 的樣式 --- */
+
     </style>
 </head>
 <body class="text-gray-800">
 
-    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+    <!-- 頂部導覽列 -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-indigo-600">萬用提示詞庫</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a class="nav-link active" data-page="home-page">首頁 (提示詞教學)</a>
+                        <a class="nav-link" data-page="work-prompt-generator-page">萬用工作提示詞產生器</a>
+                        <a class="nav-link" data-page="ai-flavor-remover-page">萬能去除AI味提示詞</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="globalFullscreenBtn" class="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="全螢幕切換">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 頁面內容容器 -->
+
+        <!-- 1. 首頁 (提示詞教學) -->
+        <div id="home-page" class="page-content active">
+             <div class="container mx-auto p-4 sm:p-6 md:p-8">
+                <section class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                    <div class="prose max-w-none">
+                        <h2 class="text-3xl font-bold mb-6 text-gray-900 border-b-2 border-indigo-500 pb-2">如何產生更優化的提示詞？</h2>
+                        <p class="text-lg text-gray-700">一個好的提示詞，就像是給 AI 一份清晰的任務說明書。除了使用本站的產生器，您可以透過以下幾個技巧來大幅提升 AI 回應的品質與精準度：</p>
+                        
+                        <div class="mt-8 bg-indigo-50 p-6 rounded-xl">
+                            <h3 class="text-2xl font-semibold mb-3 text-indigo-800">核心原則：C.R.I.S.P</h3>
+                            <ul class="list-disc pl-5 space-y-4 text-gray-800">
+                                <li><strong><span class="font-bold text-indigo-700">(C)larity & Context (清晰與情境):</span></strong> 提供足夠的背景資訊，讓 AI 了解任務的全貌。例如，不要只說「寫一封信」，而是「假設你是一位專案經理，寫一封信給客戶說明專案延遲的原因」。</li>
+                                <li><strong><span class="font-bold text-indigo-700">(R)ole (角色扮演):</span></strong> 賦予 AI 一個專家角色。例如，「你是一位資深的行銷文案專家」、「你是一位專精於 Python 的軟體工程師」。</li>
+                                <li><strong><span class="font-bold text-indigo-700">(I)nstruction (明確指令):</span></strong> 給予具體、可執行的指令。使用動詞開頭，例如「分析」、「比較」、「總結」、「撰寫」。</li>
+                                <li><strong><span class="font-bold text-indigo-700">(S)pecific Format (指定格式):</span></strong> 要求 AI 以特定格式輸出。例如，「請用表格呈現」、「請用點列式說明」、「請提供 Markdown 格式的程式碼」。</li>
+                                <li><strong><span class="font-bold text-indigo-700">(P)urpose & Persona (目的與受眾):</span></strong> 說明這份產出的最終目的以及是給誰看的。例如，「這份報告的目的是要說服管理層增加預算，受眾是沒有技術背景的主管」。</li>
+                            </ul>
+                        </div>
         
-        <!-- Header -->
-        <header class="flex justify-between items-center mb-6">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">提示詞產生器</h1>
-                <p class="text-sm text-gray-500">版本: 1.2.0</p>
-            </div>
-            <button id="fullscreenBtn" class="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
-                </svg>
-            </button>
-        </header>
-
-        <!-- Generator Section -->
-        <main class="bg-white p-6 rounded-2xl shadow-lg mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Controls -->
-                <div class="space-y-4">
-                    <div>
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">1. 選擇職位分類</label>
-                        <select id="category" class="custom-select w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                            <option value="">請選擇...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="scenario" class="block text-sm font-medium text-gray-700 mb-1">2. 選擇使用情境</label>
-                        <select id="scenario" class="custom-select w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white" disabled>
-                            <option value="">請先選擇分類...</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Output -->
-                <div class="flex flex-col">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">產生的提示詞</label>
-                    <div class="relative flex-grow">
-                        <div id="promptOutput" class="w-full h-full min-h-[150px] p-3 border border-gray-300 rounded-lg bg-gray-50 overflow-y-auto whitespace-pre-wrap"></div>
-                        <div id="copyFeedback" class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-opacity duration-300">已複製!</div>
-                    </div>
-                    <div class="flex items-center space-x-3 mt-3">
-                        <button id="copyBtn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400" disabled>
-                            複製提示詞
-                        </button>
-                        <button id="clearBtn" class="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:bg-gray-100" disabled>
-                            清除
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Optimization Guide Section -->
-        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-            <div class="prose max-w-none">
-                <h2 class="text-2xl font-bold mb-4">如何產生更優化的提示詞？</h2>
-                <p>一個好的提示詞，就像是給 AI 一份清晰的任務說明書。除了使用上方的範本，您可以透過以下幾個技巧來大幅提升 AI 回應的品質與精準度：</p>
-                
-                <h3 class="text-xl font-semibold mt-6 mb-2">1. C.R.I.S.P 原則</h3>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li><strong>(C)larity & Context (清晰與情境):</strong> 提供足夠的背景資訊，讓 AI 了解任務的全貌。例如，不要只說「寫一封信」，而是「假設你是一位專案經理，寫一封信給客戶說明專案延遲的原因」。</li>
-                    <li><strong>(R)ole (角色扮演):</strong> 賦予 AI 一個專家角色。例如，「你是一位資深的行銷文案專家」、「你是一位專精於 Python 的軟體工程師」。</li>
-                    <li><strong>(I)nstruction (明確指令):</strong> 給予具體、可執行的指令。使用動詞開頭，例如「分析」、「比較」、「總結」、「撰寫」。</li>
-                    <li><strong>(S)pecific Format (指定格式):</strong> 要求 AI 以特定格式輸出。例如，「請用表格呈現」、「請用點列式說明」、「請提供 Markdown 格式的程式碼」。</li>
-                    <li><strong>(P)urpose & Persona (目的與受眾):</strong> 說明這份產出的最終目的以及是給誰看的。例如，「這份報告的目的是要說服管理層增加預算，受眾是沒有技術背景的主管」。</li>
-                </ul>
-
-                <h3 class="text-xl font-semibold mt-6 mb-2">2. 優化範例說明</h3>
-                
-                <div class="mt-4">
-                    <h4 class="text-lg font-semibold">範例 1：撰寫產品上市 EDM</h4>
-                    <p class="mt-1 font-medium">原始提示詞:</p>
-                    <pre>為新產品撰寫上市 EDM。使用以下產品與受眾資訊：〔插入細節〕。內容需具吸引力與說服力，並以可審稿的行銷郵件格式輸出。</pre>
-                    <p class="mt-2 font-medium">優化後的提示詞:</p>
-                    <pre>
+                        <h3 class="text-2xl font-semibold mt-10 mb-4 border-l-4 border-indigo-500 pl-4">優化範例說明</h3>
+                        
+                        <div class="mt-6">
+                            <h4 class="text-xl font-semibold text-gray-800">範例 1：撰寫產品上市 EDM</h4>
+                            <div class="grid md:grid-cols-2 gap-6 mt-4">
+                                <div>
+                                    <p class="mt-1 font-medium text-red-600">原始提示詞 (較模糊):</p>
+                                    <pre class="border-red-300 border bg-red-50">為新產品撰寫上市 EDM。使用以下產品與受眾資訊：〔插入細節〕。內容需具吸引力與說服力，並以可審稿的行銷郵件格式輸出。</pre>
+                                </div>
+                                <div>
+                                     <p class="mt-2 font-medium text-green-600">優化後的提示詞 (C.R.I.S.P):</p>
+                                    <pre class="border-green-300 border bg-green-50">
 你是一位專業的電商行銷文案專家，擁有 10 年經驗，特別擅長撰寫高轉換率的 EDM。
 
 # 任務
@@ -144,15 +241,21 @@
     -   行動呼籲 (CTA)：設計一個強而有力的 CTA，例如「立即預定您的第一杯完美咖啡」，並說明早鳥優惠（限量 8 折）。
 3.  **語氣與風格：** 語氣需專業、自信，帶有一點科技感與溫度。
 4.  **輸出格式：** 請以 HTML 格式輸出郵件內容，方便直接使用。
-                    </pre>
-                </div>
-
-                <div class="mt-6">
-                    <h4 class="text-lg font-semibold">範例 2：草擬會議邀請</h4>
-                    <p class="mt-1 font-medium">原始提示詞:</p>
-                    <pre>為一場關於〔主題〕的會議撰寫邀請。參與者包含〔參與者/角色〕，列出議程項目、目標與需事前準備事項。請以行事曆邀請格式提供文字。</pre>
-                    <p class="mt-2 font-medium">優化後的提示詞:</p>
-                    <pre>
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="mt-8 border-t pt-8">
+                            <h4 class="text-xl font-semibold text-gray-800">範例 2：草擬會議邀請</h4>
+                             <div class="grid md:grid-cols-2 gap-6 mt-4">
+                                <div>
+                                    <p class="mt-1 font-medium text-red-600">原始提示詞 (較模糊):</p>
+                                    <pre class="border-red-300 border bg-red-50">為一場關於〔主題〕的會議撰寫邀請。參與者包含〔參與者/角色〕，列出議程項目、目標與需事前準備事項。請以行事曆邀請格式提供文字。</pre>
+                                </div>
+                                <div>
+                                    <p class="mt-2 font-medium text-green-600">優化後的提示詞 (C.R.I.S.P):</p>
+                                    <pre class="border-green-300 border bg-green-50">
 你是一位效率極高的專案助理。請為我草擬一份正式的 Google Calendar 會議邀請文字。
 
 # 會議資訊
@@ -161,11 +264,7 @@
     1.  確認 Q1 行銷活動的最終預算分配。
     2.  對齊各部門（產品、銷售、行銷）對主要目標客群的認知。
     3.  拍板定案主打的廣告標語 (Slogan)。
-- **參與者：**
-    -   王經理 (行銷部主管)
-    -   李協理 (產品部主管)
-    -   陳總監 (銷售部主管)
-    -   我 (專案負責人)
+- **參與者：** 王經理, 李協理, 陳總監, 我
 - **會議時長：** 60 分鐘
 
 # 指令
@@ -184,15 +283,21 @@
 
 # 輸出格式
 請直接提供可複製貼上的文字內容，無需額外說明。
-                    </pre>
-                </div>
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="mt-6">
-                    <h4 class="text-lg font-semibold">範例 3：摘要冗長郵件</h4>
-                    <p class="mt-1 font-medium">原始提示詞:</p>
-                    <pre>請將此電子郵件往來摘要成短篇重點。此信件串包含多次來回訊息。請標示關鍵決策、行動項目與未解問題。郵件：〔貼上文字〕</pre>
-                    <p class="mt-2 font-medium">優化後的提示詞:</p>
-                    <pre>
+                        <div class="mt-8 border-t pt-8">
+                            <h4 class="text-xl font-semibold text-gray-800">範例 3：摘要冗長郵件</h4>
+                            <div class="grid md:grid-cols-2 gap-6 mt-4">
+                                <div>
+                                    <p class="mt-1 font-medium text-red-600">原始提示詞 (較模糊):</p>
+                                    <pre class="border-red-300 border bg-red-50">請將此電子郵件往來摘要成短篇重點。此信件串包含多次來回訊息。請標示關鍵決策、行動項目與未解問題。郵件：〔貼上文字〕</pre>
+                                </div>
+                                <div>
+                                    <p class="mt-2 font-medium text-green-600">優化後的提示詞 (C.R.I.S.P):</p>
+                                    <pre class="border-green-300 border bg-green-50">
 你是一位精明的商業分析師，擅長從複雜的資訊中快速提煉重點。
 
 # 任務
@@ -203,30 +308,179 @@
 
 - **背景簡述：** (用一句話說明此郵件串的核心議題)
 - **關鍵決策 (Key Decisions)：**
-    -   [決策 1]
-    -   [決策 2]
-- **待辦事項 (Action Items)：**
-    -   **誰 (Owner):** [姓名]
-    -   **做什麼 (Task):** [具體任務]
-    -   **何時完成 (Deadline):** [日期]
+- **待辦事項 (Action Items)：** (誰, 做什麼, 何時完成)
 - **待釐清問題 (Open Questions)：**
-    -   [問題 1]
-    -   [問題 2]
 
 # 語氣
 專業、精簡、條理分明。
 
 # 原始郵件串
 [ 此處貼上完整的郵件內容 ]
-                    </pre>
-                </div>
-            </div>
-        </section>
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
 
-    </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- 2. 萬用工作提示詞產生器 -->
+        <div id="work-prompt-generator-page" class="page-content">
+            <div class="container mx-auto p-4 sm:p-6 md:p-8">
+                <!-- Header -->
+                <header class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">提示詞產生器</h1>
+                        <p class="text-sm text-gray-500">版本: 1.2.0</p>
+                    </div>
+                </header>
+
+                <!-- Generator Section -->
+                <main class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Controls -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">1. 選擇職位分類</label>
+                                <select id="category" class="custom-select w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                                    <option value="">請選擇...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="scenario" class="block text-sm font-medium text-gray-700 mb-1">2. 選擇使用情境</label>
+                                <select id="scenario" class="custom-select w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white" disabled>
+                                    <option value="">請先選擇分類...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">產生的提示詞</label>
+                            <div class="relative flex-grow">
+                                <div id="promptOutput" class="w-full h-full min-h-[150px] p-3 border border-gray-300 rounded-lg bg-gray-50 overflow-y-auto whitespace-pre-wrap"></div>
+                                <div id="copyFeedback" class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-opacity duration-300">已複製!</div>
+                            </div>
+                            <div class="flex items-center space-x-3 mt-3">
+                                <button id="copyBtn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400" disabled>
+                                    複製提示詞
+                                </button>
+                                <button id="clearBtn" class="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:bg-gray-100" disabled>
+                                    清除
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- 3. 萬能去除AI味提示詞 -->
+        <div id="ai-flavor-remover-page" class="page-content">
+             <div class="app-container">
+                <main class="main-content">
+                    <!-- 輸入區域 -->
+                    <section class="section input-section">
+                        <h2 class="section-title">基本設定</h2>
+                        <div class="form-group">
+                            <label class="form-label">基本描述</label>
+                            <textarea id="basicDescription" class="form-control" placeholder="請輸入您想要的基本描述..." rows="4"></textarea>
+                        </div>
+                        <div class="input-row">
+                            <div class="form-group"> <label class="form-label">類型</label> <select id="categorySelect" class="form-control"> <option value="">選擇類型</option> <option value="人像">人像</option> <option value="風景">風景</option> <option value="商品拍攝">商品拍攝</option> <option value="室內設計">室內設計</option> <option value="抽象藝術">抽象藝術</option> <option value="動物">動物</option> <option value="建築">建築</option> <option value="文字藝術">文字藝術</option> </select> </div>
+                            <div class="form-group"> <label class="form-label">風格</label> <select id="styleSelect" class="form-control"> <option value="">選擇風格</option> <option value="寫實">寫實</option> <option value="動漫">動漫</option> <option value="油畫">油畫</option> <option value="水彩">水彩</option> <option value="素描">素描</option> <option value="復古">復古</option> <option value="現代">現代</option> <option value="夢幻">夢幻</option> </select> </div>
+                            <div class="form-group"> <label class="form-label">情境</label> <select id="contextSelect" class="form-control"> <option value="">選擇情境</option> <option value="日系清新">日系清新</option> <option value="歐美時尚">歐美時尚</option> <option value="中式古典">中式古典</option> <option value="科幻未來">科幻未來</option> <option value="自然野外">自然野外</option> <option value="都市街頭">都市街頭</option> </select> </div>
+                        </div>
+                        <div class="parameter-controls">
+                            <h4>參數調整</h4>
+                            <div class="parameter-row"> <label class="parameter-label">詳細程度</label> <input type="range" id="detailLevel" class="parameter-slider" min="1" max="5" value="3"> <span id="detailValue" class="parameter-value">3</span> </div>
+                            <div class="parameter-row"> <label class="parameter-label">創意程度</label> <input type="range" id="creativityLevel" class="parameter-slider" min="1" max="5" value="3"> <span id="creativityValue" class="parameter-value">3</span> </div>
+                            <div class="parameter-row"> <label class="parameter-label">情感強度</label> <input type="range" id="emotionLevel" class="parameter-slider" min="1" max="5" value="3"> <span id="emotionValue" class="parameter-value">3</span> </div>
+                        </div>
+                        <div class="templates-section">
+                            <h4 class="templates-title">範例模板</h4>
+                            <div class="template-grid" id="templateGrid"></div>
+                        </div>
+                    </section>
+                    <!-- 技巧選擇區域 -->
+                    <section class="section techniques-section">
+                        <h2 class="section-title">去AI味技巧選擇</h2>
+                        <div class="technique-categories" id="techniqueCategories"></div>
+                    </section>
+                    <!-- 輸出區域 -->
+                    <section class="section output-section">
+                        <h2 class="section-title">生成結果</h2>
+                        <div class="controls"> <button class="btn btn--primary" id="generatePromptsBtn">生成提示詞</button> <button class="btn btn--secondary" id="regeneratePromptsBtn">重新生成</button> <button class="btn btn--secondary" id="exportPromptsBtn">匯出結果</button> </div>
+                        <div class="output-versions" id="outputVersions">
+                            <div class="version-item">
+                                <div class="version-header"> <span class="version-title">等待生成...</span> </div>
+                                <div class="version-text">請填寫基本描述並選擇技巧後，點擊「生成提示詞」按鈕開始生成。</div>
+                            </div>
+                        </div>
+                        <div class="word-count" id="wordCount">字數: 0</div>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+    </main>
 
     <script>
+        // --- START: 全域導覽與全螢幕控制 ---
         document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page-content');
+            const fullscreenBtn = document.getElementById('globalFullscreenBtn');
+
+            function switchPage(pageId) {
+                // 處理頁面顯示
+                pages.forEach(page => {
+                    if (page.id === pageId) {
+                        page.classList.add('active');
+                    } else {
+                        page.classList.remove('active');
+                    }
+                });
+                // 處理導覽列樣式
+                navLinks.forEach(link => {
+                    if (link.dataset.page === pageId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const pageId = event.currentTarget.dataset.page;
+                    switchPage(pageId);
+                });
+            });
+
+            // 全螢幕切換
+            fullscreenBtn.addEventListener('click', function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        alert(`無法進入全螢幕模式: ${err.message} (${err.name})`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+            
+            // 初始化第一個頁面
+            switchPage('home-page');
+        });
+        // --- END: 全域導覽與全螢幕控制 ---
+    </script>
+    
+    <script>
+        // --- START: 來自 index.html 的腳本 (萬用工作提示詞產生器) ---
+        (function() {
             // Data extracted and completed from the PDF
             const promptsData = {
                 "各職位皆適用": {
@@ -480,7 +734,7 @@
                 "管理職位": {
                     "策略規劃與對齊": [
                         { "scenario": "撰寫季度目標", "prompt": "為我的團隊撰寫清楚且可衡量的季度目標。以下是商業脈絡、公司目標與近期表現：［貼上脈絡］。請以簡潔條列呈現 3 個目標，每個目標含 3–4 個關鍵結果。" },
-                        { "scenario": "高階簡報要點", "prompt": "我需要向副總報告團隊進度。根據這份每週摘要：［貼上筆記］，請產出簡潔要點，分為：成就、阻礙、與需要協助。" },
+                        { "scenario": "高階簡報要點", "prompt": "我需要向副總報告團隊進度。根據這份每週摘要：［貼上筆記］，請产出簡潔要點，分為：成就、阻礙、與需要協助。" },
                         { "scenario": "技能落差分析", "prompt": "我想評估團隊的技能落差。這是目前技能矩陣與期望的未來狀態：［貼上資訊］。請識別關鍵落差並提出訓練或招募方案，以短表格呈現。" },
                         { "scenario": "招募路線圖規劃", "prompt": "我需要規劃接下來兩季的招募需求。這是目前團隊結構與成長預測：［貼上資訊］。請提出分階段招募計畫，包含每個職位的理由與建議時程。" },
                         { "scenario": "策略轉向後重構目標", "prompt": "我們剛經歷策略轉向。變動如下：［貼上細節］。請協助重構團隊目標與敘事，使其對齊新方向。提供 2–3 組談話要點與修訂後的團隊目標敘述。" }
@@ -620,14 +874,14 @@
                     ]
                 }
             };
-
-            const categorySelect = document.getElementById('category');
-            const scenarioSelect = document.getElementById('scenario');
-            const promptOutput = document.getElementById('promptOutput');
-            const copyBtn = document.getElementById('copyBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const copyFeedback = document.getElementById('copyFeedback');
+            
+            const page = document.getElementById('work-prompt-generator-page');
+            const categorySelect = page.querySelector('#category');
+            const scenarioSelect = page.querySelector('#scenario');
+            const promptOutput = page.querySelector('#promptOutput');
+            const copyBtn = page.querySelector('#copyBtn');
+            const clearBtn = page.querySelector('#clearBtn');
+            const copyFeedback = page.querySelector('#copyFeedback');
 
             // Populate category dropdown
             Object.keys(promptsData).forEach(category => {
@@ -719,18 +973,278 @@
                 scenarioSelect.value = '';
                 updateButtonStates(false);
             });
-
-            // Fullscreen toggle logic
-            fullscreenBtn.addEventListener('click', function () {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => {
-                        alert(`無法進入全螢幕模式: ${err.message} (${err.name})`);
-                    });
-                } else {
-                    document.exitFullscreen();
-                }
-            });
-        });
+        })();
+        // --- END: 來自 index.html 的腳本 ---
     </script>
+
+    <script>
+        // --- START: 來自 index01.html 的腳本 (萬能去除AI味提示詞) ---
+        (function() {
+            const page = document.getElementById('ai-flavor-remover-page');
+            if (!page) return;
+
+            // 技巧數據
+            const techniques = {
+                "描繪類": [
+                    { name: "增加描繪", description: "豐富場景和情節細節，讓讀者更容易進入情境", key: "rich_detail" },
+                    { name: "場景塑造", description: "細致描寫環境，讓背景更具視覺衝擊力", key: "scene_building" },
+                    { name: "詳細場景", description: "詳細描述背景場景，讓讀者有畫面感", key: "detailed_scene" },
+                    { name: "增加細節", description: "添加具體細節，讓讀者有直觀感受", key: "add_detail" },
+                    { name: "增強畫面感", description: "讓讀者通過文字感受到逼真的畫面", key: "visual_sense" }
+                ],
+                "情感類": [
+                    { name: "刻畫情感", description: "詳細刻畫人物的內心活動，讓情感更具張力", key: "emotion_detail" },
+                    { name: "描寫心情", description: "詳細描寫人物心情，增強情感共鳴", key: "mood_description" },
+                    { name: "強化代入", description: "讓讀者感受到自己就是故事中的一部分", key: "immersion" },
+                    { name: "增強代入感", description: "讓讀者代入文章中的角色或情景", key: "enhanced_immersion" }
+                ],
+                "表達類": [
+                    { name: "避免俗套", description: "拋棄過時的表達，尋找新穎且符合語境的詞彙", key: "avoid_cliche" },
+                    { name: "避開老套", description: "避免使用陳詞濫調，換成新穎的表達", key: "fresh_expression" },
+                    { name: "多樣用詞", description: "避免重複同一個詞，多使用同義詞或近義詞", key: "varied_vocabulary" },
+                    { name: "豐富詞彙", description: "使用同義詞替換重複詞彙，讓文章更豐富", key: "rich_vocabulary" },
+                    { name: "動詞驅動", description: "多使用生動的動詞，增強文章的動態感", key: "verb_driven" },
+                    { name: "多用動詞", description: "用更多動詞，讓文章更有活力", key: "more_verbs" },
+                    { name: "主動表達", description: "使用主動語態，提升文章清晰度和力量感", key: "active_voice" },
+                    { name: "主動語態", description: "盡量用主動句，增加文章力量", key: "active_sentence" }
+                ],
+                "結構類": [
+                    { name: "調節韻律", description: "通過句式長短搭配，使文章讀起來有節奏感", key: "rhythm_control" },
+                    { name: "調整節奏", description: "通過長短句的變化，控制文章的節奏", key: "pace_adjustment" },
+                    { name: "簡明表達", description: "用更簡潔的方式傳遞信息，讓句子更加有力", key: "concise_expression" },
+                    { name: "簡化表達", description: "把複雜句子拆開用短句子表達，更有衝擊力", key: "simplified_expression" },
+                    { name: "分段合理", description: "將段落適當分割，提升文章的可讀性", key: "proper_paragraphing" },
+                    { name: "合理分段", description: "避免段落過長，影響閱讀體驗", key: "reasonable_paragraphs" }
+                ],
+                "創意類": [
+                    { name: "運用比喻", description: "借用比喻使抽象概念更加具體和生動", key: "use_metaphor" },
+                    { name: "使用比喻", description: "用比喻手法，讓抽象概念具體化", key: "metaphor_technique" },
+                    { name: "利用對比", description: "通過對比增強文章的層次感和說服力", key: "use_contrast" },
+                    { name: "使用對比", description: "通過對比手法，突出文章的重點", key: "contrast_technique" },
+                    { name: "植入幽默", description: "在合適的地方加入幽默元素，增加趣味性", key: "add_humor" },
+                    { name: "幽默元素", description: "加入幽默元素，讓文章更輕鬆有趣", key: "humor_element" },
+                    { name: "製造懸念", description: "在合適的地方埋下伏筆，引發讀者的好奇心", key: "create_suspense" },
+                    { name: "設置懸念", description: "適當設置懸念，吸引讀者繼續閱讀", key: "suspense_setting" },
+                    { name: "適度誇張", description: "在描述時，加入適度誇張手法，增強感染力", key: "moderate_exaggeration" }
+                ],
+                "互動類": [
+                    { name: "互動引導", description: "通過問句或提示，引導讀者思考或參與討論", key: "interactive_guide" },
+                    { name: "增加互動", description: "用提問方式與讀者互動，增加參與感", key: "add_interaction" },
+                    { name: "自然對白", description: "讓對話流暢且符合人物性格，避免生硬感", key: "natural_dialogue" },
+                    { name: "自然對話", description: "寫對話部分要像真的一樣自然", key: "natural_conversation" }
+                ],
+                "重點強化類": [
+                    { name: "強調要點", description: "通過格式或語氣變化，突出文章重要信息", key: "emphasize_points" },
+                    { name: "突出重點", description: "用標點符號或排版突出重點，吸引注意", key: "highlight_key_points" },
+                    { name: "突出核心", description: "集中篇幅描寫文章的核心思想，避免跑題", key: "focus_core" },
+                    { name: "明確立場", description: "在文章中清晰地表達自己觀點，不模棱兩可", key: "clear_position" },
+                    { name: "表達觀點", description: "大膽表達自己的觀點，不要太中庸", key: "express_viewpoint" }
+                ]
+            };
+            const templates = {
+                "心齋橋拱廊街晨光": "清晨的心齋橋商店街仍帶著夜裡殘留的濕氣，玻璃屋頂上凝著細小水珠，柔和陽光斜斜灑落，在地面繪出斑駁光影。19歲的日本女孩穿著純白比基尼，外搭透氣薄紗披肩，手提米色布袋，站在還未開門的精品店前。她神情恬靜，微風撩起髮梢，整座城市像在屏息等待她下一個動作。遠處的腳步聲逐漸靠近，咖啡香瀰漫，時間在這一刻暫停，只留下光與影的對話，整體氣氛柔和且富有日式青春感。",
+                "道頓堀黃昏霓虹": "傍晚的道頓堀河畔被霓虹燈光吞沒，紅、藍、金三色在水面閃爍。女孩穿著純白比基尼，外搭輕薄罩衫，站在木質護欄旁，頭髮被微風輕拂，轉頭看向遠處河面上的船隻，眼中閃著細微光芒。身後人潮喧鬧，她卻彷彿被時間隔離，靜靜存在於熱鬧之中。風從河面掠過，招牌光影映在臉上，像記憶中溫柔的夢。整個畫面浪漫又充滿都市氛圍。"
+            };
+            const defaultTechniques = ['rich_detail', 'scene_building', 'emotion_detail', 'avoid_cliche', 'varied_vocabulary', 'verb_driven', 'use_metaphor', 'visual_sense', 'active_voice', 'rhythm_control', 'add_detail', 'immersion'];
+            let currentVersions = [];
+            const basicDescriptionEl = page.querySelector('#basicDescription');
+            const categorySelectEl = page.querySelector('#categorySelect');
+            const styleSelectEl = page.querySelector('#styleSelect');
+            const contextSelectEl = page.querySelector('#contextSelect');
+            const detailLevelEl = page.querySelector('#detailLevel');
+            const creativityLevelEl = page.querySelector('#creativityLevel');
+            const emotionLevelEl = page.querySelector('#emotionLevel');
+
+            function renderTechniques() {
+                const container = page.querySelector('#techniqueCategories');
+                container.innerHTML = '';
+                Object.entries(techniques).forEach(([category, items]) => {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'technique-category';
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'category-title';
+                    titleDiv.innerHTML = `<span>${category}</span><button class="select-all-btn">全選/取消</button>`;
+                    titleDiv.querySelector('button').onclick = () => toggleCategorySelection(category);
+                    const gridDiv = document.createElement('div');
+                    gridDiv.className = 'technique-grid';
+                    items.forEach(technique => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'technique-item tooltip';
+                        const isChecked = defaultTechniques.includes(technique.key);
+                        itemDiv.innerHTML = `<input type="checkbox" id="tech_${technique.key}" class="technique-checkbox" ${isChecked ? 'checked' : ''}><label for="tech_${technique.key}" class="technique-label">${technique.name}</label><span class="tooltiptext">${technique.description}</span>`;
+                        gridDiv.appendChild(itemDiv);
+                    });
+                    categoryDiv.appendChild(titleDiv);
+                    categoryDiv.appendChild(gridDiv);
+                    container.appendChild(categoryDiv);
+                });
+            }
+
+            function renderTemplates() {
+                const container = page.querySelector('#templateGrid');
+                container.innerHTML = '';
+                Object.entries(templates).forEach(([name, content]) => {
+                    const templateDiv = document.createElement('div');
+                    templateDiv.className = 'template-item';
+                    templateDiv.onclick = () => loadTemplate(content);
+                    templateDiv.innerHTML = `<div class="template-name">${name}</div><div class="template-preview">${content.substring(0, 100)}...</div>`;
+                    container.appendChild(templateDiv);
+                });
+            }
+
+            function loadTemplate(content) {
+                basicDescriptionEl.value = content;
+            }
+
+            function toggleCategorySelection(category) {
+                const categoryTechniques = techniques[category];
+                const checkboxes = categoryTechniques.map(t => page.querySelector(`#tech_${t.key}`));
+                const allChecked = checkboxes.every(cb => cb.checked);
+                checkboxes.forEach(cb => { cb.checked = !allChecked; });
+            }
+
+            function setupParameterListeners() {
+                const sliders = ['detailLevel', 'creativityLevel', 'emotionLevel'];
+                sliders.forEach(id => {
+                    const slider = page.querySelector(`#${id}`);
+                    const valueSpan = page.querySelector(`#${id.replace('Level', 'Value')}`);
+                    slider.addEventListener('input', () => { valueSpan.textContent = slider.value; });
+                });
+            }
+
+            function getSelectedTechniques() {
+                const selected = [];
+                Object.values(techniques).flat().forEach(technique => {
+                    const checkbox = page.querySelector(`#tech_${technique.key}`);
+                    if (checkbox && checkbox.checked) {
+                        selected.push(technique);
+                    }
+                });
+                return selected;
+            }
+
+            function generatePrompts() {
+                const basicDesc = basicDescriptionEl.value.trim();
+                if (!basicDesc) { alert('請輸入基本描述'); return; }
+                const selectedTechniques = getSelectedTechniques();
+                const parameters = {
+                    detail: parseInt(detailLevelEl.value),
+                    creativity: parseInt(creativityLevelEl.value),
+                    emotion: parseInt(emotionLevelEl.value)
+                };
+                showLoadingState();
+                setTimeout(() => {
+                    const versions = generateMultipleVersions(basicDesc, categorySelectEl.value, styleSelectEl.value, contextSelectEl.value, selectedTechniques, parameters);
+                    displayVersions(versions);
+                }, 1000);
+            }
+
+            function showLoadingState() {
+                const container = page.querySelector('#outputVersions');
+                container.innerHTML = `<div class="version-item"><div class="version-header"><span class="version-title">生成中...</span><span class="loading"></span></div><div class="version-text">正在運用選定的技巧生成豐富的提示詞，請稍候...</div></div>`;
+            }
+
+            function generateMultipleVersions(basicDesc, category, style, context, selectedTechniques, parameters) {
+                const versions = [];
+                versions.push({ title: '基礎增強版', content: enhanceDescription(basicDesc, selectedTechniques, parameters, 'basic', category, style, context) });
+                versions.push({ title: '情感豐富版', content: enhanceDescription(basicDesc, selectedTechniques, parameters, 'emotional', category, style, context) });
+                versions.push({ title: '視覺詳細版', content: enhanceDescription(basicDesc, selectedTechniques, parameters, 'visual', category, style, context) });
+                versions.push({ title: '創意表達版', content: enhanceDescription(basicDesc, selectedTechniques, parameters, 'creative', category, style, context) });
+                return versions;
+            }
+            
+            function enhanceDescription(basicDesc, techniques, parameters, version, category, style, context) {
+                let enhanced = basicDesc;
+                const contextInfo = [];
+                if (category) contextInfo.push(`${category}攝影`);
+                if (style) contextInfo.push(`${style}風格`);
+                if (context) contextInfo.push(`${context}氛圍`);
+                
+                const hasTechnique = (keys) => techniques.some(t => keys.some(k => t.key.includes(k)));
+
+                if (version === 'basic' && hasTechnique(['scene', 'detail'])) {
+                    const enhancements = ['畫面構圖精緻', '光線柔和自然', '色彩層次豐富', '細節刻畫生動'].slice(0, parameters.detail);
+                    enhanced += `。${enhancements.join('，')}。`;
+                }
+                if (version === 'emotional' && hasTechnique(['emotion', 'mood'])) {
+                    const words = { 1: ['平靜'], 2: ['溫暖'], 3: ['動人', '溫柔'], 4: ['震撼', '濃烈'], 5: ['震撼心靈', '情感澎湃']};
+                    const emotions = words[parameters.emotion] || words[3];
+                    enhanced += ` 整個場面散發著${emotions[Math.floor(Math.random() * emotions.length)]}的情感氛圍。`;
+                }
+                if (version === 'visual' && hasTechnique(['visual', 'detail'])) {
+                    const details = ['光影交錯', '色彩飽和度恰到好處', '紋理質感細膩', '景深控制精準', '構圖比例完美'].slice(0, parameters.detail + 1);
+                    enhanced += ` ${details.join('；')}。`;
+                }
+                if (version === 'creative' && hasTechnique(['metaphor', 'creative'])) {
+                     const metaphors = ['如詩如畫的視覺饗宴', '時間在這一刻凝固成永恆', '美的旋律在畫面中輕柔流淌', '光與影的完美協奏曲', '色彩在空間中翩翩起舞'];
+                     enhanced += ` 這是一場${metaphors[Math.floor(Math.random() * metaphors.length)]}。`;
+                }
+                if (contextInfo.length > 0 && version === 'basic') {
+                    enhanced += ` 整體呈現${contextInfo.join('與')}的完美結合。`;
+                }
+                return enhanced;
+            }
+
+            function displayVersions(versions) {
+                currentVersions = versions;
+                const container = page.querySelector('#outputVersions');
+                container.innerHTML = '';
+                versions.forEach((version, index) => {
+                    const versionDiv = document.createElement('div');
+                    versionDiv.className = 'version-item fade-in';
+                    versionDiv.innerHTML = `<div class="version-header"><span class="version-title">${version.title}</span><button class="btn btn--sm btn--secondary">📋 複製</button></div><div class="version-text">${version.content}</div>`;
+                    versionDiv.querySelector('button').onclick = (event) => copyVersion(index, event.target);
+                    container.appendChild(versionDiv);
+                });
+                updateWordCount();
+            }
+
+            function copyVersion(index, button) {
+                const text = currentVersions[index].content;
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = button.textContent;
+                    button.textContent = '✅ 已複製';
+                    setTimeout(() => { button.textContent = originalText; }, 1500);
+                }).catch(err => { console.error('複製失敗:', err); alert('複製失敗'); });
+            }
+            
+            function exportPrompts() {
+                if (currentVersions.length === 0) { alert('請先生成提示詞'); return; }
+                const exportData = {
+                    timestamp: new Date().toISOString(),
+                    settings: {
+                        category: categorySelectEl.value, style: styleSelectEl.value, context: contextSelectEl.value,
+                        parameters: { detail: detailLevelEl.value, creativity: creativityLevelEl.value, emotion: emotionLevelEl.value },
+                        selectedTechniques: getSelectedTechniques().map(t => t.name)
+                    },
+                    versions: currentVersions
+                };
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ai_prompts_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            function updateWordCount() {
+                const totalWords = currentVersions.reduce((sum, version) => sum + version.content.length, 0);
+                page.querySelector('#wordCount').textContent = `總字數: ${totalWords}`;
+            }
+
+            // 初始化與事件綁定
+            renderTechniques();
+            renderTemplates();
+            setupParameterListeners();
+            page.querySelector('#generatePromptsBtn').onclick = generatePrompts;
+            page.querySelector('#regeneratePromptsBtn').onclick = generatePrompts;
+            page.querySelector('#exportPromptsBtn').onclick = exportPrompts;
+        })();
+        // --- END: 來自 index01.html 的腳本 ---
+    </script>
+
 </body>
 </html>
