@@ -229,6 +229,8 @@
                             <a class="nav-link active" data-page="home-page">首頁 (提示詞教學)</a>
                             <a class="nav-link" data-page="work-prompt-generator-page">萬用工作提示詞產生器</a>
                             <a class="nav-link" data-page="ai-flavor-remover-page">萬能去除AI味提示詞</a>
+                            <!-- NEW LINK ADDED HERE -->
+                            <a class="nav-link" href="https://platform.openai.com/chat/edit?models=gpt-5&optimize=true" target="_blank" rel="noopener noreferrer">GPT-5提示詞優化產生器</a>
                         </div>
                     </div>
                     
@@ -272,6 +274,8 @@
                 <a class="nav-link mobile-nav-link block active" data-page="home-page">首頁 (提示詞教學)</a>
                 <a class="nav-link mobile-nav-link block" data-page="work-prompt-generator-page">萬用工作提示詞產生器</a>
                 <a class="nav-link mobile-nav-link block" data-page="ai-flavor-remover-page">萬能去除AI味提示詞</a>
+                <!-- NEW LINK ADDED HERE -->
+                <a class="nav-link mobile-nav-link block" href="https://platform.openai.com/chat/edit?models=gpt-5&optimize=true" target="_blank" rel="noopener noreferrer">GPT-5提示詞優化產生器</a>
             </div>
         </div>
     </nav>
@@ -622,15 +626,24 @@
             // --- 頁面切換邏輯 ---
             function switchPage(pageId) {
                 pages.forEach(page => page.classList.toggle('active', page.id === pageId));
-                navLinks.forEach(link => link.classList.toggle('active', link.dataset.page === pageId));
+                navLinks.forEach(link => {
+                    // Only toggle active class for internal page links
+                    if (link.dataset.page) {
+                        link.classList.toggle('active', link.dataset.page === pageId);
+                    }
+                });
             }
 
             navLinks.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    switchPage(event.currentTarget.dataset.page);
-                });
+                // Only add click listener for internal page links
+                if (link.dataset.page) {
+                    link.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        switchPage(event.currentTarget.dataset.page);
+                    });
+                }
             });
+
 
             // --- 全螢幕切換 ---
             fullscreenBtn.addEventListener('click', function () {
