@@ -216,33 +216,66 @@
     <nav class="bg-white shadow-md sticky top-0 z-50 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
+                <!-- LOGO -->
                 <div class="flex items-center">
                     <span class="font-bold text-xl text-indigo-600">萬用提示詞庫</span>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a class="nav-link active" data-page="home-page">首頁 (提示詞教學)</a>
-                        <a class="nav-link" data-page="work-prompt-generator-page">萬用工作提示詞產生器</a>
-                        <a class="nav-link" data-page="ai-flavor-remover-page">萬能去除AI味提示詞</a>
+                
+                <!-- 右側群組：桌面選單與功能按鈕 -->
+                <div class="flex items-center">
+                    <!-- 桌面選單 (md 以上顯示) -->
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a class="nav-link active" data-page="home-page">首頁 (提示詞教學)</a>
+                            <a class="nav-link" data-page="work-prompt-generator-page">萬用工作提示詞產生器</a>
+                            <a class="nav-link" data-page="ai-flavor-remover-page">萬能去除AI味提示詞</a>
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <!-- NEW: 說明按鈕 -->
-                    <button id="infoBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="說明／版本資訊">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </button>
-                    <!-- NEW: 主題切換按鈕 -->
-                    <button id="themeToggleBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="主題切換">
-                        <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                        <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-                    </button>
-                    <button id="globalFullscreenBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="全螢幕切換">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" /></svg>
-                    </button>
+                    
+                    <!-- 功能按鈕 (所有尺寸都可能顯示) -->
+                    <div class="flex items-center gap-2 ml-4">
+                        <!-- NEW: 說明按鈕 -->
+                        <button id="infoBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="說明／版本資訊">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </button>
+                        <!-- NEW: 主題切換按鈕 -->
+                        <button id="themeToggleBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="主題切換">
+                            <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                        </button>
+                        <button id="globalFullscreenBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" title="全螢幕切換">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" /></svg>
+                        </button>
+                    </div>
+
+                    <!-- 手機漢堡選單按鈕 (md 以下顯示) -->
+                    <div class="-mr-2 flex md:hidden ml-4">
+                        <button id="hamburger-btn" type="button" class="bg-gray-200 dark:bg-gray-700 inline-flex items-center justify-center p-2 rounded-md text-gray-800 dark:text-gray-200 hover:text-white hover:bg-indigo-500 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                            <span class="sr-only">開啟主選單</span>
+                            <!-- 選單關閉時的圖示 -->
+                            <svg id="hamburger-icon-open" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <!-- 選單開啟時的圖示 -->
+                            <svg id="hamburger-icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- 手機版選單 (預設隱藏) -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a class="nav-link mobile-nav-link block active" data-page="home-page">首頁 (提示詞教學)</a>
+                <a class="nav-link mobile-nav-link block" data-page="work-prompt-generator-page">萬用工作提示詞產生器</a>
+                <a class="nav-link mobile-nav-link block" data-page="ai-flavor-remover-page">萬能去除AI味提示詞</a>
+            </div>
+        </div>
     </nav>
+
 
     <main>
         <!-- 頁面內容容器 -->
@@ -578,6 +611,13 @@
             const infoBtn = document.getElementById('infoBtn');
             const infoModal = document.getElementById('infoModal');
             const closeInfoModalBtn = document.getElementById('closeInfoModalBtn');
+            
+            // --- NEW: Hamburger Menu Elements ---
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIconOpen = document.getElementById('hamburger-icon-open');
+            const hamburgerIconClose = document.getElementById('hamburger-icon-close');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
             // --- 頁面切換邏輯 ---
             function switchPage(pageId) {
@@ -635,6 +675,28 @@
             closeInfoModalBtn.addEventListener('click', closeModal);
             infoModal.addEventListener('click', (e) => {
                 if(e.target === infoModal) closeModal(); // 點擊背景關閉
+            });
+
+            // --- NEW: Hamburger Menu Logic ---
+            const toggleMenu = () => {
+                mobileMenu.classList.toggle('hidden');
+                hamburgerIconOpen.classList.toggle('block');
+                hamburgerIconOpen.classList.toggle('hidden');
+                hamburgerIconClose.classList.toggle('block');
+                hamburgerIconClose.classList.toggle('hidden');
+                const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+                hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
+            };
+            
+            hamburgerBtn.addEventListener('click', toggleMenu);
+
+            // 當點擊手機選單中的連結時，自動關閉選單
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        toggleMenu();
+                    }
+                });
             });
 
             // --- 初始化 ---
