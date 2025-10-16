@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google AI 提示詞產生器 - 專業互動工具</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 返回首頁按鈕 -->
+    <button id="homeBtn" class="home-btn" title="返回首頁">
+        <i class="fas fa-home"></i>
+    </button>
+
+    <!-- 全螢幕切換按鈕 -->
+    <button id="fullscreenBtn" class="fullscreen-btn" title="切換全螢幕">
+        <i class="fas fa-expand"></i>
+    </button>
+
+    <!-- 主題切換按鈕 -->
+    <button id="themeToggle" class="theme-toggle" title="切換主題">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- 頁面容器 -->
+    <div class="container">
+        <!-- 頁面標題 -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="main-title">
+                    <i class="fab fa-google"></i>
+                    Google AI 提示詞產生器
+                </h1>
+                <p class="subtitle">運用四大元素與21字黃金法則，打造高效能提示詞</p>
+            </div>
+        </header>
+
+        <!-- 主要內容區域 -->
+        <main class="main-content">
+            <!-- 提示詞產生器區域 -->
+            <section class="generator-section">
+                <div class="card generator-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-magic"></i> 提示詞產生器</h2>
+                        <div class="word-counter">
+                            <span id="wordCount">0</span> / <span class="golden-number">21</span> 字
+                            <div class="word-indicator" id="wordIndicator"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form id="promptForm" class="prompt-form">
+                            <!-- 角色設定 -->
+                            <div class="form-group">
+                                <label for="role" class="form-label">
+                                    <i class="fas fa-user-tie"></i>
+                                    角色設定 (Role)
+                                    <span class="tooltip" data-tooltip="要LLM調度哪些領域知識">
+                                        <i class="fas fa-question-circle"></i>
+                                    </span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="role" 
+                                    class="form-control"
+                                    placeholder="例如：你是一位資深的行銷專家"
+                                    maxlength="100"
+                                >
+                                <div class="input-suggestions" id="roleSuggestions">
+                                    <!-- 角色建議按鈕將由 JavaScript 動態生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 任務 -->
+                            <div class="form-group">
+                                <label for="task" class="form-label">
+                                    <i class="fas fa-tasks"></i>
+                                    任務 (Task)
+                                    <span class="tooltip" data-tooltip="你想完成什麼目標">
+                                        <i class="fas fa-question-circle"></i>
+                                    </span>
+                                </label>
+                                <textarea 
+                                    id="task" 
+                                    class="form-control"
+                                    placeholder="例如：為新產品撰寫一份行銷企劃"
+                                    rows="3"
+                                    maxlength="200"
+                                ></textarea>
+                                <div class="input-suggestions" id="taskSuggestions">
+                                    <!-- 任務建議按鈕將由 JavaScript 動態生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 背景 -->
+                            <div class="form-group">
+                                <label for="context" class="form-label">
+                                    <i class="fas fa-info-circle"></i>
+                                    背景 (Context)
+                                    <span class="tooltip" data-tooltip="任務的起源、目標的限制、涉及的人士等">
+                                        <i class="fas fa-question-circle"></i>
+                                    </span>
+                                </label>
+                                <textarea 
+                                    id="context" 
+                                    class="form-control"
+                                    placeholder="例如：這是一個針對25-35歲上班族的健康飲品產品"
+                                    rows="3"
+                                    maxlength="200"
+                                ></textarea>
+                                <div class="input-suggestions" id="contextSuggestions">
+                                    <!-- 背景建議按鈕將由 JavaScript 動態生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 格式 -->
+                            <div class="form-group">
+                                <label for="format" class="form-label">
+                                    <i class="fas fa-file-alt"></i>
+                                    格式 (Format)
+                                    <span class="tooltip" data-tooltip="輸出類型、編排格式">
+                                        <i class="fas fa-question-circle"></i>
+                                    </span>
+                                </label>
+                                <select id="formatSelect" class="form-control">
+                                    <option value="">選擇格式...</option>
+                                    <option value="條列式重點整理">條列式重點整理</option>
+                                    <option value="表格呈現">表格呈現</option>
+                                    <option value="段落描述">段落描述</option>
+                                    <option value="摘要格式">摘要格式</option>
+                                    <option value="簡報格式">簡報格式</option>
+                                    <option value="custom">自訂格式</option>
+                                </select>
+                                <input 
+                                    type="text" 
+                                    id="formatCustom" 
+                                    class="form-control hidden"
+                                    placeholder="請輸入自訂格式要求"
+                                    maxlength="100"
+                                >
+                            </div>
+
+                            <!-- 按鈕組 -->
+                            <div class="button-group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-wand-magic-sparkles"></i>
+                                    產生提示詞
+                                </button>
+                                <button type="button" id="clearBtn" class="btn btn-secondary">
+                                    <i class="fas fa-eraser"></i>
+                                    清除所有
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- 提示詞預覽區域 -->
+                        <div id="promptPreview" class="prompt-preview hidden">
+                            <div class="preview-header">
+                                <h3>生成的提示詞</h3>
+                                <button id="copyBtn" class="btn btn-success">
+                                    <i class="fas fa-copy"></i>
+                                    複製提示詞
+                                </button>
+                            </div>
+                            <div class="preview-content" id="promptContent"></div>
+                            <div class="preview-stats">
+                                <span class="stat">
+                                    <i class="fas fa-calculator"></i>
+                                    字數：<span id="previewWordCount">0</span>
+                                </span>
+                                <span class="stat" id="goldenRuleStatus">
+                                    <i class="fas fa-medal"></i>
+                                    符合21字法則
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- (後續的 HTML 內容，如原理、範例、技巧等區塊，維持不變) -->
+            <section class="principles-section">
+                <div class="card golden-rule-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-crown"></i> 21字黃金法則</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="golden-rule-content">
+                            <div class="rule-description">
+                                <p>最有效的prompt平均是<strong>21個字</strong>，但多數人的prompt都少於<strong>9個字</strong></p>
+                            </div>
+                            <div class="statistics-visual">
+                                <div class="stat-item effective">
+                                    <div class="stat-number">21</div>
+                                    <div class="stat-label">有效平均字數</div>
+                                    <div class="stat-bar" style="width: 100%;"></div>
+                                </div>
+                                <div class="stat-item common">
+                                    <div class="stat-number">9</div>
+                                    <div class="stat-label">一般平均字數</div>
+                                    <div class="stat-bar" style="width: 42.8%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card principles-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-lightbulb"></i> Google AI 七大核心原則</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="principles-accordion">
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">💬</span>
+                                    <span class="principle-title">使用自然語言</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>想像是在跟人說話，不要過度技術化</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">🎯</span>
+                                    <span class="principle-title">講話要具體</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>反覆說明你的需求，避免模糊不清</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">⚡</span>
+                                    <span class="principle-title">用動詞表達任務</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>清楚表達任務需求，如：寫作、分析、比較</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">📋</span>
+                                    <span class="principle-title">提供充足背景</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>盡可能提供充足的背景資訊</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">✨</span>
+                                    <span class="principle-title">用語簡潔</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>不要太複雜或用太多行話</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">🤝</span>
+                                    <span class="principle-title">對話而非指令</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>不要覺得自己是在下指令，而是在對話</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span class="principle-icon">🔢</span>
+                                    <span class="principle-title">單一任務</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="accordion-content">
+                                    <p>不要用一個prompt執行多個任務，要拆開來</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card formula-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-puzzle-piece"></i> 四元素公式圖解</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="formula-visual">
+                            <div class="formula-element">
+                                <div class="element-icon role"><i class="fas fa-user-tie"></i></div>
+                                <div class="element-content">
+                                    <h4>角色設定</h4>
+                                    <p>要LLM調度哪些領域知識</p>
+                                </div>
+                            </div>
+                            <div class="formula-plus">+</div>
+                            <div class="formula-element">
+                                <div class="element-icon task"><i class="fas fa-tasks"></i></div>
+                                <div class="element-content">
+                                    <h4>任務</h4>
+                                    <p>你想完成什麼目標</p>
+                                </div>
+                            </div>
+                            <div class="formula-plus">+</div>
+                            <div class="formula-element">
+                                <div class="element-icon context"><i class="fas fa-info-circle"></i></div>
+                                <div class="element-content">
+                                    <h4>背景</h4>
+                                    <p>任務起源、限制條件等</p>
+                                </div>
+                            </div>
+                            <div class="formula-plus">+</div>
+                            <div class="formula-element">
+                                <div class="element-icon format"><i class="fas fa-file-alt"></i></div>
+                                <div class="element-content">
+                                    <h4>格式</h4>
+                                    <p>輸出類型、編排格式</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="examples-section">
+                <div class="card examples-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-lightbulb"></i> 實用範例展示</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="examples-grid">
+                            <div class="example-item">
+                                <div class="example-header">
+                                    <h4>行銷文案撰寫</h4>
+                                    <button class="btn btn-outline apply-example" data-example="0">
+                                        <i class="fas fa-upload"></i>
+                                        套用範例
+                                    </button>
+                                </div>
+                                <div class="example-breakdown">
+                                    <div class="breakdown-item role">
+                                        <span class="label">角色:</span>
+                                        <span class="value">你是一位資深的數位行銷專家</span>
+                                    </div>
+                                    <div class="breakdown-item task">
+                                        <span class="label">任務:</span>
+                                        <span class="value">為我們的新款智慧手錶撰寫產品介紹文案</span>
+                                    </div>
+                                    <div class="breakdown-item context">
+                                        <span class="label">背景:</span>
+                                        <span class="value">目標客群是25-40歲的科技愛好者，強調健康監測功能</span>
+                                    </div>
+                                    <div class="breakdown-item format">
+                                        <span class="label">格式:</span>
+                                        <span class="value">請以生動有趣的方式呈現，字數控制在200字以內</span>
+                                    </div>
+                                </div>
+                                <div class="example-result">
+                                    <strong>完整提示詞:</strong>
+                                    <p>你是一位資深的數位行銷專家，為我們的新款智慧手錶撰寫產品介紹文案。目標客群是25-40歲的科技愛好者，強調健康監測功能。請以生動有趣的方式呈現，字數控制在200字以內。</p>
+                                </div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-header">
+                                    <h4>資料分析報告</h4>
+                                    <button class="btn btn-outline apply-example" data-example="1">
+                                        <i class="fas fa-upload"></i>
+                                        套用範例
+                                    </button>
+                                </div>
+                                <div class="example-breakdown">
+                                    <div class="breakdown-item role">
+                                        <span class="label">角色:</span>
+                                        <span class="value">你是一位專業的資料分析師</span>
+                                    </div>
+                                    <div class="breakdown-item task">
+                                        <span class="label">任務:</span>
+                                        <span class="value">分析我們Q3季度的銷售數據趨勢</span>
+                                    </div>
+                                    <div class="breakdown-item context">
+                                        <span class="label">背景:</span>
+                                        <span class="value">包含三個產品線的月度銷售額，需要找出成長動因</span>
+                                    </div>
+                                    <div class="breakdown-item format">
+                                        <span class="label">格式:</span>
+                                        <span class="value">請以重點摘要+圖表建議的方式呈現</span>
+                                    </div>
+                                </div>
+                                <div class="example-result">
+                                    <strong>完整提示詞:</strong>
+                                    <p>你是一位專業的資料分析師，分析我們Q3季度的銷售數據趨勢。包含三個產品線的月度銷售額，需要找出成長動因。請以重點摘要+圖表建議的方式呈現。</p>
+                                </div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-header">
+                                    <h4>互動課程設計</h4>
+                                    <button class="btn btn-outline apply-example" data-example="2">
+                                        <i class="fas fa-upload"></i>
+                                        套用範例
+                                    </button>
+                                </div>
+                                <div class="example-breakdown">
+                                    <div class="breakdown-item role">
+                                        <span class="label">角色:</span>
+                                        <span class="value">你是一位經驗豐富的高中歷史老師</span>
+                                    </div>
+                                    <div class="breakdown-item task">
+                                        <span class="label">任務:</span>
+                                        <span class="value">設計一個關於第二次世界大戰的互動式課堂活動</span>
+                                    </div>
+                                    <div class="breakdown-item context">
+                                        <span class="label">背景:</span>
+                                        <span class="value">學生對此主題的先備知識有限，需要引發他們的學習興趣，活動時間為45分鐘</span>
+                                    </div>
+                                    <div class="breakdown-item format">
+                                        <span class="label">格式:</span>
+                                        <span class="value">請提供活動流程、所需材料清單，以及評估學生學習成效的方法</span>
+                                    </div>
+                                </div>
+                                <div class="example-result">
+                                    <strong>完整提示詞:</strong>
+                                    <p>你是一位經驗豐富的高中歷史老師，設計一個關於第二次世界大戰的互動式課堂活動。學生對此主題的先備知識有限，需要引發他們的學習興趣，活動時間為45分鐘。請提供活動流程、所需材料清單，以及評估學生學習成效的方法。</p>
+                                </div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-header">
+                                    <h4>資料庫結構規劃</h4>
+                                    <button class="btn btn-outline apply-example" data-example="3">
+                                        <i class="fas fa-upload"></i>
+                                        套用範例
+                                    </button>
+                                </div>
+                                <div class="example-breakdown">
+                                    <div class="breakdown-item role">
+                                        <span class="label">角色:</span>
+                                        <span class="value">你是一位資深的後端工程師</span>
+                                    </div>
+                                    <div class="breakdown-item task">
+                                        <span class="label">任務:</span>
+                                        <span class="value">為一個新的電商網站規劃資料庫結構</span>
+                                    </div>
+                                    <div class="breakdown-item context">
+                                        <span class="label">背景:</span>
+                                        <span class="value">需要儲存用戶、商品、訂單和評論資訊，並考慮到未來擴展性與效能</span>
+                                    </div>
+                                    <div class="breakdown-item format">
+                                        <span class="label">格式:</span>
+                                        <span class="value">請以ERD（實體關聯圖）的描述和SQL schema的方式呈現</span>
+                                    </div>
+                                </div>
+                                <div class="example-result">
+                                    <strong>完整提示詞:</strong>
+                                    <p>你是一位資深的後端工程師，為一個新的電商網站規劃資料庫結構。需要儲存用戶、商品、訂單和評論資訊，並考慮到未來擴展性與效能。請以ERD（實體關聯圖）的描述和SQL schema的方式呈現。</p>
+                                </div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-header">
+                                    <h4>創意菜單設計</h4>
+                                    <button class="btn btn-outline apply-example" data-example="4">
+                                        <i class="fas fa-upload"></i>
+                                        套用範例
+                                    </button>
+                                </div>
+                                <div class="example-breakdown">
+                                    <div class="breakdown-item role">
+                                        <span class="label">角色:</span>
+                                        <span class="value">你是一位專精於義式料理的米其林星級主廚</span>
+                                    </div>
+                                    <div class="breakdown-item task">
+                                        <span class="label">任務:</span>
+                                        <span class="value">為一家新餐廳設計一份春季限定的創意菜單</span>
+                                    </div>
+                                    <div class="breakdown-item context">
+                                        <span class="label">背景:</span>
+                                        <span class="value">強調使用台灣當季食材，菜單需包含前菜、主菜和甜點各三道</span>
+                                    </div>
+                                    <div class="breakdown-item format">
+                                        <span class="label">格式:</span>
+                                        <span class="value">請以菜色名稱、食材介紹和烹飪手法的格式呈現</span>
+                                    </div>
+                                </div>
+                                <div class="example-result">
+                                    <strong>完整提示詞:</strong>
+                                    <p>你是一位專精於義式料理的米其林星級主廚，為一家新餐廳設計一份春季限定的創意菜單。強調使用台灣當季食材，菜單需包含前菜、主菜和甜點各三道。請以菜色名稱、食材介紹和烹飪手法的格式呈現。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="advanced-section">
+                <div class="card advanced-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-graduation-cap"></i> 進階技巧 &amp; 優化建議</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="advanced-content">
+                            <div class="technique-item">
+                                <div class="technique-header">
+                                    <h4><i class="fas fa-robot"></i> LLM作為提示詞編輯器</h4>
+                                </div>
+                                <div class="technique-content">
+                                    <p>在真正給出prompt以前，先用LLM作為prompt編輯器</p>
+                                    <div class="code-example">
+                                        <strong>方法：</strong>
+                                        <code>請將 [原始prompt文字] 寫成一個厲害的prompt（power prompt），並附上修改建議與解釋。</code>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="technique-item">
+                                <div class="technique-header">
+                                    <h4><i class="fas fa-question"></i> 先問問題再改寫</h4>
+                                </div>
+                                <div class="technique-content">
+                                    <p>在請LLM改寫prompt以前，先問它有什麼問題</p>
+                                    <div class="code-example">
+                                        <strong>方法：</strong>
+                                        <code>[原始prompt文字] 這是我的需求，你有什麼問題想問我，以便你改寫一個更好的版本？</code>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tips-section">
+                                <h4><i class="fas fa-star"></i> 實用提醒</h4>
+                                <ul class="tips-list">
+                                    <li>多數人連21個字的平均都沒達到</li>
+                                    <li>光是能把話講清楚就已經是前四分之一的使用者</li>
+                                    <li>模型能力的天花板通常就是操作者本身</li>
+                                    <li>用自然語言把需求說清楚，如果結果不滿意再考慮進階技巧</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 頁腳 -->
+        <footer class="footer">
+            <p>&copy; 2024 Google AI 提示詞產生器 | 基於Google Gemini最佳實踐設計</p>
+        </footer>
+    </div>
+
+    <!-- 通知訊息 -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
