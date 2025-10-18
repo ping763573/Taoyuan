@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投資決策與風險管理完整指南</title>
+    <style>
+        /* Design System Variables */
+        :root {
+            /* Custom color scheme for investment guide */
+            --color-primary: #2c3e50;
+            --color-secondary: #3498db;
+            --color-accent: #e67e22;
+            --color-background: #f8f9fa;
+            --color-surface: #ffffff;
+            --color-text: #2c3e50;
+            --color-text-secondary: #6c757d;
+            --color-border: #dee2e6;
+            --color-success: #27ae60;
+            --color-warning: #f39c12;
+            --color-danger: #e74c3c;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            /* Typography */
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+            
+            /* Border radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            
+            /* Transitions */
+            --transition-fast: 150ms ease-in-out;
+            --transition-normal: 300ms ease-in-out;
+        }
+        
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-background);
+        }
+        
+        /* Fixed Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-surface);
+            border-bottom: 2px solid var(--color-primary);
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            padding: 0;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) var(--space-lg);
+        }
+        
+        .navbar-brand {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--color-secondary);
+            color: white;
+        }
+        
+        .fullscreen-toggle {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            transition: var(--transition-fast);
+        }
+        
+        .fullscreen-toggle:hover {
+            background: #d35400;
+            transform: scale(1.05);
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb {
+            background: rgba(52, 152, 219, 0.1);
+            padding: var(--space-sm) 0;
+            margin-top: 80px;
+        }
+        
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+            min-height: calc(100vh - 140px);
+        }
+        
+        /* Search Bar */
+        .search-container {
+            margin: var(--space-xl) 0;
+            text-align: center;
+        }
+        
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: var(--space-md);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            transition: var(--transition-fast);
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: var(--space-2xl) 0;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(231, 126, 34, 0.1));
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .hero h1 {
+            font-size: var(--font-size-4xl);
+            color: var(--color-primary);
+            margin-bottom: var(--space-md);
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 82px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(52, 152, 219, 0.2);
+            z-index: 999;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--color-secondary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Chapter Navigation */
+        .chapter-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin: var(--space-2xl) 0;
+        }
+        
+        .chapter-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-secondary);
+        }
+        
+        .chapter-card h3 {
+            color: var(--color-primary);
+            margin-bottom: var(--space-sm);
+            font-size: var(--font-size-xl);
+        }
+        
+        .chapter-card p {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .chapter-number {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+        
+        /* Chapter Content */
+        .chapter-content {
+            display: none;
+        }
+        
+        .chapter-content.active {
+            display: block;
+        }
+        
+        .chapter-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: var(--space-2xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-2xl);
+            text-align: center;
+        }
+        
+        .chapter-header h2 {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--space-md);
+        }
+        
+        .chapter-header p {
+            font-size: var(--font-size-lg);
+            opacity: 0.9;
+        }
+        
+        /* Subtopic Sections */
+        .subtopic {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .subtopic-header {
+            background: rgba(52, 152, 219, 0.1);
+            padding: var(--space-lg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+        
+        .subtopic-header:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        .subtopic-header h4 {
+            color: var(--color-primary);
+            font-size: var(--font-size-lg);
+            margin: 0;
+        }
+        
+        .subtopic-toggle {
+            font-size: var(--font-size-xl);
+            color: var(--color-secondary);
+            transition: transform var(--transition-fast);
+        }
+        
+        .subtopic-content {
+            padding: var(--space-lg);
+            display: none;
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .subtopic-content.expanded {
+            display: block;
+        }
+        
+        .subtopic.expanded .subtopic-toggle {
+            transform: rotate(180deg);
+        }
+        
+        /* Key Concepts */
+        .key-concepts {
+            background: rgba(231, 126, 34, 0.1);
+            border-left: 4px solid var(--color-accent);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+        }
+        
+        .key-concepts h5 {
+            color: var(--color-accent);
+            margin-bottom: var(--space-md);
+            font-size: var(--font-size-lg);
+        }
+        
+        .key-concept-tag {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: var(--space-xs) var(--space-md);
+            margin: var(--space-xs);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .key-concept-tag:hover {
+            background: #d35400;
+            transform: scale(1.05);
+        }
+        
+        /* Calculator Section */
+        .calculator {
+            background: var(--color-surface);
+            border: 2px solid var(--color-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin: var(--space-2xl) 0;
+        }
+        
+        .calculator h3 {
+            color: var(--color-secondary);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+        
+        .calc-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: var(--space-sm);
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        
+        .form-group input {
+            padding: var(--space-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+        }
+        
+        .calc-button {
+            background: var(--color-secondary);
+            color: white;
+            border: none;
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        
+        .calc-button:hover {
+            background: #2980b9;
+        }
+        
+        .calc-result {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid var(--color-success);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-top: var(--space-lg);
+            text-align: center;
+        }
+        
+        .calc-result h4 {
+            color: var(--color-success);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .calc-result .result-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-success);
+        }
+        
+        /* Case Studies */
+        .case-study {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--color-danger);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin: var(--space-xl) 0;
+        }
+        
+        .case-study h4 {
+            color: var(--color-danger);
+            margin-bottom: var(--space-lg);
+            font-size: var(--font-size-xl);
+        }
+        
+        .case-study-content {
+            background: white;
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .case-study-analysis {
+            background: rgba(231, 76, 60, 0.2);
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-danger);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            text-align: center;
+            padding: var(--space-xl);
+            margin-top: var(--space-2xl);
+        }
+        
+        .version-info {
+            font-size: var(--font-size-sm);
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: var(--space-md);
+                padding: var(--space-md);
+            }
+            
+            .navbar-nav {
+                justify-content: center;
+            }
+            
+            .breadcrumb {
+                margin-top: 120px;
+            }
+            
+            .hero h1 {
+                font-size: var(--font-size-2xl);
+            }
+            
+            .chapter-nav {
+                grid-template-columns: 1fr;
+            }
+            
+            .calc-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: white;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-fast);
+            z-index: 1001;
+        }
+        
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Fullscreen styles */
+        .fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 10000 !important;
+            background: var(--color-background) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-content">
+            <a href="#" class="navbar-brand" onclick="showHome()">投資指南</a>
+            <div class="navbar-nav">
+                <a href="#" class="nav-link" onclick="showHome()">首頁</a>
+                <a href="#" class="nav-link" onclick="showChapter(1)">市場波動</a>
+                <a href="#" class="nav-link" onclick="showChapter(2)">選擇權風險</a>
+                <a href="#" class="nav-link" onclick="showChapter(3)">價值投資</a>
+                <a href="#" class="nav-link" onclick="showChapter(4)">財報解讀</a>
+                <a href="#" class="nav-link" onclick="showChapter(5)">ROE &amp; ROIC</a>
+                <a href="#" class="nav-link" onclick="showChapter(6)">投資組合</a>
+                <a href="#" class="nav-link" onclick="showChapter(7)">應對框架</a>
+                <a href="#" class="nav-link" onclick="showChapter(8)">實務應用</a>
+                <button class="fullscreen-toggle" onclick="toggleFullscreen()" id="fullscreenBtn">🔲</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-content" id="breadcrumb">
+            首頁
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Home Page -->
+        <div id="home" class="home-content">
+            <div class="hero">
+                <h1>投資決策與風險管理完整指南</h1>
+                <p>掌握專業投資技巧，建立系統性風險管理思維，實現長期穩健的財富累積</p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="搜尋投資概念、關鍵詞..." id="searchInput" oninput="searchContent()">
+            </div>
+            
+            <!-- Chapter Navigation -->
+            <div class="chapter-nav" id="chapterNav">
+                <div class="chapter-card" onclick="showChapter(1)">
+                    <div class="chapter-number">第1章</div>
+                    <h3>市場波動的本質與成因</h3>
+                    <p>了解市場波動的雙重驅動機制，掌握系統性風險與基本面變化的影響</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(2)">
+                    <div class="chapter-number">第2章</div>
+                    <h3>選擇權投機風險結構</h3>
+                    <p>深入分析賣出選擇權(Sell Put)的風險本質，理解投機工具的風險特徵</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(3)">
+                    <div class="chapter-number">第3章</div>
+                    <h3>價值投資防禦思維</h3>
+                    <p>建立價值投資的防禦思維，學會在市場波動中保持理性判斷</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(4)">
+                    <div class="chapter-number">第4章</div>
+                    <h3>財務報表解讀</h3>
+                    <p>掌握三大財務報表的解讀技巧，建立基本面分析的基礎</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(5)">
+                    <div class="chapter-number">第5章</div>
+                    <h3>核心診斷指標：ROE與ROIC</h3>
+                    <p>學會使用ROE與ROIC評估企業資本效率，判斷真正的價值創造</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(6)">
+                    <div class="chapter-number">第6章</div>
+                    <h3>投資組合與風險控管</h3>
+                    <p>建立投資組合的分散化策略，有效控制投資風險</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(7)">
+                    <div class="chapter-number">第7章</div>
+                    <h3>股價下跌應對決策框架</h3>
+                    <p>建立系統化的決策框架，理性應對股價下跌情況</p>
+                </div>
+                <div class="chapter-card" onclick="showChapter(8)">
+                    <div class="chapter-number">第8章</div>
+                    <h3>結論與實務應用</h3>
+                    <p>整合投資理念與實務，建立長期穩健的投資策略</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 1: Market Volatility -->
+        <div id="chapter1" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第1章：市場波動的本質與成因</h2>
+                <p>了解市場波動的雙重驅動機制，掌握系統性風險與基本面變化的影響</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>雙重驅動機制：系統性風險與基本面變化</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>市場波動由系統性風險與個股基本面變動共同驅動，互為影響。系統性風險主導大盤，總經因素如利率、通膨與景氣衰退，引發全面性市場調整。個股基本面決定韌性，企業營運狀況與財務健康度，決定了股價在波動中的抗跌能力。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="系統性風險影響整體市場走向">系統性風險主導大盤</span>
+                        <span class="key-concept-tag tooltip" data-tooltip="個股基本面決定抗跌能力">個股基本面決定韌性</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>總體經濟變數：通膨、利率、景氣循環</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>通膨、利率與景氣循環是驅動大盤下跌的核心因素。高通脹影響：央行升息應對通脹，提高整體資金成本，企業融資難度加大。利率上升效應：資產估值受到壓縮，資金從股市流出轉向固定收益類資產。</p>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>政策干預與國際貿易衝突</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>政策干預與國際貿易衝突常引發極端行情。貿易戰衝擊：美國對台徵收32%關稅導致台股單日重挫近2,065點。極端行情常態化：近一年多次千點大跌，顯示地緣政治已成市場常態風險。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="地緣政治風險已成為市場新常態">極端行情常態化</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-study">
+                <h4>📊 案例分析：台股26慘案</h4>
+                <div class="case-study-content">
+                    <p><strong>事件描述：</strong>台指期賣出Put，市價暴跌至25,500點，保證金不足遭強制平倉，單日重挫近2,065點</p>
+                </div>
+                <div class="case-study-analysis">
+                    <p><strong>分析要點：</strong>此案例顯示高槓桿投機工具在極端市場條件下的毀滅性風險</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 2: Options Risk -->
+        <div id="chapter2" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第2章：選擇權投機風險結構</h2>
+                <p>深入分析賣出選擇權(Sell Put)的風險本質，理解投機工具的風險特徵</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>賣出選擇權(Sell Put)的風險本質</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>賣出選擇權本質上等同於開設保險公司並承擔履約風險。權利金相當於保險中的保費，由買方支付給賣方以獲取保障。賣方收取權利金並承擔相應義務，該行為具有風險敞口。</p>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>權利金與履約風險</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>權利金收入有限，但潛在虧損隨標的資產下跌而急劇擴大。收益封頂風險無限：賣出選擇權僅賺取固定權利金，但標的下跌時虧損持續擴大。履約價下潛損驟增：股價跌破履約價後，每跌一單位，損失即同步放大。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="收益有上限但虧損無下限">收益封頂風險無限</span>
+                        <span class="key-concept-tag tooltip" data-tooltip="高槓桿可能導致流動性危機">高槓桿流動性風險</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>保證金制度與強制平倉機制</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>保證金制度與強制平倉機制使高槓桿部位面臨流動性斷裂危機。強平風險實例：台指期賣出Put，市價暴跌至25,500點，保證金不足遭強制平倉。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="投機追求短期收益，風險極高">投機vs投資的區別</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-study">
+                <h4>📊 案例分析：AAPL Sell Put案例</h4>
+                <div class="case-study-content">
+                    <p><strong>事件描述：</strong>履約價175美元，權利金3.50美元，股價跌至165美元時虧損1,150美元，跌至0時最大虧損17,150美元</p>
+                </div>
+                <div class="case-study-analysis">
+                    <p><strong>分析要點：</strong>展示賣出選擇權收益有限但潛在虧損巨大的不對稱風險結構</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 3: Value Investing -->
+        <div id="chapter3" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第3章：價值投資防禦思維</h2>
+                <p>建立價值投資的防禦思維，學會在市場波動中保持理性判斷</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>基本面健康檢查流程</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>股價下跌時應優先檢視公司基本面是否發生根本性劣化。分析財務報表：深入研究企業的資產負債表、利潤表和現金流量表。評估商業模式：審查企業當前的商業模式是否依然具備競爭力和可持續性。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="評估企業核心競爭力">商業模式評估</span>
+                        <span class="key-concept-tag tooltip" data-tooltip="深度分析三大財務報表">財務報表分析</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>判斷股價是否被錯殺</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>透過財報分析判斷企業是否被市場情緒錯殺，而非實質衰退。檢視估值水準：比較本益比、股價淨值比與歷史區間。對比同業表現：分析競爭對手財務數據。評估市場情緒：觀察賣壓來源是否為非基本面因素。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="評估管理團隊能力">管理層評估</span>
+                        <span class="key-concept-tag tooltip" data-tooltip="比較歷史估值區間">估值水準檢視</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>三大現金流指標</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>保留盈餘、營運現金流與自由現金流是評估企業韌性的關鍵指標。保留盈餘穩增、營運現金流為正、自由現金流穩健，方顯企業長期韌性。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 4: Financial Statements -->
+        <div id="chapter4" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第4章：財務報表解讀</h2>
+                <p>掌握三大財務報表的解讀技巧，建立基本面分析的基礎</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>資產負債表：財務健康快照</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>資產負債表揭示企業財務結構與償債能力。資產包括流動資產(現金、應收帳款、存貨)和非流動資產(設備、土地、商譽)。負債包括流動負債(短期借款、應付帳款)和非流動負債(長期借款、公司債)。股東權益是資產減去負債後屬於股東的淨值。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵指標</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="短期資產vs長期資產配置">流動資產vs非流動資產</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>損益表：獲利能力評估</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>損益表反映獲利趨勢，需關注EPS穩定性與營業毛利率變化。營收是公司銷售產品或服務獲得的總收入。毛利是營收扣除銷貨成本。營業利益是毛利扣除營運費用。淨利是最終利潤。每股盈餘(EPS)將淨利分配到每股。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵指標</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="每股盈餘與獲利能力指標">EPS與毛利率</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>現金流量表：真實資金運作</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>現金流量表揭露真實資金運作狀況，營運現金流為正為健康企業的基本條件。營運現金流來自核心業務活動。投資現金流記錄資產投資。融資現金流反映與股東債權人的資金往來。自由現金流是營運現金流減去資本支出。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵指標</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="來自營運活動的現金流入">營運現金流OCF</span>
+                        <span class="key-concept-tag tooltip" data-tooltip="扣除資本支出後的可用現金">自由現金流FCF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 5: ROE & ROIC -->
+        <div id="chapter5" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第5章：核心診斷指標：ROE與ROIC</h2>
+                <p>學會使用ROE與ROIC評估企業資本效率，判斷真正的價值創造</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>ROE：股東權益報酬率</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>ROE衡量股東權益回報效率，長期高於15%顯示資本運用良好。ROE = 淨利/股東權益，反映股東資金的使用效益。ROE ≥ 15%代表公司具備優異的資本回報能力。但高ROE若來自高負債，可能掩蓋財務風險。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="ROE超過15%為優良企業標準">ROE≥15%為優良標準</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>ROIC：投入資本報酬率</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>ROIC反映整體投入資本的報酬表現，超越WACC才真正創造價值。ROIC = 稅後營業利潤/投入資本，衡量企業運用全部資本的盈利能力。當ROIC大於WACC時，企業才真正創造經濟價值。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="反映整體資本使用效率">ROIC反映整體資本效率</span>
+                        <span class="key-concept-tag tooltip" data-tooltip="ROIC大於資金成本才創造價值">ROIC>WACC才真正創造價值</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>ROIC vs WACC價值創造判斷</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>當ROE高而ROIC低時，可能暗示企業過度依賴財務槓桿支撐報酬。高ROE可能由舉債支撐，財務槓桿掩蓋了經營回報的真實水平。ROIC偏低反映資本運用效率不佳。ROIC低於WACC意味著投資回報無法覆蓋資金成本。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="高ROE搭配低ROIC可能過度槓桿">高ROE低ROIC暗示過度槓桿</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ROE/ROIC Calculator -->
+            <div class="calculator">
+                <h3>📊 ROE &amp; ROIC 計算器</h3>
+                <div class="calc-form">
+                    <div class="form-group">
+                        <label for="netIncome">淨利潤 (萬元)</label>
+                        <input type="number" id="netIncome" placeholder="請輸入淨利潤">
+                    </div>
+                    <div class="form-group">
+                        <label for="equity">股東權益 (萬元)</label>
+                        <input type="number" id="equity" placeholder="請輸入股東權益">
+                    </div>
+                    <div class="form-group">
+                        <label for="nopat">稅後營業利潤 (萬元)</label>
+                        <input type="number" id="nopat" placeholder="請輸入稅後營業利潤">
+                    </div>
+                    <div class="form-group">
+                        <label for="investedCapital">投入資本 (萬元)</label>
+                        <input type="number" id="investedCapital" placeholder="請輸入投入資本">
+                    </div>
+                </div>
+                <button class="calc-button" onclick="calculateROE()">計算 ROE &amp; ROIC</button>
+                <div class="calc-result" id="calcResult" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- Chapter 6: Portfolio Management -->
+        <div id="chapter6" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第6章：投資組合與風險控管</h2>
+                <p>建立投資組合的分散化策略，有效控制投資風險</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>分散化投資原則</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>單一股票過度集中將放大非系統性風險，建議持有5至10檔跨產業標的。避免集中風險：持有5-10檔跨產業股票，降低單一企業或產業突發風險對整體績效衝擊。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="建議投資組合包含5-10檔不同產業股票">建議持有5-10檔跨產業標的</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>持股比例管理</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>配置ETF可有效降低個股波動對整體績效的衝擊。透過持有S&P 500等指數ETF，一鍵分散投資於百檔股票，大幅降低單一標的暴險。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="ETF提供即時分散化效果">配置ETF降低波動</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>定期調整策略</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>定期調整部位比重，避免特定產業或區域風險累積過高。防范過度集中，維持風險水平，響應價格波動，根據市場變化調整資產配置。</p>
+                    <div class="key-concepts">
+                        <h5>關鍵概念</h5>
+                        <span class="key-concept-tag tooltip" data-tooltip="避免單一產業權重過高">避免單一產業過度集中</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 7: Decision Framework -->
+        <div id="chapter7" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第7章：股價下跌應對決策框架</h2>
+                <p>建立系統化的決策框架，理性應對股價下跌情況</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>辨識風險來源</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>首先釐清導致股價下跌的根本原因。市場系統性風險包括總體經濟變數(通膨、利率、景氣衰退)和政策變化。公司個別問題包括營運惡化、管理層問題、競爭力下降。</p>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>基本面健康檢查</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>對公司基本面進行嚴格的健康檢查。檢查商業模式是否改變、財務報表是否惡化、管理層或產品是否有問題。確認公司內部是否存在重大問題。</p>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>判斷是否被錯殺</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>如果基本面依然穩健，股價下跌很可能是非基本面因素造成的錯殺。檢查公司估值、與競爭對手比較、判斷是否為市場情緒恐慌導致。</p>
+                </div>
+            </div>
+            
+            <div class="key-concepts">
+                <h5>決策流程檢查清單</h5>
+                <div style="background: white; padding: var(--space-lg); border-radius: var(--radius-md); margin-top: var(--space-lg);">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-md);">
+                        <div>✓ 檢查商業模式是否改變</div>
+                        <div>✓ 檢視財務報表是否惡化</div>
+                        <div>✓ 評估管理層與產品競爭力</div>
+                        <div>✓ 比較同業表現與估值水準</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 8: Conclusion -->
+        <div id="chapter8" class="chapter-content">
+            <div class="chapter-header">
+                <h2>第8章：結論與實務應用</h2>
+                <p>整合投資理念與實務，建立長期穩健的投資策略</p>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>投資vs投機的操作紀律</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>投資應區分投資與投機兩種模式，並建立各自的操作紀律。劃分資金用途：將資金分為投資與投機兩部分。制定操作規則：為投資和投機設定獨立的操作規則。區分策略邏輯：投資側重基本面與長期持有。</p>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>以基本面為錨點抵抗市場情緒</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>面對波動需兼具耐心與紀律，以基本面為錨點抵抗市場情緒干擾。堅守投資紀律：市場恐慌時不盲目殺出。以基本面為錨：股價波動非風險根源，企業價值才是決策依據。區分情緒與現實：短期行情受情緒驅動。</p>
+                </div>
+            </div>
+            
+            <div class="subtopic">
+                <div class="subtopic-header" onclick="toggleSubtopic(this)">
+                    <h4>整合分析框架實現長期財富累積</h4>
+                    <span class="subtopic-toggle">▼</span>
+                </div>
+                <div class="subtopic-content">
+                    <p>整合財務分析、風險控管與多元配置，方能實現長期耐力型財富累積。結合基本面分析、風險分散與紀律操作，打造可持續的投資組合。</p>
+                </div>
+            </div>
+            
+            <div class="key-concepts">
+                <h5>核心投資原則</h5>
+                <div style="background: white; padding: var(--space-lg); border-radius: var(--radius-md); margin-top: var(--space-lg);">
+                    <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-sm);">
+                        <div>🎯 以基本面為投資決策核心</div>
+                        <div>🛡️ 建立完整的風險管理體系</div>
+                        <div>⚖️ 區分投資與投機的界線</div>
+                        <div>📈 保持長期價值投資理念</div>
+                        <div>🔄 運用分散化降低風險</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="version-info">
+            <p>投資決策與風險管理完整指南 v1.0.0</p>
+            <p>最後更新：2025年10月18日</p>
+            <p>© 2025 Professional Investment Guide. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        let currentChapter = 0;
+        let searchResults = [];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            setupKeyboardShortcuts();
+        });
+        
+        // Keyboard shortcuts for fullscreen
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F11') {
+                    e.preventDefault();
+                    toggleFullscreen();
+                } else if (e.key === 'Escape' && document.fullscreenElement) {
+                    toggleFullscreen();
+                }
+            });
+        }
+        
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            const btn = document.getElementById('fullscreenBtn');
+            
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    btn.textContent = '🔳';
+                }).catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    btn.textContent = '🔲';
+                }).catch(err => {
+                    console.log('Exit fullscreen error:', err);
+                });
+            }
+        }
+        
+        // Navigation functions
+        function showHome() {
+            hideAllChapters();
+            document.getElementById('home').style.display = 'block';
+            currentChapter = 0;
+            updateBreadcrumb('首頁');
+            updateNavigation();
+            updateProgress();
+        }
+        
+        function showChapter(chapterNum) {
+            hideAllChapters();
+            document.getElementById('chapter' + chapterNum).style.display = 'block';
+            currentChapter = chapterNum;
+            
+            const chapterTitles = {
+                1: '市場波動的本質與成因',
+                2: '選擇權投機風險結構',
+                3: '價值投資防禦思維',
+                4: '財務報表解讀',
+                5: 'ROE與ROIC指標',
+                6: '投資組合與風險控管',
+                7: '股價下跌應對框架',
+                8: '結論與實務應用'
+            };
+            
+            updateBreadcrumb('首頁 > 第' + chapterNum + '章: ' + chapterTitles[chapterNum]);
+            updateNavigation();
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        function hideAllChapters() {
+            document.getElementById('home').style.display = 'none';
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById('chapter' + i).style.display = 'none';
+            }
+        }
+        
+        function updateBreadcrumb(text) {
+            document.getElementById('breadcrumb').textContent = text;
+        }
+        
+        function updateNavigation() {
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(link => link.classList.remove('active'));
+            
+            if (currentChapter === 0) {
+                links[0].classList.add('active'); // Home
+            } else {
+                links[currentChapter].classList.add('active');
+            }
+        }
+        
+        // Progress tracking
+        function updateProgress() {
+            const progress = currentChapter === 0 ? 0 : (currentChapter / 8) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        // Subtopic toggle functionality
+        function toggleSubtopic(header) {
+            const subtopic = header.parentElement;
+            const content = subtopic.querySelector('.subtopic-content');
+            const toggle = header.querySelector('.subtopic-toggle');
+            
+            subtopic.classList.toggle('expanded');
+            content.classList.toggle('expanded');
+            
+            if (subtopic.classList.contains('expanded')) {
+                content.style.display = 'block';
+                content.classList.add('fade-in');
+            } else {
+                content.style.display = 'none';
+                content.classList.remove('fade-in');
+            }
+        }
+        
+        // Search functionality
+        function searchContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const chapterCards = document.querySelectorAll('.chapter-card');
+            
+            if (query === '') {
+                chapterCards.forEach(card => {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                });
+                return;
+            }
+            
+            chapterCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const summary = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(query) || summary.includes(query)) {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1)';
+                    }, 300);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // ROE & ROIC Calculator
+        function calculateROE() {
+            const netIncome = parseFloat(document.getElementById('netIncome').value) || 0;
+            const equity = parseFloat(document.getElementById('equity').value) || 0;
+            const nopat = parseFloat(document.getElementById('nopat').value) || 0;
+            const investedCapital = parseFloat(document.getElementById('investedCapital').value) || 0;
+            
+            if (equity === 0 || investedCapital === 0) {
+                alert('請輸入有效的數值');
+                return;
+            }
+            
+            const roe = (netIncome / equity) * 100;
+            const roic = (nopat / investedCapital) * 100;
+            
+            const resultDiv = document.getElementById('calcResult');
+            resultDiv.style.display = 'block';
+            
+            let roeStatus = roe >= 15 ? '優良' : '待改善';
+            let roeColor = roe >= 15 ? 'var(--color-success)' : 'var(--color-warning)';
+            
+            let roicStatus = roic >= 10 ? '良好' : '需關注';
+            let roicColor = roic >= 10 ? 'var(--color-success)' : 'var(--color-warning)';
+            
+            resultDiv.innerHTML = `
+                <h4>計算結果</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-top: var(--space-md);">
+                    <div style="text-align: center;">
+                        <div style="color: ${roeColor}; font-size: var(--font-size-xl); font-weight: 700;">
+                            ROE: ${roe.toFixed(2)}%
+                        </div>
+                        <div style="color: ${roeColor}; margin-top: var(--space-sm);">
+                            ${roeStatus} (標準: ≥15%)
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: ${roicColor}; font-size: var(--font-size-xl); font-weight: 700;">
+                            ROIC: ${roic.toFixed(2)}%
+                        </div>
+                        <div style="color: ${roicColor}; margin-top: var(--space-sm);">
+                            ${roicStatus} (建議: ≥10%)
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: var(--space-lg); padding: var(--space-md); background: rgba(52, 152, 219, 0.1); border-radius: var(--radius-md);">
+                    <strong>分析建議：</strong>
+                    ${roe >= 15 && roic >= 10 ? '企業資本效率優良，具備良好投資價值。' :
+                      roe >= 15 && roic < 10 ? 'ROE優良但ROIC偏低，可能過度依賴財務槓桿。' :
+                      roe < 15 && roic >= 10 ? 'ROIC良好但ROE偏低，建議關注股東權益運用效率。' :
+                      '兩項指標均需改善，建議謹慎評估投資價值。'}
+                </div>
+            `;
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Scroll progress update
+        window.addEventListener('scroll', function() {
+            if (currentChapter > 0) {
+                const scrolled = window.pageYOffset;
+                const maxHeight = document.body.scrollHeight - window.innerHeight;
+                const scrollProgress = (scrolled / maxHeight) * 100;
+                document.getElementById('progressBar').style.width = Math.min(scrollProgress, 100) + '%';
+            }
+        });
+        
+        // Initialize with home page
+        showHome();
+    </script>
+</body>
+</html>
