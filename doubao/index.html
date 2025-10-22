@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>豆包藝術字體提示詞生成器</title>
+    <style>
+        :root {
+            /* Primitive Color Tokens */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            /* RGB versions for opacity control */
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+
+            /* Background color tokens */
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-bg-6: rgba(249, 115, 22, 0.08);
+            --color-bg-7: rgba(236, 72, 153, 0.08);
+            --color-bg-8: rgba(6, 182, 212, 0.08);
+
+            /* Semantic Color Tokens */
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+
+            /* Typography */
+            --font-family-base: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 30px;
+            --font-size-4xl: 36px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Spacing */
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.1);
+
+            /* Animation */
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Dark mode colors */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(167, 169, 169, 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-primary-active: var(--color-teal-800);
+                --color-secondary: rgba(119, 124, 124, 0.15);
+                --color-secondary-hover: rgba(119, 124, 124, 0.25);
+                --color-secondary-active: rgba(119, 124, 124, 0.3);
+                --color-border: rgba(119, 124, 124, 0.3);
+                --color-btn-primary-text: var(--color-slate-900);
+                --color-card-border: rgba(119, 124, 124, 0.2);
+                --color-card-border-inner: rgba(119, 124, 124, 0.15);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-teal-300);
+                --color-warning: var(--color-orange-400);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .app-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background-color: var(--color-background);
+            overflow-y: auto; /* MODIFIED: Allow vertical scrolling */
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: var(--color-surface);
+            border-bottom: 1px solid var(--color-card-border);
+            padding: var(--space-4) 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: var(--space-6);
+        }
+
+        .nav-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-base);
+            transition: all var(--duration-fast) var(--ease-standard);
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+        }
+
+        .fullscreen-btn {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            transition: background-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .fullscreen-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-8) var(--space-4);
+        }
+
+        .section {
+            margin-bottom: var(--space-12);
+        }
+
+        .section-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+            margin-bottom: var(--space-6);
+            text-align: center;
+        }
+
+        .section-description {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: var(--space-8);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--duration-normal) var(--ease-standard);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-4);
+        }
+
+        .card-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-2);
+        }
+
+        .card-category {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .card-text {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            text-align: center;
+            margin: var(--space-4) 0;
+            padding: var(--space-4);
+            border-radius: var(--radius-base);
+            border: 2px dashed var(--color-border);
+        }
+
+        .card-description {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-4);
+            line-height: 1.5;
+        }
+
+        .card-prompt {
+            background-color: var(--color-bg-1);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-3);
+            font-size: var(--font-size-sm);
+            font-family: monospace;
+            line-height: 1.4;
+            position: relative;
+            margin-bottom: var(--space-3);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: var(--space-2);
+            right: var(--space-2);
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            cursor: pointer;
+            transition: background-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .copy-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Category Filter */
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 2px solid var(--color-border);
+            color: var(--color-text);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        /* Custom Generator */
+        .generator-container {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-5);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--space-2);
+            color: var(--color-text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            font-size: var(--font-size-base);
+            transition: border-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-focus-ring);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+
+        .preview-area {
+            background-color: var(--color-bg-2);
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            text-align: center;
+            margin: var(--space-6) 0;
+        }
+
+        .preview-text {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-4);
+        }
+
+        .generated-prompt {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            position: relative;
+        }
+
+        .prompt-text {
+            font-family: monospace;
+            font-size: var(--font-size-sm);
+            line-height: 1.5;
+            margin-bottom: var(--space-3);
+        }
+
+        .generate-btn {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: background-color var(--duration-fast) var(--ease-standard);
+            width: 100%;
+        }
+
+        .generate-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Instructions */
+        .instructions-container {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+        }
+
+        .instruction-item {
+            margin-bottom: var(--space-5);
+            padding: var(--space-4);
+            background-color: var(--color-bg-3);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .instruction-title {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-2);
+        }
+
+        .instruction-text {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .nav-container {
+                padding: 0 var(--space-3);
+            }
+            
+            .main-content {
+                padding: var(--space-6) var(--space-3);
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-filter {
+                gap: var(--space-2);
+            }
+            
+            .filter-btn {
+                padding: var(--space-2) var(--space-3);
+                font-size: var(--font-size-xs);
+            }
+            
+            .section-title {
+                font-size: var(--font-size-2xl);
+            }
+        }
+
+        /* Hidden sections */
+        .section.hidden {
+            display: none;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-base);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform var(--duration-normal) var(--ease-standard);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="appContainer">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="#" class="nav-brand">豆包藝術字體生成器(來源：站酷;作者：言川Artie)</a>
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-section="examples">字體範例</a></li>
+                    <li><a href="#" class="nav-link" data-section="effects">字效展示</a></li>
+                    <li><a href="#" class="nav-link" data-section="generator">自定義生成</a></li>
+                    <li><a href="#" class="nav-link" data-section="instructions">使用指南</a></li>
+                </ul>
+                <button class="fullscreen-btn" id="fullscreenBtn">全螢幕</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Font Examples Section -->
+            <section class="section" id="examples">
+                <h2 class="section-title">字體範例展示</h2>
+                <p class="section-description">探索各種藝術字體風格，獲取專業的提示詞範例</p>
+                
+                <div class="category-filter" id="categoryFilter">
+                    <button class="filter-btn active" data-category="全部">全部</button>
+                    <button class="filter-btn" data-category="簡約風格">簡約風格</button>
+                    <button class="filter-btn" data-category="藝術風格">藝術風格</button>
+                    <button class="filter-btn" data-category="復古風格">復古風格</button>
+                    <button class="filter-btn" data-category="卡通風格">卡通風格</button>
+                    <button class="filter-btn" data-category="書法風格">書法風格</button>
+                </div>
+                
+                <div class="cards-grid" id="fontExamples">
+                    <!-- Font examples will be dynamically populated -->
+                </div>
+            </section>
+
+            <!-- Font Effects Section -->
+            <section class="section hidden" id="effects">
+                <h2 class="section-title">字效展示</h2>
+                <p class="section-description">了解各種視覺效果，為您的字體增添魅力</p>
+                
+                <div class="cards-grid" id="fontEffects">
+                    <!-- Font effects will be dynamically populated -->
+                </div>
+            </section>
+
+            <!-- Custom Generator Section -->
+            <section class="section hidden" id="generator">
+                <h2 class="section-title">自定義生成器</h2>
+                <p class="section-description">輸入您的文字內容，自動生成專業的藝術字體提示詞</p>
+                
+                <div class="generator-container">
+                    <div class="form-group">
+                        <label class="form-label" for="customText">文字內容</label>
+                        <input type="text" id="customText" class="form-control" placeholder="請輸入要生成的文字內容" maxlength="20">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="fontType">字體類型</label>
+                            <select id="fontType" class="form-control">
+                                <option value="">選擇字體類型</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="fontEffect">字效類型</label>
+                            <select id="fontEffect" class="form-control">
+                                <option value="">選擇字效類型</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-area">
+                        <div class="preview-text" id="previewText">預覽文字</div>
+                    </div>
+                    
+                    <button class="generate-btn" id="generateBtn">生成提示詞</button>
+                    
+                    <div class="generated-prompt" id="generatedPrompt" style="display: none;">
+                        <div class="prompt-text" id="promptText"></div>
+                        <button class="copy-btn" onclick="copyPrompt('promptText')">複製</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Instructions Section -->
+            <section class="section hidden" id="instructions">
+                <h2 class="section-title">使用指南</h2>
+                <p class="section-description">學會如何使用豆包AI生成專業的藝術字體</p>
+                
+                <div class="instructions-container">
+                    <div class="instruction-item">
+                        <div class="instruction-title">1. 通用提示詞範本</div>
+                        <div class="instruction-text">
+                            【文字內容】+【字體類型】+【字體描述】+【主題風格】<br>
+                            例如：「創意無限」，未來感字體，線條簡潔硬朗，結構幾何化，充滿科技感與未來感，黑底白字。
+                        </div>
+                    </div>
+                    
+                    <div class="instruction-item">
+                        <div class="instruction-title">2. 豆包AI使用步驟</div>
+                        <div class="instruction-text">
+                            ① 打開豆包AI並選擇Seedream 3.0模型<br>
+                            ② 複製本工具生成的提示詞<br>
+                            ③ 貼上提示詞並點擊生成<br>
+                            ④ 等待AI生成您的專屬藝術字體
+                        </div>
+                    </div>
+                    
+                    <div class="instruction-item">
+                        <div class="instruction-title">3. 最佳實踐技巧</div>
+                        <div class="instruction-text">
+                            • 文字內容建議控制在2-6個字符以內<br>
+                            • 可以嘗試不同的字體風格和效果組合<br>
+                            • 根據使用場景選擇合適的字體類型<br>
+                            • 善用顏色描述增強視覺效果
+                        </div>
+                    </div>
+                    
+                    <div class="instruction-item">
+                        <div class="instruction-title">4. 注意事項</div>
+                        <div class="instruction-text">
+                            • 確保使用豆包AI的Seedream 3.0模型<br>
+                            • 複雜的字體可能需要多次嘗試<br>
+                            • 可以根據生成結果微調提示詞<br>
+                            • 建議保存滿意的提示詞供日後使用
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Application data
+        const fontExamples = [
+            {
+                category: "簡約風格",
+                font_type: "時尚體",
+                description: "設計前衛獨特，線條簡潔流暢，具有強烈現代感與潮流屬性",
+                text: "潮流先鋒",
+                prompt: "「潮流先鋒」，時尚體，設計前衛獨特，線條簡潔流暢，具有強烈現代感與潮流屬性，黑底白字。",
+                color: "#FF6B6B"
+            },
+            {
+                category: "簡約風格",
+                font_type: "極簡無襯線手寫",
+                description: "筆劃簡潔流暢，線條粗細均勻",
+                text: "清風徐來",
+                prompt: "「清風徐來」，極簡無襯線手寫，筆劃簡潔流暢，線條粗細均勻，黑底白字。",
+                color: "#4ECDC4"
+            },
+            {
+                category: "簡約風格",
+                font_type: "細線體",
+                description: "字形精緻纖細流暢",
+                text: "纖細流光",
+                prompt: "「纤细流光」，细线体，字形精致纤细流畅，黑底白字。",
+                color: "#45B7D1"
+            },
+            {
+                category: "藝術風格",
+                font_type: "彎曲字體",
+                description: "筆劃多曲線，線條流暢自然，整體柔和優雅，給人動感印象",
+                text: "信手拈來",
+                prompt: "「信手拈來」，彎曲字體，筆劃多曲線，線條流暢自然，整體柔和優雅，給人動感印象，黑底白字。",
+                color: "#FFEAA7"
+            },
+            {
+                category: "藝術風格",
+                font_type: "塗鴉字體",
+                description: "線條隨性、不對稱，粗獷生動，筆劃不規則自由",
+                text: "天馬行空",
+                prompt: "「天馬行空」，塗鴉字體，線條隨性、不對稱，粗獷生動，筆劃不規則自由，黑底白字。",
+                color: "#DDA0DD"
+            },
+            {
+                category: "藝術風格",
+                font_type: "未來感字體",
+                description: "線條簡潔硬朗，結構幾何化，充滿科技感與未來感",
+                text: "智慧驅動",
+                prompt: "「智慧驅動」，未來感字體，線條簡潔硬朗，結構幾何化，充滿科技感與未來感，黑底白字。",
+                color: "#74B9FF"
+            },
+            {
+                category: "復古風格",
+                font_type: "復古字體",
+                description: "設計風格模仿古代字體，具有懷舊古樸氣息",
+                text: "古韻流芳",
+                prompt: "「古韻流芳」，復古字體，設計風格模仿古代字體，具有懷舊古樸氣息，黑底白字。",
+                color: "#A29BFE"
+            },
+            {
+                category: "復古風格",
+                font_type: "哥特風格字體",
+                description: "字體線條尖銳細長，字母筆劃粗細對比鮮明",
+                text: "暗夜幽靈",
+                prompt: "「暗夜幽靈」，哥特風格字體，字體線條尖銳細長，字母筆劃粗細對比鮮明。採用金屬字效，具有強烈的金屬質感，通常伴隨著高光和陰影的對比，展現出硬朗、冷峻的視覺效果。",
+                color: "#636E72"
+            },
+            {
+                category: "卡通風格",
+                font_type: "可愛體",
+                description: "筆劃圓潤流暢，結構扁圓，重心偏高，充滿童趣活力，風格俏皮活潑",
+                text: "夢想起飛",
+                prompt: "「夢想起飛」，可愛體，筆劃圓潤流暢，結構扁圓，重心偏高，充滿童趣活力，風格俏皮活潑，黑底白字。",
+                color: "#FFB6C1"
+            },
+            {
+                category: "卡通風格",
+                font_type: "軟糖體",
+                description: "字體呈現出類似軟糖的柔軟、流動感，通常飽滿而有彈性",
+                text: "萌趣橫生",
+                prompt: "「萌趣橫生」，軟糖體，字體呈現出類似軟糖的柔軟、流動感，通常飽滿而有彈性，黑底白字。",
+                color: "#FF7675"
+            },
+            {
+                category: "書法風格",
+                font_type: "草書風格",
+                description: "筆劃簡化連貫，書寫流暢快速，藝術性高",
+                text: "鳳舞龍飛",
+                prompt: "「鳳舞龍飛」，草書風格，筆劃簡化連貫，書寫流暢快速，藝術性高，黑底白字。",
+                color: "#00B894"
+            },
+            {
+                category: "書法風格",
+                font_type: "行書風格",
+                description: "介於楷書與草書之間，筆劃連貫，書寫自然",
+                text: "渾然天成",
+                prompt: "「渾然天成」，行書風格，介於楷書與草書之間，筆劃連貫，書寫自然，黑底白字。",
+                color: "#FDCB6E"
+            }
+        ];
+
+        const fontEffects = [
+            {
+                name: "卡通字效",
+                description: "圓潤線條，鮮豔顏色，誇張變形，動感趣味，親和力強",
+                suitable_for: ["卡通風格", "兒童內容", "趣味設計"],
+                color: "#FFB6C1"
+            },
+            {
+                name: "立體字效",
+                description: "深度感，陰影效果，光澤反射，層次分明，現代感強，邊緣突出",
+                suitable_for: ["現代設計", "商業廣告", "品牌LOGO"],
+                color: "#4ECDC4"
+            },
+            {
+                name: "發光字效",
+                description: "具有強烈的發光效果，色彩豐富且層次分明",
+                suitable_for: ["科技主題", "夜景設計", "電競遊戲"],
+                color: "#74B9FF"
+            },
+            {
+                name: "金屬字效",
+                description: "具有強烈的金屬質感，通常伴隨著高光和陰影的對比，展現出硬朗、冷峻的視覺效果",
+                suitable_for: ["工業設計", "科技產品", "豪華品牌"],
+                color: "#636E72"
+            },
+            {
+                name: "火焰字效",
+                description: "具有鮮明的火焰色彩，呈現燃燒與閃爍的動態效果",
+                suitable_for: ["運動賽事", "激情主題", "能量飲料"],
+                color: "#E17055"
+            },
+            {
+                name: "水墨字效",
+                description: "墨色層次豐富，暈染自然，帶有書法線條和文化意境",
+                suitable_for: ["中國風設計", "文化藝術", "傳統節日"],
+                color: "#2D3436"
+            },
+            {
+                name: "漸變字效",
+                description: "具有柔和的色彩過渡和豐富的層次感，能增強文字的視覺吸引力和藝術效果",
+                suitable_for: ["時尚設計", "現代藝術", "品牌包裝"],
+                color: "#A29BFE"
+            }
+        ];
+
+        // State management
+        let currentSection = 'examples';
+        let currentFilter = '全部';
+        let isFullscreen = false;
+
+        // DOM Elements
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const appContainer = document.getElementById('appContainer');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const fontExamplesContainer = document.getElementById('fontExamples');
+        const fontEffectsContainer = document.getElementById('fontEffects');
+        const customTextInput = document.getElementById('customText');
+        const fontTypeSelect = document.getElementById('fontType');
+        const fontEffectSelect = document.getElementById('fontEffect');
+        const previewText = document.getElementById('previewText');
+        const generateBtn = document.getElementById('generateBtn');
+        const generatedPrompt = document.getElementById('generatedPrompt');
+        const promptText = document.getElementById('promptText');
+        const toast = document.getElementById('toast');
+
+        // Initialize application
+        function init() {
+            renderFontExamples();
+            renderFontEffects();
+            populateSelects();
+            setupEventListeners();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.getAttribute('data-section');
+                    switchSection(section);
+                });
+            });
+
+            // Fullscreen toggle
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+            // Category filter
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const category = btn.getAttribute('data-category');
+                    filterByCategory(category);
+                    
+                    // Update active filter button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // Custom generator
+            customTextInput.addEventListener('input', updatePreview);
+            fontTypeSelect.addEventListener('change', updatePreview);
+            fontEffectSelect.addEventListener('change', updatePreview);
+            generateBtn.addEventListener('click', generatePrompt);
+        }
+
+        // Switch between sections
+        function switchSection(sectionName) {
+            // Hide all sections
+            sections.forEach(section => section.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.remove('hidden');
+            
+            // Update navigation
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+            
+            currentSection = sectionName;
+        }
+
+        // Toggle fullscreen mode
+        function toggleFullscreen() {
+            isFullscreen = !isFullscreen;
+            
+            if (isFullscreen) {
+                appContainer.classList.add('fullscreen');
+                fullscreenBtn.textContent = '退出全螢幕';
+            } else {
+                appContainer.classList.remove('fullscreen');
+                fullscreenBtn.textContent = '全螢幕';
+            }
+        }
+
+        // Render font examples
+        function renderFontExamples(filter = '全部') {
+            // Map text content to image files
+            const imageMap = {
+                "潮流先鋒": "001.png",
+                "清風徐來": "002.png",
+                "纖細流光": "003.png",
+                "信手拈來": "004.png",
+                "暗夜幽靈": "005.png",
+                "夢想起飛": "006.png",
+                "萌趣橫生": "007.png",
+                "鳳舞龍飛": "008.png",
+                "天馬行空": "009.png",
+                "智慧驅動": "010.png",
+                "古韻流芳": "011.png",
+                "渾然天成": "012.png"
+            };
+
+            const filteredExamples = filter === '全部' 
+                ? fontExamples 
+                : fontExamples.filter(example => example.category === filter);
+
+            fontExamplesContainer.innerHTML = filteredExamples.map(example => {
+                const imagePath = imageMap[example.text];
+                
+                // Conditionally render an image or the text
+                const cardTextContent = imagePath
+                    ? `<div class="card-text" style="padding: 0; border: none; background: transparent;">
+                           <img src="${imagePath}" alt="${example.text}" style="width: 100%; height: auto; display: block; border-radius: var(--radius-base);">
+                       </div>`
+                    : `<div class="card-text" style="color: ${example.color}">${example.text}</div>`;
+
+                return `
+                    <div class="card" data-category="${example.category}">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">${example.font_type}</h3>
+                                <span class="card-category">${example.category}</span>
+                            </div>
+                        </div>
+                        ${cardTextContent}
+                        <p class="card-description">${example.description}</p>
+                        <div class="card-prompt">
+                            ${example.prompt}
+                            <button class="copy-btn" onclick="copyToClipboard('${example.prompt.replace(/'/g, "\\'")}')">複製</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render font effects
+        function renderFontEffects() {
+            fontEffectsContainer.innerHTML = fontEffects.map(effect => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" style="color: ${effect.color}">${effect.name}</h3>
+                    </div>
+                    <p class="card-description">${effect.description}</p>
+                    <div class="instruction-text">
+                        <strong>適用場景：</strong>${effect.suitable_for.join('、')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Populate select options
+        function populateSelects() {
+            // Populate font types
+            const uniqueFontTypes = [...new Set(fontExamples.map(example => example.font_type))];
+            fontTypeSelect.innerHTML = '<option value="">選擇字體類型</option>' + 
+                uniqueFontTypes.map(type => `<option value="${type}">${type}</option>`).join('');
+
+            // Populate font effects
+            fontEffectSelect.innerHTML = '<option value="">選擇字效類型</option>' + 
+                fontEffects.map(effect => `<option value="${effect.name}">${effect.name}</option>`).join('');
+        }
+
+        // Filter examples by category
+        function filterByCategory(category) {
+            currentFilter = category;
+            renderFontExamples(category);
+        }
+
+        // Update preview text
+        function updatePreview() {
+            const text = customTextInput.value || '預覽文字';
+            previewText.textContent = text;
+        }
+
+        // Generate custom prompt
+        function generatePrompt() {
+            const text = customTextInput.value.trim();
+            const fontType = fontTypeSelect.value;
+            const fontEffect = fontEffectSelect.value;
+
+            if (!text) {
+                showToast('請輸入文字內容');
+                return;
+            }
+
+            let prompt = `「${text}」`;
+            
+            if (fontType) {
+                const example = fontExamples.find(e => e.font_type === fontType);
+                if (example) {
+                    prompt += `，${fontType}，${example.description}`;
+                }
+            }
+            
+            if (fontEffect) {
+                const effect = fontEffects.find(e => e.name === fontEffect);
+                if (effect) {
+                    prompt += `。採用${fontEffect}，${effect.description}`;
+                }
+            }
+            
+            if (!fontEffect) {
+                prompt += '，黑底白字';
+            }
+            
+            prompt += '。';
+
+            promptText.textContent = prompt;
+            generatedPrompt.style.display = 'block';
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('已複製到剪貼簿');
+            }).catch(() => {
+                showToast('複製失敗');
+            });
+        }
+
+        // Copy prompt function for button onclick
+        function copyPrompt(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            copyToClipboard(text);
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F11') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+
+        // Initialize application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
