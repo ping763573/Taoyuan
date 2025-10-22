@@ -164,7 +164,7 @@
             height: 100vh;
             z-index: 9999;
             background-color: var(--color-background);
-            overflow-y: auto; /* MODIFIED: Allow vertical scrolling */
+            overflow-y: auto;
         }
 
         /* Navigation */
@@ -230,6 +230,79 @@
 
         .fullscreen-btn:hover {
             background-color: var(--color-primary-hover);
+        }
+
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            display: none; /* Hidden on desktop */
+            flex-direction: column;
+            justify-content: space-around;
+            width: 28px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+            margin-left: var(--space-4);
+        }
+
+        .hamburger-btn span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--color-text);
+            border-radius: 2px;
+            transition: all var(--duration-normal) ease-in-out;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background-color: var(--color-surface);
+            z-index: 1000;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform var(--duration-normal) var(--ease-standard);
+            padding: var(--space-12) var(--space-6);
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .mobile-menu .close-btn {
+            position: absolute;
+            top: var(--space-4);
+            right: var(--space-4);
+            background: transparent;
+            border: none;
+            font-size: var(--font-size-3xl);
+            color: var(--color-text);
+            cursor: pointer;
+        }
+
+        .mobile-menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .mobile-nav-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: var(--font-size-lg);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-base);
+            transition: background-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .mobile-nav-link:hover, .mobile-nav-link.active {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
         }
 
         /* Main Content */
@@ -505,6 +578,10 @@
             .nav-links {
                 display: none;
             }
+
+            .hamburger-btn {
+                display: flex;
+            }
             
             .nav-container {
                 padding: 0 var(--space-3);
@@ -567,15 +644,33 @@
         <nav class="navbar">
             <div class="nav-container">
                 <a href="#" class="nav-brand">豆包藝術字體生成器(來源：站酷;作者：言川Artie)</a>
-                <ul class="nav-links">
+                <ul class="nav-links" id="desktopNav">
                     <li><a href="#" class="nav-link active" data-section="examples">字體範例</a></li>
                     <li><a href="#" class="nav-link" data-section="effects">字效展示</a></li>
                     <li><a href="#" class="nav-link" data-section="generator">自定義生成</a></li>
                     <li><a href="#" class="nav-link" data-section="instructions">使用指南</a></li>
                 </ul>
-                <button class="fullscreen-btn" id="fullscreenBtn">全螢幕</button>
+                <div>
+                  <button class="fullscreen-btn" id="fullscreenBtn">全螢幕</button>
+                  <button class="hamburger-btn" id="hamburgerBtn" aria-label="開啟選單">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </button>
+                </div>
             </div>
         </nav>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <button class="close-btn" id="closeMenuBtn" aria-label="關閉選單">&times;</button>
+            <nav class="mobile-menu-nav" id="mobileNav">
+                <a href="#" class="mobile-nav-link active" data-section="examples">字體範例</a>
+                <a href="#" class="mobile-nav-link" data-section="effects">字效展示</a>
+                <a href="#" class="mobile-nav-link" data-section="generator">自定義生成</a>
+                <a href="#" class="mobile-nav-link" data-section="instructions">使用指南</a>
+            </nav>
+        </div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -892,6 +987,10 @@
         const generatedPrompt = document.getElementById('generatedPrompt');
         const promptText = document.getElementById('promptText');
         const toast = document.getElementById('toast');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
         // Initialize application
         function init() {
@@ -903,13 +1002,32 @@
 
         // Setup event listeners
         function setupEventListeners() {
-            // Navigation
+            // Desktop Navigation
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const section = link.getAttribute('data-section');
                     switchSection(section);
                 });
+            });
+            
+            // Mobile Navigation
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.getAttribute('data-section');
+                    switchSection(section);
+                    mobileMenu.classList.remove('open');
+                });
+            });
+
+            // Hamburger Menu Toggle
+            hamburgerBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+
+            closeMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
             });
 
             // Fullscreen toggle
@@ -922,7 +1040,6 @@
                     const category = btn.getAttribute('data-category');
                     filterByCategory(category);
                     
-                    // Update active filter button
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                 });
@@ -937,17 +1054,19 @@
 
         // Switch between sections
         function switchSection(sectionName) {
-            // Hide all sections
             sections.forEach(section => section.classList.add('hidden'));
-            
-            // Show selected section
             document.getElementById(sectionName).classList.remove('hidden');
             
-            // Update navigation
-            navLinks.forEach(link => link.classList.remove('active'));
-            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+            // Update both navigations
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-section') === sectionName);
+            });
+            mobileNavLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-section') === sectionName);
+            });
             
             currentSection = sectionName;
+            window.scrollTo(0, 0); // Scroll to top on section change
         }
 
         // Toggle fullscreen mode
@@ -965,7 +1084,6 @@
 
         // Render font examples
         function renderFontExamples(filter = '全部') {
-            // Map text content to image files
             const imageMap = {
                 "潮流先鋒": "001.png",
                 "清風徐來": "002.png",
@@ -991,7 +1109,6 @@
             fontExamplesContainer.innerHTML = filteredExamples.map(example => {
                 const imagePath = imageMap[example.text];
                 
-                // Conditionally render an image or the text
                 const cardTextContent = imagePath
                     ? `<div class="card-text" style="padding: 0; border: none; background: transparent;">
                            <img src="${imagePath}" alt="${example.text}" style="width: 100%; height: auto; display: block; border-radius: var(--radius-base);">
@@ -1034,12 +1151,10 @@
 
         // Populate select options
         function populateSelects() {
-            // Populate font types
             const uniqueFontTypes = [...new Set(fontExamples.map(example => example.font_type))];
             fontTypeSelect.innerHTML = '<option value="">選擇字體類型</option>' + 
                 uniqueFontTypes.map(type => `<option value="${type}">${type}</option>`).join('');
 
-            // Populate font effects
             fontEffectSelect.innerHTML = '<option value="">選擇字效類型</option>' + 
                 fontEffects.map(effect => `<option value="${effect.name}">${effect.name}</option>`).join('');
         }
