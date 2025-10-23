@@ -799,6 +799,7 @@
     <script>
         // Application data
         const fontExamples = [
+            // Original examples from the HTML file
             {
                 category: "簡約風格",
                 font_type: "時尚體",
@@ -918,6 +919,159 @@
                 text: "美不勝收",
                 prompt: "在琉璃上，標註中文繁體文字草書書法“美不勝收”字體每一筆畫用名畫裝飾字體每一部份，並有飛龍抬頭盤旋字體呈螺旋狀而下，兩旁角落有兩支小麒麟，上方兩旁有2支鳳凰，兩旁中間各有不同色彩牡丹花畔，字題下方中間並擺放一些古玩藝術品裝飾，右下角古畫小印，比例 「9:16」，背景西洋名畫琉璃",
                 color: "#f1c40f"
+            },
+            // New examples from the PDF file
+            {
+                category: "書法風格",
+                font_type: "狂草書法",
+                description: "墨蹟飛白, 筆鋒剛勁, 線條奔放, 節奏跳躍, 氣勢磅礴。",
+                text: "花千樹",
+                prompt: "黑底白字, 書法繁體字體“花千樹”, 狂草風格, 墨蹟飛白, 筆鋒剛勁, 線條奔放, 節奏跳躍, 氣勢磅礴。",
+                color: "#00B894"
+            },
+            {
+                category: "書法風格",
+                font_type: "行書",
+                description: "毛筆行書, 勁健有力, 古樸雅致, 行書筆意。",
+                text: "春風",
+                prompt: "黑底白字, 內容“春風”, 毛筆行書, 勁健有力, 古樸雅致, 行書筆意, 適合標題設計。",
+                color: "#FDCB6E"
+            },
+            {
+                category: "復古風格",
+                font_type: "復古印刷體",
+                description: "打字機風格, 粗顆粒感, 不規則墨蹟, 復古老式印刷效果, 略有缺損。",
+                text: "哈爾的移動城堡",
+                prompt: "黑底白字, 打字機風格, 粗顆粒感, 不規則墨蹟, 復古老式印刷效果, 略有缺損, 內容“哈爾的移動城堡”。",
+                color: "#A29BFE"
+            },
+            {
+                category: "復古風格",
+                font_type: "哥特體",
+                description: "高垂直比筆劃, 尖銳修飾, 復古莊嚴。",
+                text: "貝克街的亡靈",
+                prompt: "黑底白字, 哥特體風格, 高垂直比筆劃, 尖銳修飾, 復古莊嚴, 內容“貝克街的亡靈”。",
+                color: "#636E72"
+            },
+            {
+                category: "藝術風格",
+                font_type: "蒸汽朋克",
+                description: "立體金屬質感, 銅鐵銹跡, 鉚釘紋理, 機械筆觸。",
+                text: "蒸汽時代",
+                prompt: "黑底白字, 立體金屬質感, 銅鐵銹跡, 鉚釘紋理, 機械筆觸, 內容“蒸汽時代”。",
+                color: "#E17055"
+            },
+            {
+                category: "書法風格",
+                font_type: "秀麗筆手寫",
+                description: "筆劃粗細對比強烈, 起筆粗重收筆細尖, 飛白效果。",
+                text: "追光逐夢青春無悔",
+                prompt: "黑底白字, 白色秀麗筆手寫“追光逐夢青春無悔”, 筆劃粗細對比強烈, 起筆粗重收筆細尖, 飛白效果。",
+                color: "#4ECDC4"
+            },
+            {
+                category: "簡約風格",
+                font_type: "文藝鋼筆字",
+                description: "細線條鋼筆字, 連筆靈動, 錯落有致。",
+                text: "我所嚮往的生活",
+                prompt: "藍天綠草地背景, 白字“我所嚮往的生活”, 細線條鋼筆字, 連筆靈動, 錯落有致。",
+                color: "#45B7D1"
+            },
+            {
+                category: "簡約風格",
+                font_type: "極簡無襯線體",
+                description: "極細無襯線手寫體, 字間留白呼吸感強, 現代日式美學。",
+                text: "懸崖上的金魚姬",
+                prompt: "黑底白字, 極細無襯線手寫體, 字間留白呼吸感強, 現代日式美學, 內容“懸崖上的金魚姬”。",
+                color: "#4ECDC4"
+            },
+            {
+                category: "藝術風格",
+                font_type: "大筆觸手寫",
+                description: "筆劃粗細變化明顯, 部分斷裂傾斜, 動感活潑。",
+                text: "雙 11 來了, 預售狂歡開啟",
+                prompt: "藍底白字, “雙 11 來了, 預售狂歡開啟”, 筆劃粗細變化明顯, 部分斷裂傾斜, 動感活潑。",
+                color: "#FD79A8"
+            },
+            {
+                category: "卡通風格",
+                font_type: "少女夢幻體",
+                description: "粉色調圓潤字形, 泡泡感筆劃, 糖果質感, 點綴小星星或愛心。",
+                text: "櫻花樹下的約定",
+                prompt: "粉色調圓潤字形, 泡泡感筆劃, 糖果質感, 點綴小星星或愛心, 內容“櫻花樹下的約定”。",
+                color: "#FFB6C1"
+            },
+            {
+                category: "藝術風格",
+                font_type: "科技棱角",
+                description: "字體邊緣閃金屬光澤, 機械棱角與流線設計, 霓虹光效電路紋理。",
+                text: "台灣智造",
+                prompt: "黑底白字, “台灣智造”, 字體邊緣閃金屬光澤, 機械棱角與流線設計, 霓虹光效電路紋理, 環繞二進位碼。",
+                color: "#74B9FF"
+            },
+            {
+                category: "藝術風格",
+                font_type: "賽博朋克",
+                description: "粗線結構, 幾何拆解, 高對比未來感。",
+                text: "賽博朋克",
+                prompt: "黑底白字, 粗線結構, 幾何拆解, 高對比未來感, 內容“賽博朋克”。",
+                color: "#DDA0DD"
+            },
+            {
+                category: "卡通風格",
+                font_type: "動態爆炸",
+                description: "筆劃弧形延展, 爆發狀線條扭曲, 漫畫擬聲字效果。",
+                text: "爆炸辣",
+                prompt: "黑底白字, “爆炸辣”, 筆劃弧形延展, 爆發狀線條扭曲, 漫畫擬聲字效果。",
+                color: "#FF7675"
+            },
+            {
+                category: "藝術風格",
+                font_type: "科幻切割",
+                description: "筆劃切割錯位設計, 數位化拆解重組。",
+                text: "奔向元宇宙",
+                prompt: "深邃黑色背景, 白色粗體字“奔向元宇宙”, 筆劃切割錯位設計, 數位化拆解重組, 上方英文“RUSH TO THE META-UNIVERSE”。",
+                color: "#74B9FF"
+            },
+            {
+                category: "卡通風格",
+                font_type: "動漫活力體",
+                description: "筆劃末端粗, 動態張力, 活潑俏皮。",
+                text: "這家酸辣粉!太好吃啦!",
+                prompt: "黑底白字, “這家酸辣粉!太好吃啦!”, 筆劃末端粗, 動態張力, 活潑俏皮。",
+                color: "#FFB6C1"
+            },
+            {
+                category: "卡通風格",
+                font_type: "兒童插畫體",
+                description: "線條圓潤跳躍, 彩色漸變筆觸, 趣味童真。",
+                text: "踏青出遊 萬物回春",
+                prompt: "藍底白字, “踏青出遊 萬物回春”, 線條圓潤跳躍, 彩色漸變筆觸, 趣味童真。",
+                color: "#6C5CE7"
+            },
+            {
+                category: "藝術風格",
+                font_type: "霓虹燈管",
+                description: "發光描邊, 玻璃感內發光, 線條細長彎曲流暢, 夜店霓虹質感。",
+                text: "上海不夜城",
+                prompt: "發光描邊, 玻璃感內發光, 線條細長彎曲流暢, 夜店霓虹質感, 內容“上海不夜城”。",
+                color: "#FD79A8"
+            },
+            {
+                category: "藝術風格",
+                font_type: "創意粗體",
+                description: "筆劃誇張多變, 連筆中斷點彎曲延展, 隨性自由。",
+                text: "放肆派對",
+                prompt: "創意手寫字體, 筆劃誇張多變, 如“放”“肆”“派”“對”, 連筆中斷點彎曲延展, 隨性自由。",
+                color: "#FFEAA7"
+            },
+            {
+                category: "簡約風格",
+                font_type: "雜誌排版",
+                description: "基礎幾何拼接, 顆粒感朦朧美學, 極簡構圖。",
+                text: "時尚台北",
+                prompt: "基礎幾何拼接, 顆粒感朦朧美學, 文字“時尚台北”, 草書英文“Welcome to Beijing”, 極簡構圖。",
+                color: "#96CEB4"
             }
         ];
 
@@ -1099,7 +1253,26 @@
                 "渾然天成": "012.png",
                 "道高龍虎伏": "013.png",
                 "別具一格": "014.png",
-                "美不勝收": "015.png"
+                "美不勝收": "015.png",
+                "花千樹": "016.png",
+                "春風": "017.png",
+                "哈爾的移動城堡": "018.png",
+                "貝克街的亡靈": "019.png",
+                "蒸汽時代": "020.png",
+                "追光逐夢青春無悔": "021.png",
+                "我所嚮往的生活": "022.png",
+                "懸崖上的金魚姬": "023.png",
+                "雙 11 來了, 預售狂歡開啟": "024.png",
+                "櫻花樹下的約定": "025.png",
+                "台灣智造": "026.png",
+                "賽博朋克": "027.png",
+                "爆炸辣": "028.png",
+                "奔向元宇宙": "029.png",
+                "這家酸辣粉!太好吃啦!": "030.png",
+                "踏青出遊 萬物回春": "031.png",
+                "上海不夜城": "032.png",
+                "放肆派對": "033.png",
+                "時尚台北": "034.png"
             };
 
             const filteredExamples = filter === '全部' 
@@ -1113,7 +1286,7 @@
                     ? `<div class="card-text" style="padding: 0; border: none; background: transparent;">
                            <img src="${imagePath}" alt="${example.text}" style="width: 100%; height: auto; display: block; border-radius: var(--radius-base);">
                        </div>`
-                    : `<div class="card-text" style="color: ${example.color}">${example.text}</div>`;
+                    : `<div class="card-text" style="color: ${example.color}; font-size: ${example.text.length > 6 ? 'var(--font-size-lg)' : 'var(--font-size-2xl)'};">${example.text}</div>`;
 
                 return `
                     <div class="card" data-category="${example.category}">
