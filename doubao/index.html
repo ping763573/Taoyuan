@@ -643,7 +643,7 @@
         <!-- Navigation -->
         <nav class="navbar">
             <div class="nav-container">
-                <a href="#" class="nav-brand">豆包藝術字體生成器(來源：站酷;作者：言川Artie)</a>
+                <a href="#" class="nav-brand">豆包與即夢藝術字體(來源：站酷(作者：言川Artie)與網路教學資訊)</a>
                 <ul class="nav-links" id="desktopNav">
                     <li><a href="#" class="nav-link active" data-section="examples">字體範例</a></li>
                     <li><a href="#" class="nav-link" data-section="effects">字效展示</a></li>
@@ -681,13 +681,21 @@
                 
                 <div class="category-filter" id="categoryFilter">
                     <button class="filter-btn active" data-category="全部">全部</button>
-                    <button class="filter-btn" data-category="現代簡約">現代簡約</button>
-                    <button class="filter-btn" data-category="復古經典">復古經典</button>
-                    <button class="filter-btn" data-category="可愛卡通">可愛卡通</button>
-                    <button class="filter-btn" data-category="書法水墨">書法水墨</button>
-                    <button class="filter-btn" data-category="科技未來">科技未來</button>
-                    <button class="filter-btn" data-category="創意擬物">創意擬物</button>
-                    <button class="filter-btn" data-category="藝術手繪">藝術手繪</button>
+                    <button class="filter-btn" data-category="時尚潮流">時尚潮流</button>
+                    <button class="filter-btn" data-category="極簡主義">極簡主義</button>
+                    <button class="filter-btn" data-category="古典優雅">古典優雅</button>
+                    <button class="filter-btn" data-category="懷舊印刷">懷舊印刷</button>
+                    <button class="filter-btn" data-category="Q版圓潤">Q版圓潤</button>
+                    <button class="filter-btn" data-category="動漫遊戲">動漫遊戲</button>
+                    <button class="filter-btn" data-category="毛筆書法">毛筆書法</button>
+                    <button class="filter-btn" data-category="硬筆手寫">硬筆手寫</button>
+                    <button class="filter-btn" data-category="賽博朋克">賽博朋克</button>
+                    <button class="filter-btn" data-category="機械工業">機械工業</button>
+                    <button class="filter-btn" data-category="自然元素">自然元素</button>
+                    <button class="filter-btn" data-category="食物材質">食物材質</button>
+                    <button class="filter-btn" data-category="材質紋理">材質紋理</button>
+                    <button class="filter-btn" data-category="街頭塗鴉">街頭塗鴉</button>
+                    <button class="filter-btn" data-category="插畫風格">插畫風格</button>
                 </div>
                 
                 <div class="cards-grid" id="fontExamples">
@@ -750,7 +758,7 @@
             <!-- Instructions Section -->
             <section class="section hidden" id="instructions">
                 <h2 class="section-title">使用指南</h2>
-                <p class="section-description">學會如何使用豆包AI生成專業的藝術字體</p>
+                <p class="section-description">學會如何使用豆包AI或即夢生成專業的藝術字體</p>
                 
                 <div class="instructions-container">
                     <div class="instruction-item">
@@ -762,9 +770,9 @@
                     </div>
                     
                     <div class="instruction-item">
-                        <div class="instruction-title">2. 豆包AI使用步驟</div>
+                        <div class="instruction-title">2. 豆包AI或即夢使用步驟</div>
                         <div class="instruction-text">
-                            ① 打開豆包AI並選擇Seedream 3.0模型<br>
+                            ① 打開豆包AI並選擇Seedream 3.0以上模型或即夢4.0模型<br>
                             ② 複製本工具生成的提示詞<br>
                             ③ 貼上提示詞並點擊生成<br>
                             ④ 等待AI生成您的專屬藝術字體
@@ -784,7 +792,7 @@
                     <div class="instruction-item">
                         <div class="instruction-title">4. 注意事項</div>
                         <div class="instruction-text">
-                            • 確保使用豆包AI的Seedream 3.0模型<br>
+                            • 確保使用豆包AI的Seedream 3.0以上模型或即夢4.0模型<br>
                             • 複雜的字體可能需要多次嘗試<br>
                             • 可以根據生成結果微調提示詞<br>
                             • 建議保存滿意的提示詞供日後使用
@@ -801,9 +809,8 @@
     <script>
         // Application data
         const fontExamples = [
-            // START: RE-CATEGORIZED DATA
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "時尚體",
                 description: "設計前衛獨特，線條簡潔流暢，具有強烈現代感與潮流屬性",
                 text: "潮流先鋒",
@@ -811,7 +818,7 @@
                 color: "#FF6B6B"
             },
             {
-                category: "現代簡約",
+                category: "極簡主義",
                 font_type: "極簡無襯線手寫",
                 description: "筆劃簡潔流暢，線條粗細均勻",
                 text: "清風徐來",
@@ -819,7 +826,7 @@
                 color: "#4ECDC4"
             },
             {
-                category: "現代簡約",
+                category: "極簡主義",
                 font_type: "細線體",
                 description: "字形精緻纖細流暢",
                 text: "纖細流光",
@@ -827,7 +834,7 @@
                 color: "#45B7D1"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "彎曲字體",
                 description: "筆劃多曲線，線條流暢自然，整體柔和優雅，給人動感印象",
                 text: "信手拈來",
@@ -835,7 +842,7 @@
                 color: "#FFEAA7"
             },
             {
-                category: "藝術手繪",
+                category: "街頭塗鴉",
                 font_type: "塗鴉字體",
                 description: "線條隨性、不對稱，粗獷生動，筆劃不規則自由",
                 text: "天馬行空",
@@ -843,7 +850,7 @@
                 color: "#DDA0DD"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "未來感字體",
                 description: "線條簡潔硬朗，結構幾何化，充滿科技感與未來感",
                 text: "智慧驅動",
@@ -851,7 +858,7 @@
                 color: "#74B9FF"
             },
             {
-                category: "復古經典",
+                category: "懷舊印刷",
                 font_type: "復古字體",
                 description: "設計風格模仿古代字體，具有懷舊古樸氣息",
                 text: "古韻流芳",
@@ -859,7 +866,7 @@
                 color: "#A29BFE"
             },
             {
-                category: "復古經典",
+                category: "古典優雅",
                 font_type: "哥特風格字體",
                 description: "字體線條尖銳細長，字母筆劃粗細對比鮮明",
                 text: "暗夜幽靈",
@@ -867,7 +874,7 @@
                 color: "#636E72"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "可愛體",
                 description: "筆劃圓潤流暢，結構扁圓，重心偏高，充滿童趣活力，風格俏皮活潑",
                 text: "夢想起飛",
@@ -875,7 +882,7 @@
                 color: "#FFB6C1"
             },
             {
-                category: "可愛卡通",
+                category: "食物材質",
                 font_type: "軟糖體",
                 description: "字體呈現出類似軟糖的柔軟、流動感，通常飽滿而有彈性",
                 text: "萌趣橫生",
@@ -883,7 +890,7 @@
                 color: "#FF7675"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "草書風格",
                 description: "筆劃簡化連貫，書寫流暢快速，藝術性高",
                 text: "鳳舞龍飛",
@@ -891,7 +898,7 @@
                 color: "#00B894"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "行書風格",
                 description: "介於楷書與草書之間，筆劃連貫，書寫自然",
                 text: "渾然天成",
@@ -899,7 +906,7 @@
                 color: "#FDCB6E"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "雕刻草書",
                 description: "毛筆草書，雕刻效果，渾厚有力，3D飄逸",
                 text: "道高龍虎伏",
@@ -907,7 +914,7 @@
                 color: "#DAA520"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "琉璃名畫草書",
                 description: "琉璃為底，名畫入字，別具一格的藝術融合",
                 text: "別具一格",
@@ -915,7 +922,7 @@
                 color: "#8e44ad"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "祥瑞盤龍草書",
                 description: "飛龍盤旋，祥瑞齊聚，融合古玩與名畫的華麗風格",
                 text: "美不勝收",
@@ -923,7 +930,7 @@
                 color: "#f1c40f"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "狂草書法",
                 description: "墨蹟飛白, 筆鋒剛勁, 線條奔放, 節奏跳躍, 氣勢磅礴。",
                 text: "花千樹",
@@ -931,7 +938,7 @@
                 color: "#00B894"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "行書",
                 description: "毛筆行書, 勁健有力, 古樸雅致, 行書筆意。",
                 text: "春風",
@@ -939,7 +946,7 @@
                 color: "#FDCB6E"
             },
             {
-                category: "復古經典",
+                category: "懷舊印刷",
                 font_type: "復古印刷體",
                 description: "打字機風格, 粗顆粒感, 不規則墨蹟, 復古老式印刷效果, 略有缺損。",
                 text: "哈爾的移動城堡",
@@ -947,7 +954,7 @@
                 color: "#A29BFE"
             },
             {
-                category: "復古經典",
+                category: "古典優雅",
                 font_type: "哥特體",
                 description: "高垂直比筆劃, 尖銳修飾, 復古莊嚴。",
                 text: "貝克街的亡靈",
@@ -955,7 +962,7 @@
                 color: "#636E72"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "蒸汽朋克",
                 description: "立體金屬質感, 銅鐵銹跡, 鉚釘紋理, 機械筆觸。",
                 text: "蒸汽時代",
@@ -963,7 +970,7 @@
                 color: "#E17055"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "秀麗筆手寫",
                 description: "筆劃粗細對比強烈, 起筆粗重收筆細尖, 飛白效果。",
                 text: "追光逐夢青春無悔",
@@ -971,7 +978,7 @@
                 color: "#4ECDC4"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "文藝鋼筆字",
                 description: "細線條鋼筆字, 連筆靈動, 錯落有致。",
                 text: "我所嚮往的生活",
@@ -979,7 +986,7 @@
                 color: "#45B7D1"
             },
             {
-                category: "現代簡約",
+                category: "極簡主義",
                 font_type: "極簡無襯線體",
                 description: "極細無襯線手寫體, 字間留白呼吸感強, 現代日式美學。",
                 text: "懸崖上的金魚姬",
@@ -987,7 +994,7 @@
                 color: "#4ECDC4"
             },
             {
-                category: "藝術手繪",
+                category: "動漫遊戲",
                 font_type: "大筆觸手寫",
                 description: "筆劃粗細變化明顯, 部分斷裂傾斜, 動感活潑。",
                 text: "雙 11 來了, 預售狂歡開啟",
@@ -995,7 +1002,7 @@
                 color: "#FD79A8"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "少女夢幻體",
                 description: "粉色調圓潤字形, 泡泡感筆劃, 糖果質感, 點綴小星星或愛心。",
                 text: "櫻花樹下的約定",
@@ -1003,7 +1010,7 @@
                 color: "#FFB6C1"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "科技棱角",
                 description: "字體邊緣閃金屬光澤, 機械棱角與流線設計, 霓虹光效電路紋理。",
                 text: "台灣智造",
@@ -1011,7 +1018,7 @@
                 color: "#74B9FF"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "賽博朋克",
                 description: "粗線結構, 幾何拆解, 高對比未來感。",
                 text: "賽博朋克",
@@ -1019,7 +1026,7 @@
                 color: "#DDA0DD"
             },
             {
-                category: "可愛卡通",
+                category: "動漫遊戲",
                 font_type: "動態爆炸",
                 description: "筆劃弧形延展, 爆發狀線條扭曲, 漫畫擬聲字效果。",
                 text: "爆炸辣",
@@ -1027,7 +1034,7 @@
                 color: "#FF7675"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "科幻切割",
                 description: "筆劃切割錯位設計, 數位化拆解重組。",
                 text: "奔向元宇宙",
@@ -1035,7 +1042,7 @@
                 color: "#74B9FF"
             },
             {
-                category: "可愛卡通",
+                category: "動漫遊戲",
                 font_type: "動漫活力體",
                 description: "筆劃末端粗, 動態張力, 活潑俏皮。",
                 text: "這家酸辣粉!太好吃啦!",
@@ -1043,7 +1050,7 @@
                 color: "#FFB6C1"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "兒童插畫體",
                 description: "線條圓潤跳躍, 彩色漸變筆觸, 趣味童真。",
                 text: "踏青出遊 萬物回春",
@@ -1051,7 +1058,7 @@
                 color: "#6C5CE7"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "霓虹燈管",
                 description: "發光描邊, 玻璃感內發光, 線條細長彎曲流暢, 夜店霓虹質感。",
                 text: "上海不夜城",
@@ -1059,7 +1066,7 @@
                 color: "#FD79A8"
             },
             {
-                category: "藝術手繪",
+                category: "插畫風格",
                 font_type: "創意粗體",
                 description: "筆劃誇張多變, 連筆中斷點彎曲延展, 隨性自由。",
                 text: "放肆派對",
@@ -1067,7 +1074,7 @@
                 color: "#FFEAA7"
             },
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "雜誌排版",
                 description: "基礎幾何拼接, 顆粒感朦朧美學, 極簡構圖。",
                 text: "時尚台北",
@@ -1075,7 +1082,7 @@
                 color: "#96CEB4"
             },
             {
-                category: "創意擬物",
+                category: "食物材質",
                 font_type: "熱帶水果風",
                 description: "熱帶風情，果香視覺，清新自然，立體豐盈，由水果拼接而成，果皮質感生動飽滿。",
                 text: "夏日果園",
@@ -1083,7 +1090,7 @@
                 color: "#FF7675"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "古玉印章風",
                 description: "厚重圓潤的古玉風格，手工感強，帶有歷史磨損感，質感溫潤，如古玉印章。",
                 text: "古玉傳說",
@@ -1091,7 +1098,7 @@
                 color: "#00B894"
             },
             {
-                category: "藝術手繪",
+                category: "街頭塗鴉",
                 font_type: "街頭嘻哈風",
                 description: "嘻哈感強烈，飽滿圓潤，厚重立體，街頭風，動感十足，C4D渲染的科技潮流風格。",
                 text: "街頭潮流",
@@ -1099,7 +1106,7 @@
                 color: "#DDA0DD"
             },
             {
-                category: "復古經典",
+                category: "懷舊印刷",
                 font_type: "懸疑檔案風",
                 description: "粗糲厚重，斑駁的老舊打字機感，強立體感，融合了郵戳、檔案框等元素，營造懸疑氛圍。",
                 text: "絕密檔案",
@@ -1107,7 +1114,7 @@
                 color: "#A29BFE"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "喜劇舞臺風",
                 description: "喜劇舞臺字體，胖胖的卡通造型，像穿著小丑服飾，充滿濃濃的節目感和搞笑氛圍。",
                 text: "歡樂劇場",
@@ -1115,7 +1122,7 @@
                 color: "#FF6B6B"
             },
             {
-                category: "藝術手繪",
+                category: "插畫風格",
                 font_type: "飄逸花藤體",
                 description: "文藝手寫字體，線條流暢靈動，結構錯落有致，加入藤蔓與花朵裝飾，溫暖而有動感。",
                 text: "花漾手記",
@@ -1123,7 +1130,7 @@
                 color: "#FF7675"
             },
             {
-                category: "藝術手繪",
+                category: "賽博朋克",
                 font_type: "酸性故障風",
                 description: "破格變形，視覺躁動，酸性視覺噪點，線條斷裂扭曲，充滿螢光與噴塗效果。",
                 text: "訊號失真",
@@ -1131,7 +1138,7 @@
                 color: "#FFEAA7"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "科幻機械風",
                 description: "智慧機械風格，科幻工業感，擬真機械拼裝，精密結構，冷峻實戰風，充滿科技細節。",
                 text: "機械之心",
@@ -1139,7 +1146,7 @@
                 color: "#636E72"
             },
             {
-                category: "可愛卡通",
+                category: "街頭塗鴉",
                 font_type: "矢量塗鴉Logo",
                 description: "矢量插畫風格，結合流暢線條與藝術感的塗鴉筆觸，傳遞天真快樂的童趣氛圍。",
                 text: "童趣塗鴉",
@@ -1147,7 +1154,7 @@
                 color: "#FF6B6B"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "奇幻絨毛",
                 description: "奇幻童話感，魔法生物質感，毛絨細節擬真，神秘浪漫氣息，奇妙生動，夜色奇境氛圍。",
                 text: "絨毛精靈",
@@ -1155,7 +1162,7 @@
                 color: "#DDA0DD"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "機甲重裝",
                 description: "金屬質感硬核未來，機甲重裝風，力量感強，科技鋒利感，具工業風骨感，未來戰士視覺聯想。",
                 text: "重裝機甲",
@@ -1163,7 +1170,7 @@
                 color: "#636E72"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "獸骨刻字",
                 description: "獸骨刻字風，圖騰符號感，原始殘酷感，粗獷直接，極具力量，荒野部落感，生存與狩獵氛圍。",
                 text: "荒野圖騰",
@@ -1171,7 +1178,7 @@
                 color: "#E17055"
             },
             {
-                category: "科技未來",
+                category: "動漫遊戲",
                 font_type: "電競速度",
                 description: "動感、速度感強，傾斜結構，機械感，電競車神風格，科技浪潮衝擊力十足。",
                 text: "電競狂飆",
@@ -1179,7 +1186,7 @@
                 color: "#74B9FF"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "森林樹皮",
                 description: "古木森林字體，厚重的樹皮質感，字形被苔蘚和青藤纏繞覆蓋，綠意盎然，宛如森林精靈低語。",
                 text: "古木之森",
@@ -1187,7 +1194,7 @@
                 color: "#00B894"
             },
             {
-                category: "現代簡約",
+                category: "極簡主義",
                 font_type: "簡潔粗圓體",
                 description: "現代極簡風，線條粗壯有力，強調平衡對稱，清爽俐落，視覺張力強。",
                 text: "現代簡風",
@@ -1195,7 +1202,7 @@
                 color: "#4ECDC4"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "中式吉祥拼貼",
                 description: "由美麗花朵、麒麟、故宮建築、祥雲、牡丹等中式吉祥元素拼貼構成。",
                 text: "你最棒棒",
@@ -1203,7 +1210,7 @@
                 color: "#c0392b"
             },
             {
-                category: "創意擬物",
+                category: "插畫風格",
                 font_type: "日式和風拼貼",
                 description: "由招財貓、富士山、日式建築、海浪、櫻花、福袋等日式吉祥元素拼貼組成。",
                 text: "妳最棒的",
@@ -1211,7 +1218,7 @@
                 color: "#3498db"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "手写风情",
                 description: "浪漫唯美风格, 背景为粉色系天空、漂浮的爱心气球与云朵、梦幻光晕...",
                 text: "與你有關,皆是浪漫",
@@ -1219,7 +1226,7 @@
                 color: "#ff85a2"
             },
             {
-                category: "藝術手繪",
+                category: "插畫風格",
                 font_type: "唯美梦幻",
                 description: "背景为时间隧道或金色流光轨迹,时光穿梭的视觉氛围,柔和光影,蓝金色调为主...",
                 text: "穿過時間的流嵐,一起見證每一个精彩的十年",
@@ -1227,7 +1234,7 @@
                 color: "#74B9FF"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "水墨中國風",
                 description: "背景为泼墨山水画,墨色晕染感强,字体飞白留笔感,古风海报排版",
                 text: "山海經",
@@ -1235,7 +1242,7 @@
                 color: "#636E72"
             },
             {
-                category: "藝術手繪",
+                category: "動漫遊戲",
                 font_type: "热血国潮",
                 description: "笔锋有力如烈火燃烧,背景为暗红天幕与破碎祥云,主角形象为燃烧的少年或哪吒神态...",
                 text: "我命由我不由天",
@@ -1243,7 +1250,7 @@
                 color: "#E17055"
             },
             {
-                category: "可愛卡通",
+                category: "插畫風格",
                 font_type: "清新教育风插画",
                 description: "背景为蓝天白云与奔跑的少年/少女,飞舞的书本、纸飞机、梦想光芒...",
                 text: "新學期,讓夢想起飛",
@@ -1251,7 +1258,7 @@
                 color: "#45B7D1"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "金属质感立体变形",
                 description: "风格偏工业未来感,画面整体风格为赛博朋克视觉氛围,背景可加入霓虹色能量线...",
                 text: "續勢待發",
@@ -1259,7 +1266,7 @@
                 color: "#DDA0DD"
             },
             {
-                category: "可愛卡通",
+                category: "插畫風格",
                 font_type: "梦幻插画",
                 description: "背景为童话感郁金香花园,有缓缓飘动的花瓣、光晕、小女孩或猫咪在花丛中漫步...",
                 text: "郁金香",
@@ -1267,7 +1274,7 @@
                 color: "#FFB6C1"
             },
             {
-                category: "科技未來",
+                category: "動漫遊戲",
                 font_type: "未来战术",
                 description: "背景为风暴中前进的战士身影,火花与能量线穿越画面,字体为机械感金属字体...",
                 text: "風暴行動",
@@ -1275,7 +1282,7 @@
                 color: "#FF7675"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "金色书法",
                 description: "配有红印章篆刻感,背景为立体国风山水卷轴展开,山水与楼阁建筑从画卷中生长而出...",
                 text: "盛世篇章·锦绣山河",
@@ -1283,7 +1290,7 @@
                 color: "#DAA520"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "自然植物",
                 description: "文字由绿色植物叶片和藤蔓自然生长形成,字体结构融合自然形态如嫩芽、卷叶、茎干...",
                 text: "清明",
@@ -1291,7 +1298,7 @@
                 color: "#00B894"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "太魯閣岩石",
                 description: "由台灣太魯閣地貌风格的巨大岩石结构组成,字体形状融合山体...",
                 text: "鬼斧神工",
@@ -1299,7 +1306,7 @@
                 color: "#636E72"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "机械拼装",
                 description: "字形为立体拼装形态,由多个旧硬盘、主板、电子设备、接口面板拼接构造...",
                 text: "未來",
@@ -1307,7 +1314,7 @@
                 color: "#74B9FF"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "金属丝带编织",
                 description: "每一笔画呈现出类似肌肉纤维的流动感,线条流畅,粗细有力,质感为刷光金属材质...",
                 text: "生日快樂",
@@ -1315,7 +1322,7 @@
                 color: "#E17055"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "立体绣线",
                 description: "刺绣立体毛线工艺,由蓝色、黃色、棕色的粗毛线编织而成,呈现精美刺绣细节,带有小花朵装饰...",
                 text: "平平安安",
@@ -1323,7 +1330,7 @@
                 color: "#FDCB6E"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "毛绒玩偶",
                 description: "背景为蓝色天空与彩虹、卡通星星和云朵环绕,整体风格软萌童趣...",
                 text: "快樂星球 Planet Joy",
@@ -1331,7 +1338,7 @@
                 color: "#FF7675"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "液态金属霓虹灯",
                 description: "用液态金属和霓虹灯光管构成字体,背景为炫光舞台、电音律动线条,整体风格未来感强烈、科技潮流...",
                 text: "燃爆現場 Turn Up the Heat",
@@ -1339,7 +1346,7 @@
                 color: "#FD79A8"
             },
             {
-                category: "可愛卡通",
+                category: "食物材質",
                 font_type: "奶油绵软",
                 description: "用奶油绵软质感拼写字体,融合樱桃、棉花糖、粉色毛绒材质,背景为梦幻天空、泡泡浮现...",
                 text: "樱有盡有 All You Cherry Need",
@@ -1347,7 +1354,7 @@
                 color: "#FFB6C1"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "古劍拼貼",
                 description: "由琉璃、青銅、玉石、寶劍、古畫等元素拼貼組成，充滿東方神話的神秘氛圍。",
                 text: "斬妖除魔",
@@ -1355,7 +1362,7 @@
                 color: "#c0392b"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "金龍水墨",
                 description: "字体用數條金色小金龍組成,采用传统水墨线稿技法,充满东方神秘韵味。",
                 text: "龍",
@@ -1363,7 +1370,7 @@
                 color: "#f1c40f"
             },
             {
-                category: "創意擬物",
+                category: "插畫風格",
                 font_type: "老街元素拼貼",
                 description: "字體由老街上的元素(巴洛克建築、老式骑楼、复古招牌)组成,呈现充满烟火气的复古老街视觉氛围。",
                 text: "大溪老街",
@@ -1371,7 +1378,7 @@
                 color: "#e67e22"
             },
             {
-                category: "創意擬物",
+                category: "食物材質",
                 font_type: "燒烤食材拼貼",
                 description: "由各类烧烤食材(羊肉串、牛肉串、烤鸡翅等)组成汉字,呈现烟火气十足的中式烧烤视觉效果。",
                 text: "中式燒烤",
@@ -1379,7 +1386,7 @@
                 color: "#d35400"
             },
             {
-                category: "創意擬物",
+                category: "插畫風格",
                 font_type: "吉祥元素拼貼",
                 description: "字体由招财猫、财神爷、金元宝、古钱币等吉祥元素构成,色彩鲜艳喜庆。",
                 text: "招財進寶",
@@ -1387,7 +1394,7 @@
                 color: "#c0392b"
             },
             {
-                category: "復古經典",
+                category: "古典優雅",
                 font_type: "哲學拼貼風",
                 description: "拼贴风字体设计,构图融合古典雕像、钟表齿轮、手写信稿等哲学意象。",
                 text: "西方哲學史",
@@ -1395,7 +1402,7 @@
                 color: "#8e44ad"
             },
             {
-                category: "復古經典",
+                category: "古典優雅",
                 font_type: "維多利亞復古",
                 description: "西方古典与复刻年代风格融合,哥特字形或拉丁装饰体,呈现浓郁的文化考古气质与欧洲古典优雅。",
                 text: "維多利亞風格溯源",
@@ -1403,7 +1410,7 @@
                 color: "#2c3e50"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "清逸筆跡",
                 description: "清逸笔迹融合光韵夜影风格,线条纤细飘逸,情绪充满漂泊与成长的浪漫。",
                 text: "我曾經跨過山和大海",
@@ -1411,7 +1418,7 @@
                 color: "#3498db"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "海洋夢幻",
                 description: "色彩斑斓、神秘的海洋梦幻风格,蓝色艺术字体。",
                 text: "海洋導遊",
@@ -1419,7 +1426,7 @@
                 color: "#1abc9c"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "森林童話",
                 description: "充满奇幻、自然元素的森林童话风格,手写的绿色字体。",
                 text: "森林伙伴",
@@ -1427,7 +1434,7 @@
                 color: "#27ae60"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "未來科技",
                 description: "充满科技感、蓝光效果的未来科技风格,发光的蓝色字体。",
                 text: "科技先锋",
@@ -1435,7 +1442,7 @@
                 color: "#2980b9"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "馬卡龍",
                 description: "色彩柔和、甜美的马卡龙配色风格,圆润的彩色字体。",
                 text: "暖心陪伴",
@@ -1443,7 +1450,7 @@
                 color: "#ff85a2"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "工業金屬",
                 description: "金属质感、机械元素的工业风格,粗重的工业字体。",
                 text: "制造大师",
@@ -1451,7 +1458,7 @@
                 color: "#7f8c8d"
             },
             {
-                category: "復古經典",
+                category: "古典優雅",
                 font_type: "歐式古典",
                 description: "华丽、庄重的欧式古典风格,华丽的花体字体。",
                 text: "力量之源",
@@ -1459,7 +1466,7 @@
                 color: "#DAA520"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "圓潤卡通",
                 description: "线条圆润、色彩鲜艳的卡通可爱风格,圆润的卡通字体。",
                 text: "快樂伙伴",
@@ -1467,7 +1474,7 @@
                 color: "#f39c12"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "賽博朋克霓虹",
                 description: "霓虹灯闪烁、色彩对比强烈的赛博朋克风格,发光的霓虹字体。",
                 text: "未來伙伴",
@@ -1475,7 +1482,7 @@
                 color: "#8e44ad"
             },
             {
-                category: "復古經典",
+                category: "懷舊印刷",
                 font_type: "懷舊霓虹",
                 description: "年代怀旧气质,笔画模仿老式霓虹灯管造型,民国复古风格。",
                 text: "老北京烤鸭",
@@ -1483,7 +1490,7 @@
                 color: "#c0392b"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "毛線針織",
                 description: "笔画呈现毛线缠绕质感,表面有针织纹理,视觉温暖而富有手工趣味。",
                 text: "暖意融融",
@@ -1491,7 +1498,7 @@
                 color: "#fdfd96"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "少女夢幻",
                 description: "少女梦幻风,笔画拉丝,灵动的曲线,圆润软萌,具有艺术气息。",
                 text: "巴啦啦小魔仙",
@@ -1499,7 +1506,7 @@
                 color: "#ffc0cb"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "雲朵字體",
                 description: "云朵字体,彩色,画面整体有松弛感,童真有趣且有漂浮感。",
                 text: "曉看天色暮看雲",
@@ -1507,7 +1514,7 @@
                 color: "#87ceeb"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "隨性手寫",
                 description: "两行字,笔触变化丰富,粗细对比强烈,整体呈现随性、自由、奔放。",
                 text: "再不瘋狂我們老了",
@@ -1515,7 +1522,7 @@
                 color: "#ff69b4"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "霓虹燈管風",
                 description: "霓虹灯管风格,轮廓式笔画,发光描边,线条细长柔和,弯曲流畅,玻璃感内发光,夜店霓虹质感。",
                 text: "年輕就是嗨",
@@ -1523,17 +1530,15 @@
                 color: "#ff00ff"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "可愛手繪",
                 description: "浅蓝色的天空背景,下面是一片绿色的草地,紫色字体。",
                 text: "友誼長存,相伴一生",
                 prompt: "可爱背景提示词:浅蓝色的天空背景,下面是一片绿色的草地,紫色字体,“友誼長存,相伴一生”位于画面中心,旁边有两个牵手的小人,比例「9:16」",
                 color: "#9b59b6"
             },
-            // END: RE-CATEGORIZED DATA
-            // START: NEW DATA from OCR
             {
-                category: "藝術手繪",
+                category: "插畫風格",
                 font_type: "彩色顏料潑濺",
                 description: "採用彩色顏料潑濺風格,呈現立體流動的油漆質感,富有視覺衝擊力。",
                 text: "幸福每一天",
@@ -1541,7 +1546,7 @@
                 color: "#ff6347"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "玻璃夸張體",
                 description: "夸張體設計,採用玻璃字效,具有透明感、高光和反射效果。",
                 text: "晶瑩剔透",
@@ -1549,7 +1554,7 @@
                 color: "#40e0d0"
             },
             {
-                category: "創意擬物",
+                category: "材質紋理",
                 font_type: "彩色絲帶字",
                 description: "扁平化logo設計,由一條彩色絲帶纏繞組成,擁有流暢感,線條流暢靈動。",
                 text: "春夏秋冬",
@@ -1557,7 +1562,7 @@
                 color: "#ff8c00"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "3D卡通漸變字",
                 description: "醒目的3D藝術字,帶有彩色漸變,風格活潑有動感,卡通3D效果。",
                 text: "生日快樂 (3D)",
@@ -1565,7 +1570,7 @@
                 color: "#ff69b4"
             },
             {
-                category: "藝術手繪",
+                category: "插畫風格",
                 font_type: "油漆潑濺",
                 description: "採用彩色顏料潑濺風格,呈現立體流動的油漆質感,富有視覺衝擊力。",
                 text: "您真有材",
@@ -1573,7 +1578,7 @@
                 color: "#1e90ff"
             },
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "立體漸變字",
                 description: "立體風格字體,字形厚重且現代,採用漸變效果,呈現出紅色到金色的過渡。",
                 text: "全家 108 狂歡開門红",
@@ -1581,7 +1586,7 @@
                 color: "#e52d27"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "書法風格",
                 description: "書法風格字體,字形豪放且有力,線條流暢且充滿動感。",
                 text: "春龍抬首,鴻運當頭",
@@ -1589,7 +1594,7 @@
                 color: "#ffd700"
             },
             {
-                category: "藝術手繪",
+                category: "街頭塗鴉",
                 font_type: "街頭塗鴉",
                 description: "街頭塗鴉風格字體,字形剛勁且有力,線條鋒利並富 यूँ 動感。",
                 text: "生龍活虎",
@@ -1597,7 +1602,7 @@
                 color: "#f0ad4e"
             },
             {
-                category: "復古經典",
+                category: "古典優雅",
                 font_type: "哥特風格",
                 description: "哥特式風格字體,字形古典且充滿魔法感,線條尖銳且細節豐富。",
                 text: "哈利波特",
@@ -1605,7 +1610,7 @@
                 color: "#c0c0c0"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "書法風格",
                 description: "書法風格字體,字形流暢且具有濃厚的筆墨韻味,線條粗細變化豐富。",
                 text: "悲喜自渡",
@@ -1613,7 +1618,7 @@
                 color: "#d4af37"
             },
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "現代漸變字",
                 description: "現代風格字體,字形流暢且富 यूँ 動感,線條清晰且充滿活力。",
                 text: "盛夏季肆意派對",
@@ -1621,7 +1626,7 @@
                 color: "#32cd32"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "可愛體",
                 description: "可愛體,筆畫圓潤流暢,結構扁圓,充滿童趣活力,風格俏皮活潑。",
                 text: "熊出没",
@@ -1629,7 +1634,7 @@
                 color: "#ff4500"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "未來感字體",
                 description: "未來感字體,線條簡潔硬朗,結構幾何化,充滿科技感與未來感。",
                 text: "超凡脫俗",
@@ -1637,7 +1642,7 @@
                 color: "#00ffff"
             },
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "現代襯線體",
                 description: "現代襯線體,襯線較短且筆畫較為細長,具有對稱的鏡面反射效果。",
                 text: "破鏡重圓",
@@ -1645,7 +1650,7 @@
                 color: "#8a2be2"
             },
             {
-                category: "現代簡約",
+                category: "極簡主義",
                 font_type: "極簡無襯線手寫",
                 description: "極簡無襯線手寫,筆畫簡潔流暢,線條粗細均勻,具有柔和、朦朧的效果。",
                 text: "湮雨濛濛",
@@ -1653,7 +1658,7 @@
                 color: "#778899"
             },
             {
-                category: "復古經典",
+                category: "懷舊印刷",
                 font_type: "复古浮雕字",
                 description: "復古字體,設計風格模仿古代字體,具有懷舊古樸氣息,採用浮雕字效。",
                 text: "古韵悠长",
@@ -1661,7 +1666,7 @@
                 color: "#deb887"
             },
             {
-                category: "復古經典",
+                category: "懷舊印刷",
                 font_type: "西部風格",
                 description: "西部風格字體,筆畫粗壯且線條銳利,整體風格粗獷不羈,帶有裂紋效果。",
                 text: "山崩地裂",
@@ -1669,7 +1674,7 @@
                 color: "#a0522d"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "冰霜藝術字",
                 description: "藝術字體,筆畫結構富有創意,採用冰霜字效,具有冰晶質感。",
                 text: "如履薄冰",
@@ -1677,7 +1682,7 @@
                 color: "#add8e6"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "草書火焰字",
                 description: "草書風格,筆畫簡化連貫,書寫流暢快速,採用火焰字效。",
                 text: "烈火燎原",
@@ -1685,7 +1690,7 @@
                 color: "#ff4500"
             },
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "時尚液體字",
                 description: "時尚體,設計前衛獨特,線條簡潔流暢,具有強烈現代感,採用液體字效。",
                 text: "流金歲月",
@@ -1693,7 +1698,7 @@
                 color: "#ffd700"
             },
             {
-                category: "科技未來",
+                category: "賽博朋克",
                 font_type: "未來感發光字",
                 description: "未來感字體,線條簡潔硬朗,結構幾何化,採用發光字效。",
                 text: "生日快樂 (未來感)",
@@ -1701,7 +1706,7 @@
                 color: "#ff1493"
             },
             {
-                category: "科技未來",
+                category: "機械工業",
                 font_type: "未來感立體字",
                 description: "未來感字體,線條簡潔硬朗,結構幾何化,採用立體字效。",
                 text: "瞬息萬變",
@@ -1709,7 +1714,7 @@
                 color: "#00ced1"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "可愛體",
                 description: "可愛體,筆畫圓潤流暢,結構扁圓,重心偏高,充滿童趣活力,風格俏皮活潑。",
                 text: "生日快樂 (可愛風)",
@@ -1717,7 +1722,7 @@
                 color: "#ff69b4"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "卡通手寫體",
                 description: "卡通手寫體,筆畫圓潤且富有彈性,模仿兒童手寫風格。",
                 text: "奇幻冒險",
@@ -1725,7 +1730,7 @@
                 color: "#da70d6"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "動物形態體",
                 description: "動物形態體,字形在設計中融入了動物元素或輪廓,突出可愛和活潑感。",
                 text: "動物世界",
@@ -1733,7 +1738,7 @@
                 color: "#3cb371"
             },
             {
-                category: "藝術手繪",
+                category: "時尚潮流",
                 font_type: "金屬藝術字",
                 description: "現代藝術字結構融合筆畫,狂野金屬質感線條,白色發光主體。",
                 text: "星影",
@@ -1741,7 +1746,7 @@
                 color: "#f5f5f5"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "書法字體",
                 description: "書法字體(行書或仿毛筆字)搭配現代無襯線英文,茶色宣紙質感背景。",
                 text: "爺爺泡的茶",
@@ -1749,7 +1754,7 @@
                 color: "#8b4513"
             },
             {
-                category: "書法水墨",
+                category: "毛筆書法",
                 font_type: "書法字體",
                 description: "書法字體(行書或篆書風)結合現代細線襯線字體,宣紙紋理或深色水墨漸變背景。",
                 text: "時光荏苒",
@@ -1757,15 +1762,15 @@
                 color: "#2f4f4f"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "溫柔手寫體",
                 description: "手寫體或溫柔圓潤藝術字體,插畫風背景為落日餘暉、牽手背影。",
                 text: "感謝每一次相遇",
-                prompt: "\"感謝每一次相遇,珍惜每一刻溫暖\"/\"Thankful for Every Encounter, Cherishing Every Warm Moment\",手写体或温柔圆润艺术字体,插画风背景为落日余晖、牵手背影、街灯下微光或轻风飘动的窗帘,色调为柔和暖色系(橙粉、奶油黄、晨曦蓝、雾灰紫等),文字排版居中或居下,搭配柔焦光晕与颗粒质感滤镜,情绪氛围宁静温柔,构图采用对称留白或生活瞬间片段式排布,视觉风格为插画写意+情绪摄影感结合,极简主义,温暖、细腻、共鸣感強,比例「9:1 toning」",
+                prompt: "\"感謝每一次相遇,珍惜每一刻溫暖\"/\"Thankful for Every Encounter, Cherishing Every Warm Moment\",手写体或温柔圆润艺术字体,插画风背景为落日余晖、牵手背影、街灯下微光或轻风飘动的窗帘,色调为柔和暖色系(橙粉、奶油黄、晨曦蓝、雾灰紫等),文字排版居中或居下,搭配柔焦光晕与颗粒质感滤镜,情绪氛围宁静温柔,构图采用对称留白或生活瞬间片段式排布,视觉风格为插画写意+情绪摄影感结合,极简主义,温暖、细腻、共鸣感強,比例「9 toning」",
                 color: "#ffdab9"
             },
             {
-                category: "藝術手繪",
+                category: "動漫遊戲",
                 font_type: "POP手繪字",
                 description: "POP字體設計,誇張變形手繪字,紅黃撞色背景,創意排版傾斜動感。",
                 text: "瘋狂星期四",
@@ -1773,7 +1778,7 @@
                 color: "#ff4500"
             },
             {
-                category: "藝術手繪",
+                category: "街頭塗鴉",
                 font_type: "街區塗鴉",
                 description: "街區塗鴉融合潮玩黑體風格,字體為極粗泡泡字結構,筆畫圓潤厚實。",
                 text: "新品促銷",
@@ -1781,7 +1786,7 @@
                 color: "#333333"
             },
             {
-                category: "藝術手繪",
+                category: "硬筆手寫",
                 font_type: "文藝鋼筆字",
                 description: "融合文藝鋼筆、西方古典與行草題韻風格,背景為淡墨暈染中融入油彩肌理。",
                 text: "我的老師徐悲鴻",
@@ -1789,7 +1794,7 @@
                 color: "#a52a2a"
             },
             {
-                category: "藝術手繪",
+                category: "插畫風格",
                 font_type: "綠飾藝術字",
                 description: "白色字體搭配綠色裝飾性曲線，風格活潑有活力，突出春日踏青的主題。",
                 text: "秋日踏青去",
@@ -1797,7 +1802,7 @@
                 color: "#2ecc71"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "童趣貼紙字",
                 description: "童趣風格貼紙效果，色彩鮮豔，搭配卡通兔子形象，活潑可愛，充滿童真。",
                 text: "不老還童",
@@ -1805,7 +1810,7 @@
                 color: "#e74c3c"
             },
             {
-                category: "現代簡約",
+                category: "時尚潮流",
                 font_type: "立體特效字",
                 description: "亮綠色立體特效字體，帶有白色立體邊緣，風格醒目有質感，整體為促銷風格。",
                 text: "秋日出遊 趣造世界",
@@ -1813,7 +1818,7 @@
                 color: "#27ae60"
             },
             {
-                category: "可愛卡通",
+                category: "Q版圓潤",
                 font_type: "氣球卡通字",
                 description: "柔和的淺粉色立體卡通字體，造型如氣球質感般圓潤，帶有可愛小豬裝飾，風格萌趣可愛。",
                 text: "懶豬",
@@ -1821,100 +1826,317 @@
                 color: "#ff85a2"
             },
             {
-                category: "創意擬物",
+                category: "自然元素",
                 font_type: "花草構成字",
                 description: "由各季節色彩繽紛的花朵、翠綠的藤蔓和草莖構成，呈現出立體的 3D 效果，風格精緻細膩。",
                 text: "春夏秋冬",
                 prompt: "以黑色为背景,用各季節各种色彩缤纷的花朵、翠绿的藤蔓和草茎构成“春夏秋冬”字,呈现出立体的 3D 效果,风格精致细腻,充满春日生机与自然气息,比例「9:16」",
                 color: "#3498db"
+            },
+            {
+                category: "Q版圓潤",
+                font_type: "創意可愛體",
+                description: "創意可愛體矢量插畫,融入淡黃色矢量色彩與金幣，線條流暢且富有藝術感。",
+                text: "只想暴富",
+                prompt: "创意可爱体矢量插画,融入淡黄色矢量色彩,融入一两个金币,标志,黑色背景,创意字体设计 Logo,线条流畅且富有艺术感,中文“只想暴富”副標體: 英文“Want to make money”,设计灵感:将字体进行抽象变形,给人以强烈的视觉冲击。高级感,扁平化,大师作品),比例:9:16",
+                color: "#f1c40f"
+            },
+            {
+                category: "插畫風格",
+                font_type: "創意矢量插畫",
+                description: "創意可愛的矢量插畫,小元素穿插在字體中,呈現出藝術化且扁平化的字體風格。",
+                text: "下班擺攤",
+                prompt: "字體設計的理念是創意可愛的矢量插畫,小元素穿插在字體中,字體裡有短線的裝飾和標誌。整體背景是黑色的,Logo的字體設計充滿創意,線條流暢且富有藝術感。中文的「下班擺攤」這個詞,英文是\"Setting up a stall after work\"。設計靈感來源於將字體進行抽象變形,創造出獨特的節奏感和動感,呈現出藝術化且扁平化的字體風格,比例:9:16",
+                color: "#3498db"
+            },
+            {
+                category: "食物材質",
+                font_type: "西瓜插畫",
+                description: "矢量插畫,含有西瓜插畫融入字體，線條流暢且富有藝術感。",
+                text: "天天吃瓜",
+                prompt: "「矢量插畫,含有西瓜插畫融入字體,綠色可以用上,標誌,黑色背景,創意字體設計 Logo,線條流暢且富有藝術感,中文「天天吃瓜」英文「Eating melons every day」設計靈感:將字體進行抽象變形,創造出獨特的節奏感和動感,給人以強烈的視覺衝擊。高級感,扁平化,大師作品」,比例:9:16",
+                color: "#e74c3c"
+            },
+            {
+                category: "材質紋理",
+                font_type: "珍珠美妝",
+                description: "字體由顆顆圓潤飽滿的珍珠串聯排列組成，採用柔和的手寫體，散發著溫潤的光澤。",
+                text: "CANVA教學 (珍珠)",
+                prompt: "珍珠美妆风格字体,“CANVA教學”字体由颗颗圆润饱满的珍珠串联排列组成,字体采用柔和的手写体,字母的曲线如女性优美的身姿,珍珠散发着温润的光泽,16k,超高清,比例:9:16",
+                color: "#f7e7ce"
+            },
+            {
+                category: "自然元素",
+                font_type: "珊瑚擬物",
+                description: "筆畫模仿多孔的珊瑚形態，表面凹凸不平，色彩鮮豔，充滿海洋生物的活力與生態之美。",
+                text: "海中奇異",
+                prompt: "標註“海中奇異”用【生机斑斓气质】+【笔画模仿多孔的珊瑚形态,表面凹凸不平,色彩鲜艳(粉、橙、蓝、紫),可点缀微小海葵或贝壳细节】+【海洋生物/热带风情/水族馆风格】+【活力、多彩、生态之美】+【背景为清澈的蓝色海水,带有光线穿透和气泡效果】,比例「9:16」",
+                color: "#ff7f50"
+            },
+            {
+                category: "材質紋理",
+                font_type: "中式扇骨",
+                description: "筆畫結構模仿折扇的扇骨或屏風的分割，線條纖細，融入水墨畫或傳統紋樣，充滿東方雅致氣質。",
+                text: "梅蘭竹菊",
+                prompt: "AI 藝術字“梅蘭竹菊”用【东方雅致气质】+【笔画结构模仿折扇的扇骨或屏风的分割,线条纤细,可融入水墨画或传统纹样(如梅蘭竹菊)】+【中国古典戏曲/园林艺术/文化展览风格】+【含蓄、精巧、意境深远】+【背景为宣纸质感或丝绸光泽,带有淡雅的图案】,比例「9:16」",
+                color: "#b2b2b2"
+            },
+            {
+                category: "Q版圓潤",
+                font_type: "圓潤手寫",
+                description: "C4D設計的圓潤可愛手寫字體，細膩的紋理與柔和的色彩漸變，呈現出浪漫且溫柔的氛圍。",
+                text: "CANVA 教學 (C4D)",
+                prompt: "C4D,将“CANVA 教學”设计成圆润可爱的手写字体。细腻的纹理与柔和的色彩渐变,从浅粉到深粉自然过渡,呈现出浪漫且溫柔的氛围。背景设置为干净的淡粉色,16k,超高清,比例「9:16」",
+                color: "#ffc0cb"
+            },
+            {
+                category: "賽博朋克",
+                font_type: "星座連線",
+                description: "筆畫由星星點點連接而成，模仿星座的形狀，線條可以是虛線或細實線，充滿神秘星象氣質。",
+                text: "星空神話",
+                prompt: "標註“星空神話”用【神秘星象气质】+【笔画由星星点点连接而成,模仿星座的形状,线条可以是虚线或细实线,星星可带有光晕】+【天文学/占星术/浪漫夜景风格】+【浩瀚、神秘、命运指引】+【背景为深邃的夜空,点缀其他星辰或星云】,比例「9:16」",
+                color: "#4a4a8f"
+            },
+            {
+                category: "插畫風格",
+                font_type: "點彩風格",
+                description: "筆畫由密集、分離的彩色小點構成，通過視覺混合形成整體字形和色彩效果，模仿後印象派藝術風格。",
+                text: "秋日午後",
+                prompt: "標註“秋日午後”永【斑斓聚合气质】+【笔画由密集、分离的彩色小点构成,通过视觉混合形成整体字形和色彩效果,边缘模糊】+【后印象派艺术/光学实验/夏日午后风格】+【明亮、闪烁、色彩丰富】+【背景为模糊的风景画或纯色背景,突出点彩效果】,比例「9:16」",
+                color: "#ffde59"
+            },
+            {
+                category: "自然元素",
+                font_type: "晶洞擬物",
+                description: "筆畫仿佛被劈開的晶洞，外層粗糙如岩石，內部則布滿閃亮的水晶簇或瑪瑙紋理，充滿神秘瑰麗氣質。",
+                text: "乾坤寶盒",
+                prompt: "標註“乾坤寶盒”用【神秘瑰丽气质】+【笔画仿佛被劈开的晶洞,外层粗糙如岩石,內部则布满闪亮的水晶簇或层叠的玛瑙纹理,色彩丰富】+【自然奇观/宝石鉴定/灵性疗愈风格】+【内秀、惊喜、自然造物】+【背景为简约的纯色或模糊的岩石纹理,突出晶体细节】,比例「9:16」",
+                color: "#9966cc"
+            },
+            {
+                category: "插畫風格",
+                font_type: "微縮場景",
+                description: "筆畫本身構成或內部填充微縮的場景，如小人國、迷你城市等，細節豐富，帶有故事性。",
+                text: "微小幻影",
+                prompt: "“微小幻影”用【奇趣叙事气质】+【笔画本身构成或内部填充微缩的场景,如小人国、迷你城市、森林角落等,细节丰富,带有故事性】+【创意广告/儿童读物/模型艺术风格】+【精巧、趣味、充满想象】+【背景简洁或与微缩场景主题相呼应,如天空、草地等】,比例「9:16」",
+                color: "#87ceeb"
+            },
+            {
+                category: "插畫風格",
+                font_type: "等高線圖",
+                description: "筆畫由連續的等高線構成，模仿地形圖效果，線條細密，充滿地理勘探氣質。",
+                text: "旅人行腳",
+                prompt: "“旅人行腳”用【地理勘探气质】+【笔画由连续的等高线构成,模仿地形图效果,线条细密,表示高度变化,颜色可为单色或彩色分区】+【户外探险/地理科普/旅行日志风格】+【探索、广阔、科学严谨】+【背景为模糊的卫星地图或带有经纬线的网格】,比例「9:16」",
+                color: "#b0c4de"
+            },
+            {
+                category: "材質紋理",
+                font_type: "卷紙藝術",
+                description: "筆畫由卷曲、折疊的彩色紙條構成，形成立體的花紋和圖案，線條細膩，色彩豐富，具有精巧的卷曲氣質。",
+                text: "平平安安 (卷紙)",
+                prompt: "“平平安安”用【精巧卷曲气质】+【笔画由卷曲、折叠的彩色纸条构成,形成立体的花纹和图案,线条细腻,色彩丰富】+【手工艺/贺卡设计/装饰艺术风格】+【精致、耐心、色彩斑斓】+【背景为纯色卡纸或带有微弱纹理的背景板】,比例「9:16」",
+                color: "#ffb6c1"
+            },
+            {
+                category: "自然元素",
+                font_type: "流沙字體",
+                description: "筆畫仿佛由流沙堆積而成，帶有細膩的沙粒紋理和被風吹拂的痕迹，邊緣松散，充滿蒼茫粗糲氣質。",
+                text: "絲路之旅",
+                prompt: "“絲路之旅”用【苍茫粗粝气质】+【笔画仿佛由流沙堆积而成,带有细腻的沙粒纹理和被风吹拂的痕迹,边缘松散,颜色为沙黄色或赭石色】+【旅行纪录片/异域文化/游戏沙漠场景风格】+【广阔、寂寥、时间流逝】+【背景为连绵的沙丘、干裂的土地或风化的岩石】,比例 「9:16」",
+                color: "#c2b280"
+            },
+            {
+                category: "插畫風格",
+                font_type: "藤蔓裝飾",
+                description: "筆畫線條蜿蜒流暢，充滿有机的曲線和植物藤蔓般的裝飾，融入花卉、昆蟲翅膀等元素，具有流暢華麗氣質。",
+                text: "花都之舞",
+                prompt: "標註“花都之舞”用【流畅华丽气质】+【笔画线条蜿蜒流畅,充满有机的曲线和植物藤蔓般的装饰,融入花卉、昆虫翅膀等元素,色彩柔和典雅】+【复古插画/珠宝设计/唯美诗集风格】+【优雅、自然、装饰性强】+【背景为带有鞭尾曲线图案的壁纸或彩绘玻璃】,比例「9:16」",
+                color: "#dda0dd"
+            },
+            {
+                category: "材質紋理",
+                font_type: "剪紙藝術",
+                description: "筆畫模仿剪紙的鏤空與連接，線條流暢，邊緣平滑，圖案可融入祥雲、窗花元素，具有傳統民俗氣質。",
+                text: "恭禧發財",
+                prompt: "“恭禧發財”+【传统民俗气质】+【笔画模仿剪纸的镂空与连接,线条流畅,边缘平滑,图案可融入祥云、窗花元素】+【中国节日庆典风格】+【喜庆、吉祥、精巧】+【背景为红色或金色底,可点缀灯笼、元宝等元素】,比例「9:16」",
+                color: "#ff0000"
+            },
+            {
+                category: "毛筆書法",
+                font_type: "行隸結合",
+                description: "筆畫融合行書的流畅與隸書的古朴，飛白效果明顯，墨色濃淡有致，充滿江湖寫意氣質。",
+                text: "江湖",
+                prompt: "【江湖写意气质】+【笔画融合行书的流畅与隶书的古朴,飞白效果明显,墨色浓淡有致】+【武侠小说/国风游戏风格】+【潇洒、豪迈、兼具溫情】+【背景为水墨晕染的竹林或山水,黑白灰与淡彩点缀】,比例「9:16」",
+                color: "#696969"
+            },
+            {
+                category: "材質紋理",
+                font_type: "半透明水晶",
+                description: "時尚的現代無襯線字體，由高檔的半透明水晶材質打造，邊緣如鑽石般切割，散射出五彩斑斕的光芒。",
+                text: "Canva 教學 (水晶)",
+                prompt: "“Canva 教學”,采用时尚的现代无衬线字体设计。字母由高档的半透明水晶材质打造,边缘如同钻石般经过精密切割与刻面处理。柔和溫暖的氛围光穿透水晶,产生类似棱镜的效果,在单词周围散射出五彩斑斓的彩虹色光芒,增添了一抹奇幻色彩,营造出梦幻且极具美感的氛围。水晶表面有着如玻璃般光滑的质感,提升了整体逼真且高品质的视觉效果,16k质量,比例「9:16」",
+                color: "#b0e0e6"
+            },
+            {
+                category: "材質紋理",
+                font_type: "金屬流體",
+                description: "流體藝術形態，抽象，酸性，銀色，金屬流體字，藝術性，概念性，極簡主義。",
+                text: "流金歲月 (流體)",
+                prompt: "创意字体设计,流体艺术形态,抽象,酸性,银色,金属流体字“流金歲月”,艺术性,概念性,混合,文字排版艺术,极简主义,留白,简约,高级,杰作,16k,比例「9:16」",
+                color: "#c0c0c0"
+            },
+            {
+                category: "材質紋理",
+                font_type: "熔岩狂草",
+                description: "夜空中燃燒的狂草火字，草書筆畫由流動熔岩構成，火星濺落化作流星軌迹，採用長曝光攝影展現火焰動態。",
+                text: "火焰",
+                prompt: "夜空中燃烧的”火焰”狂草火字,草书笔画由流动熔岩构成,火星溅落化作流星轨迹,采用长曝光摄影展现火焰动态,纯黑色背景,16K,比例「9:16」",
+                color: "#ff4500"
+            },
+            {
+                category: "機械工業",
+                font_type: "模塊化機械",
+                description: "碩大的模塊化機械3D立體字，鈦合金材質，高強度合金框架支撑交錯液壓管線，展現未來重工業動力核心的立體構造。",
+                text: "區塊鏈",
+                prompt: "硕大的模块化机械 3D 立体字”區塊鏈”,居中前视图,钛合金材质,高强度合金框架支撑交错液压管线,明黄色光带贯穿冷灰金属表面,拉丝材质接缝处呈现氧化锈蚀渐变纹理,六边形蜂窝散热矩阵嵌入齿轮咬合结构,碳纤维基座搭载抽象化涡轮增压模块,哑光灰白背景强化机械组件投影层次,动态高光在复合材质折角处形成赛博光刃效果,仿生液压装置在镂空字腔同步伸缩,荧光涂层与金属原色碰撞出工业美学,整体展现未来重工业动力核心的立体构造。Blender,OC 渲染,16K,完美光效,极简主义背景,比例 「9:16」",
+                color: "#808080"
+            },
+            {
+                category: "材質紋理",
+                font_type: "藍色玻璃",
+                description: "微雕，大大的立體字體，藍色玻璃質感，晶瑩剔透棱角明顯雕刻。",
+                text: "不老頑童",
+                prompt: "比例「9:16」微雕,大大的立体字体“不老頑童”蓝色玻璃质感,晶莹剔透棱角明显雕刻,4k 画质",
+                color: "#add8e6"
+            },
+            {
+                category: "硬筆手寫",
+                font_type: "燙金飛舞手寫",
+                description: "深灰色細磨砂背景，燙金色飛舞手寫字，粗獷，奔放灑脫，墨迹留白，內雕刻，內凹陷風格。",
+                text: "我的夢",
+                prompt: "深灰色细磨砂背景,烫金色飞舞手写字“我的夢”,粗犷,奔放洒脫,墨迹留白,內雕刻,压痕深度 3mm 效果,內凹陷风格,4k画质,比例「9:16」",
+                color: "#daa520"
+            },
+            {
+                category: "材質紋理",
+                font_type: "AI琉璃風格",
+                description: "復古綠色行李箱打開，裝着中國傳統文化元素。藝術字採用AI琉璃風格，字體晶瑩剔透，具琉璃的色彩斑斕與質感。",
+                text: "百寶箱",
+                prompt: "一个复古绿色行李箱打开,内部红色绸缎衬底饰有金色云纹,装着京剧脸谱、微型故宫建筑、景泰蓝摆件、招财猫、兔子玩偶,还有青花瓷碗装的面条、烤鸭等美食。周围环绕微型长城、天坛等建筑模型,桌上摆着糖葫芦、传统小吃与景泰蓝器物。添加艺术字“百寶箱”,采用 AI 琉璃风格,字体晶莹剔透,具琉璃的色彩斑斓与质感,整体画面是精致的微缩场景,充满中国传统文化元素,风格细腻写实,色彩浓郁华丽,突出文化百宝箱的丰富感与艺术字的琉璃特效",
+                color: "#4682b4"
+            },
+            {
+                category: "毛筆書法",
+                font_type: "AI火焰風格",
+                description: "經典神話角色孫悟空，藝術字採用AI火焰風格，字體充滿動感與熾熱金色火焰質感，具强烈視覺衝擊力。",
+                text: "悟空傳奇",
+                prompt: "中国经典神话角色孙悟空,身着传统黄衣红裤,头戴金箍,系蓝围巾,动作富有张力,周围环绕金色发光线条与萤火般粒子,背景纯黑。添加艺术字“悟空傳奇”,采用 AI 火焰风格,字体充满动感与炽热金色火焰质感,整体画面具強烈视觉冲击力,风格为精致插画,细节丰富,色彩对比强烈,突出神话英雄的传奇感与艺术字的火焰特效,比例「9:16」",
+                color: "#ff8c00"
+            },
+            {
+                category: "Q版圓潤",
+                font_type: "胖乎乎卡通體",
+                description: "黑底白字，筆畫都胖乎乎的，充滿卡通可愛與趣味。",
+                text: "童年糖果屋",
+                prompt: "文字“童年糖果屋”,黑底白字,笔画都胖乎乎的,充满卡通可爱与趣味,比例「9:16」",
+                color: "#ffc0cb"
+            },
+            {
+                category: "硬筆手寫",
+                font_type: "靈動鋼筆字",
+                description: "兩行字，連筆靈動，鋼筆字，細線條，錯落有致，黑底白字。",
+                text: "人生若初見,去有風的地方",
+                prompt: "文字手写体“人生若初見,去有風的地方”,两行字,连笔灵动,钢笔字,细线条,错落有致,黑底白字。,比例「9:16」",
+                color: "#4682b4"
+            },
+            {
+                category: "動漫遊戲",
+                font_type: "動態爆炸風",
+                description: "藝術字體，黑底白字，動態爆炸風，弧型延展，筆畫爆發式延伸，線條扭曲中帶張力，漫畫擬聲字。",
+                text: "夏日狂歡",
+                prompt: "艺术字体,黑底白字,动态爆炸风,弧型延展,笔画爆发式延伸,线条扭曲中带张力,漫画拟声字,文字內容是“夏日狂歡”,比例 「9:16」",
+                color: "#ffd700"
             }
-            // END: NEW DATA
         ];
 
         const fontEffects = [
             {
-                name: "卡通字效",
-                description: "圓潤線條，鮮豔顏色，誇張變形，動感趣味，親和力強",
-                suitable_for: ["卡通風格", "兒童內容", "趣味設計"],
-                color: "#FFB6C1"
-            },
-            {
-                name: "立體字效",
-                description: "深度感，陰影效果，光澤反射，層次分明，現代感強，邊緣突出",
-                suitable_for: ["現代設計", "商業廣告", "品牌LOGO"],
+                name: "基礎立體",
+                description: "通過陰影和高光創造深度感，使文字呈現3D效果",
+                suitable_for: ["標題設計", "商業廣告", "品牌LOGO"],
                 color: "#4ECDC4"
             },
             {
-                name: "發光字效",
-                description: "具有強烈的發光效果，色彩豐富且層次分明",
-                suitable_for: ["科技主題", "夜景設計", "電競遊戲"],
-                color: "#74B9FF"
-            },
-            {
-                name: "金屬字效",
-                description: "具有強烈的金屬質感，通常伴隨著高光和陰影的對比，展現出硬朗、冷峻的視覺效果",
-                suitable_for: ["工業設計", "科技產品", "豪華品牌"],
-                color: "#636E72"
-            },
-            {
-                name: "火焰字效",
-                description: "具有鮮明的火焰色彩，呈現燃燒與閃爍的動態效果",
-                suitable_for: ["運動賽事", "激情主題", "能量飲料"],
-                color: "#E17055"
-            },
-            {
-                name: "水墨字效",
-                description: "墨色層次豐富，暈染自然，帶有書法線條和文化意境",
-                suitable_for: ["中國風設計", "文化藝術", "傳統節日"],
-                color: "#2D3436"
-            },
-            {
-                name: "漸變字效",
-                description: "具有柔和的色彩過渡和豐富的層次感，能增強文字的視覺吸引力和藝術效果",
-                suitable_for: ["時尚設計", "現代藝術", "品牌包裝"],
-                color: "#A29BFE"
-            },
-            {
-                name: "玻璃字效",
-                description: "具有透明感、高光和反射效果，文字呈現晶瑩剔透的質感",
-                suitable_for: ["現代設計", "裝飾藝術", "標題文字"],
-                color: "#40e0d0"
-            },
-            {
-                name: "鏡像字效",
-                description: "具有對稱的鏡面反射效果，帶虛像與倒影，增強視覺趣味和對稱美感",
-                suitable_for: ["藝術設計", "創意海報", "對稱構圖"],
-                color: "#8a2be2"
-            },
-            {
-                name: "模糊字效",
-                description: "具有柔和、朦朧的效果，通過降低局部對比度，使文字邊緣和細節變得模糊",
-                suitable_for: ["夢幻氛圍", "情感表達", "背景文字"],
-                color: "#778899"
-            },
-            {
-                name: "浮雕字效",
-                description: "具有立體感和層次感，通過光影對比和斜面效果來模擬物體表面的凹凸變化",
+                name: "浮雕雕刻",
+                description: "模擬在物體表面進行雕刻或使其凸起的效果，層次感強",
                 suitable_for: ["復古風格", "UI按鈕", "標牌設計"],
                 color: "#deb887"
             },
             {
-                name: "裂紋字效",
-                description: "具有表面粗糙、不規則裂紋紋理，帶深度與陰影效果，給人以破碎、陳舊的視覺感受",
-                suitable_for: ["搖滾風格", "力量感設計", "做舊效果"],
-                color: "#a0522d"
+                name: "霓虹發光",
+                description: "模仿霓虹燈管的發光效果，色彩鮮豔，通常用於深色背景",
+                suitable_for: ["科技主題", "夜景設計", "賽博朋克"],
+                color: "#74B9FF"
             },
             {
-                name: "冰霜字效",
-                description: "具有冰晶質感，帶冷色調、立體感與霜凍紋理",
+                name: "金屬光澤",
+                description: "模擬金、銀、銅等金屬表面的反光和質感，展現硬朗冷峻風格",
+                suitable_for: ["工業設計", "豪華品牌", "遊戲UI"],
+                color: "#636E72"
+            },
+            {
+                name: "玻璃高光",
+                description: "呈現透明或半透明的玻璃質感，帶有強烈的高光和反射效果",
+                suitable_for: ["現代設計", "裝飾藝術", "科技感"],
+                color: "#40e0d0"
+            },
+            {
+                name: "液態流體",
+                description: "模擬液體流動、融合的形態，邊緣柔和且不規則",
+                suitable_for: ["時尚潮流", "音樂海報", "創意設計"],
+                color: "#ffd700"
+            },
+            {
+                name: "冰霜凍結",
+                description: "模擬冰雪覆蓋或凍結的效果，帶有冰晶紋理和冷色調",
                 suitable_for: ["冬季主題", "飲品廣告", "清涼產品"],
                 color: "#add8e6"
             },
             {
-                name: "液體字效",
-                description: "具有動態流動的形態、自然漸變的色彩、豐富的光影變化以及獨特的透明質感",
-                suitable_for: ["時尚潮流", "音樂海報", "創意設計"],
-                color: "#ffd700"
+                name: "火焰燃燒",
+                description: "呈現燃燒的火焰形態，色彩鮮明，動感十足",
+                suitable_for: ["運動賽事", "激情主題", "促銷活動"],
+                color: "#E17055"
+            },
+            {
+                name: "裂紋破損",
+                description: "模擬物體表面破碎、開裂的紋理，營造陳舊或充滿力量的感覺",
+                suitable_for: ["搖滾風格", "力量感設計", "做舊效果"],
+                color: "#a0522d"
+            },
+            {
+                name: "水墨暈染",
+                description: "模仿傳統水墨畫的筆觸和墨水在宣紙上暈開的效果",
+                suitable_for: ["中國風設計", "文化藝術", "傳統節日"],
+                color: "#2D3436"
+            },
+            {
+                name: "漸變疊加",
+                description: "色彩平滑過渡，可創造豐富的視覺層次和藝術感",
+                suitable_for: ["時尚設計", "現代藝術", "網頁設計"],
+                color: "#A29BFE"
+            },
+            {
+                name: "描邊輪廓",
+                description: "為字體添加一層或多層輪廓線，增強可讀性和裝飾性",
+                suitable_for: ["卡通風格", "貼紙效果", "重點標示"],
+                color: "#FFB6C1"
+            },
+            {
+                name: "故障風格",
+                description: "模擬數位訊號干擾、錯位的視覺效果，充滿科技感與躁動感",
+                suitable_for: ["賽博朋克", "電子音樂", "潮流文化"],
+                color: "#FFEAA7"
             }
         ];
 
@@ -2164,7 +2386,35 @@
                 "不老還童": "125.png",
                 "秋日出遊 趣造世界": "126.png",
                 "懶豬": "127.png",
-                "春夏秋冬": "128.png"
+                "春夏秋冬": "128.png",
+                "只想暴富": "129.png",
+                "下班擺攤": "130.png",
+                "天天吃瓜": "131.png",
+                "CANVA教學 (珍珠)": "132.png",
+                "海中奇異": "133.png",
+                "梅蘭竹菊": "134.png",
+                "CANVA 教學 (C4D)": "135.png",
+                "星空神話": "136.png",
+                "秋日午後": "137.png",
+                "乾坤寶盒": "138.png",
+                "微小幻影": "139.png",
+                "旅人行腳": "140.png",
+                "平平安安 (卷紙)": "141.png",
+                "絲路之旅": "142.png",
+                "花都之舞": "143.png",
+                "恭禧發財": "144.png",
+                "江湖": "145.png",
+                "Canva 教學 (水晶)": "146.png",
+                "流金歲月 (流體)": "147.png",
+                "火焰": "148.png",
+                "區塊鏈": "149.png",
+                "不老頑童": "150.png",
+                "我的夢": "151.png",
+                "百寶箱": "152.png",
+                "悟空傳奇": "153.png",
+                "童年糖果屋": "154.png",
+                "人生若初見,去有風的地方": "155.png",
+                "夏日狂歡": "156.png"
             };
 
             const filteredExamples = filter === '全部' 
