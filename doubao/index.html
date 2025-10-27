@@ -643,9 +643,10 @@
         <!-- Navigation -->
         <nav class="navbar">
             <div class="nav-container">
-                <a href="#" class="nav-brand">豆包與即夢藝術字體(來源：站酷(作者：言川Artie)與網路教學資訊)</a>
+                <a href="#" class="nav-brand">豆包與即夢藝術字體</a>
                 <ul class="nav-links" id="desktopNav">
                     <li><a href="#" class="nav-link active" data-section="examples">字體範例</a></li>
+                    <li><a href="#" class="nav-link" data-section="font-usage">字體運用解說</a></li>
                     <li><a href="#" class="nav-link" data-section="effects">字效展示</a></li>
                     <li><a href="#" class="nav-link" data-section="generator">自定義生成</a></li>
                     <li><a href="#" class="nav-link" data-section="instructions">使用指南</a></li>
@@ -666,6 +667,7 @@
             <button class="close-btn" id="closeMenuBtn" aria-label="關閉選單">&times;</button>
             <nav class="mobile-menu-nav" id="mobileNav">
                 <a href="#" class="mobile-nav-link active" data-section="examples">字體範例</a>
+                <a href="#" class="mobile-nav-link" data-section="font-usage">字體運用解說</a>
                 <a href="#" class="mobile-nav-link" data-section="effects">字效展示</a>
                 <a href="#" class="mobile-nav-link" data-section="generator">自定義生成</a>
                 <a href="#" class="mobile-nav-link" data-section="instructions">使用指南</a>
@@ -678,7 +680,7 @@
             <section class="section" id="examples">
                 <h2 class="section-title">字體範例展示</h2>
                 <p class="section-description">探索各種藝術字體風格，獲取專業的提示詞範例</p>
-                
+                <p class="section-description">(來源：站酷(作者：言川Artie)與網路教學資訊)</p>                
                 <div class="category-filter" id="categoryFilter">
                     <button class="filter-btn active" data-category="全部">全部</button>
                     <button class="filter-btn" data-category="時尚潮流">時尚潮流</button>
@@ -700,6 +702,15 @@
                 
                 <div class="cards-grid" id="fontExamples">
                     <!-- Font examples will be dynamically populated -->
+                </div>
+            </section>
+
+            <!-- Font Usage Section -->
+            <section class="section hidden" id="font-usage">
+                <h2 class="section-title">字體運用解說</h2>
+                <p class="section-description">深入了解各種字體的風格特色與最佳應用場景</p>
+                <div class="cards-grid" id="fontUsageContainer">
+                    <!-- Font usage explanations will be dynamically populated -->
                 </div>
             </section>
 
@@ -2056,6 +2067,142 @@
                 text: "夏日狂歡",
                 prompt: "艺术字体,黑底白字,动态爆炸风,弧型延展,笔画爆发式延伸,线条扭曲中带张力,漫画拟声字,文字內容是“夏日狂歡”,比例 「9:16」",
                 color: "#ffd700"
+            },
+            {
+                "category": "賽博朋克",
+                "font_type": "未來感字體",
+                "description": "科幻電玩設計的未來感展示字體，內部有電路板圖案，發光霓虹燈效果。",
+                "text": "電競人生",
+                "prompt": "“電競人生”為科幻電玩設計的未來感展示字體,字母內部有電路板圖案,發光的藍色霓虹燈效果,賽博龐克和高科技感,深色背景,細節豐富且複雜。,比例「9:16」",
+                "color": "#74B9FF"
+            },
+            {
+                "category": "懷舊印刷",
+                "font_type": "復古字體",
+                "description": "1950年代餐廳招牌風格的復古字體，帶有做舊磨損紋理和霓虹光澤。",
+                "text": "回味人生",
+                "prompt": "”回味人生”為咖啡館設計的復古字體,靈感來自 1950年代的餐廳招牌,粗體帶有彎曲的字母,帶有做舊和磨損的紋理,柔和的配色,霓虹燈光澤,磚牆背景,比例「9:16」",
+                "color": "#E17055"
+            },
+            {
+                "category": "古典優雅",
+                "font_type": "優雅手寫體",
+                "description": "奢侈品牌設計的優雅手寫字體，金屬金色，風格精緻浪漫。",
+                "text": "天賜良緣",
+                "prompt": "“天賜良緣”為奢侈品牌設計的優雅手寫字體,連筆和手寫風格,筆劃粗細變化,金屬金色,精緻浪漫的風格,大理石背景,電影級燈光,比例 「9:16」",
+                "color": "#DAA520"
+            },
+            {
+                "category": "極簡主義",
+                "font_type": "簡潔無襯線商標字體",
+                "description": "現代科技公司設計的簡潔無襯線商標字體，大膽極簡，線條流暢清晰。",
+                "text": "創意無限",
+                "prompt": "繁體中文文字“創意無限”為現代科技公司設計的簡潔無襯線商標字體,大膽而極簡,具有流暢的曲線和清晰的線條,白色背景,高解析度,比例「9:16」",
+                "color": "#4ECDC4"
+            },
+            {
+                "category": "插畫風格",
+                "font_type": "活力藝術字",
+                "description": "活力清新的商業促銷風格藝術字，搭配花朵、星星等裝飾。",
+                "text": "盛秋季 肆意派對",
+                "prompt": "促销海报,绿色背景,白色艺术大字标题“盛秋季肆意派隊”,右上角英文“AUTUMN PARTY HAPPY”搭配黄色小花装饰,黃色椭圆形标注“10月31日”,下方白色文字“更有新品低至 5 折起”,点缀白色星星和曲线装饰,风格活力清新,商业促销感强,比例 「9:16」",
+                "color": "#96CEB4"
+            },
+            {
+                "category": "插畫風格",
+                "font_type": "不規則手寫體",
+                "description": "活潑、不規則的設計風格，筆畫粗細對比明顯，帶有彎曲、扭曲的變形效果，風格靈動俏皮。",
+                "text": "生日快樂",
+                "prompt": "帮我写“生日快樂”,黑底白字,字体采用活泼、不规则的设计风格,笔画粗细对比明显,有弯曲、扭曲、拉伸等变形效果,呈现出灵动俏皮的视觉感受。在字体周围,点缀若干黄色的星星装饰元素,星星大小不一,增加画面的趣味性和梦幻感。整体画面色彩鲜明,营造出轻松愉快、充满幻想的氛围,比例「9:16」",
+                "color": "#FFEAA7"
+            },
+            {
+                "category": "插畫風格",
+                "font_type": "抽象變形字體",
+                "description": "將字體進行抽象變形，創造出獨特的節奏和動感，具有強烈的視覺衝擊。",
+                "text": "陽光幾何",
+                "prompt": "黑色背景,创意字体设计,线条流畅且富有艺术感,中文“陽光幾何”设计灵感:将字体进行抽象变形,创造出独特的节奏和动感,给人以强烈的视觉冲击。高级感,扁平化,大师作品,比例「9:16」",
+                "color": "#FDCB6E"
+            },
+            {
+                "category": "Q版圓潤",
+                "font_type": "3D卡通體",
+                "description": "豐富的三層立體效果的3D卡通字，金色帶光澤，有藍色飄帶裝飾。",
+                "text": "年末狂歡購",
+                "prompt": "黑底,卡通字,3D立体,金色字“年末狂歡購”,光泽,立体文字有丰富的三层立体效果,中间浅蓝色底层深蓝色,边缘凸起描边,底下蓝色飘带“全場滿500減250“,比例「9:16」",
+                "color": "#FFD700"
+            },
+            {
+                "category": "毛筆書法",
+                "font_type": "抽象概念書藝",
+                "description": "抽象概念書藝融合留白解構風格，半透明層疊毛筆線條，形成超現實視覺留白。",
+                "text": "藝術家看到的比你多在哪",
+                "prompt": "\"藝術家看到的比你多在哪\"/\"WHERE DO ARTISTS SEE BEYOND YOU\",抽象概念书艺融合留白解构风格,文字边界轻微溶解如意识边缘,漂浮排布构成意识碎片之感,背景为空灵灰白与虚实交织纹理,如精神空间裂隙,字体采用半透明层叠毛笔线条,笔触轻盈而残缺,形成超现实视觉留白,气质抽离冷静,带哲思与冥想氛围,思维跃迁感强烈,极简哲性构图,艺术意识流杰作,比例「9:16」",
+                "color": "#A29BFE"
+            },
+            {
+                "category": "街頭塗鴉",
+                "font_type": "創意手繪字",
+                "description": "具衝擊力的創意手繪字，3層立體設計，塗鴉手繪，傾斜動感。",
+                "text": "週年慶中大促",
+                "prompt": "冲击力的创意字体设计,创意手绘字,文字排版艺术冲击力,黑底五彩字,3层立体设计,手绘巨大文字“週年慶中大促”位于画面中心,涂鸦手绘,倾斜动感,极致的清晰度,极简主义,简约高级,杰作.,比例 「9:16」",
+                "color": "#FD79A8"
+            },
+            {
+                "category": "時尚潮流",
+                "font_type": "3D立體促銷字",
+                "description": "具視覺衝擊力的3D立體字，三層立體邊框，紫色玻璃底層。",
+                "text": "雙十大促銷",
+                "prompt": "正视图,3D立体“雙十大促銷”,字体有三层立体边框,紫色玻璃底层,促銷为黃色字,其余白色字,视觉冲击力强。下方粉色框內“超低價好貨瘋狂搶”,背景为紫色简约背景,比例 「9:16」",
+                "color": "#A29BFE"
+            },
+            {
+                "category": "時尚潮流",
+                "font_type": "3D立體玻璃字",
+                "description": "3D白色立體字，三層立體邊框，外邊框有玻璃層，紅色底色。",
+                "text": "雙十狂歡全場五折",
+                "prompt": "正视角度,3D 白色立体字“雙十狂歡全場五折_”字体有三层立体边框,外边框有玻璃层,底色是红色。标题下方红色 3D 飘带 滿300 減 100 黑色背景,比例「9:16」",
+                "color": "#FF6B6B"
+            },
+            {
+                "category": "時尚潮流",
+                "font_type": "3D衝擊力字體",
+                "description": "具衝擊力的3D設計，紫色風格華麗莊重，字形粗壯飽滿，三層結構疊加。",
+                "text": "年末搶購",
+                "prompt": "“年末搶購”四字采用极具冲击力的3D设计,整体紫色风格华丽且庄重,字形结构字体粗壮饱满,笔画具备显著的立体厚度,三层结构叠加,下方紫色质感飘带上小字内容“全場滿 300 减100”,细节笔画边缘精细处理,融入高光与阴影过渡,模拟金属材的反光特性,同时添加细微纹理,增强真实感与精致度,仿佛每一笔都历经雕琢。浅紫色简约背景,比例「9:16」",
+                "color": "#A29BFE"
+            },
+            {
+                "category": "食物材質",
+                "font_type": "透明冰沙3D字",
+                "description": "透明冰沙3D立體字型，表層覆蓋半透明果凍層，帶有水珠特效和彩虹光斑。",
+                "text": "果凍狂歡節",
+                "prompt": "主标题“果凍狂歡節”采用透明冰沙 3D立体字型,表层覆半透明果冻层(內部悬浮真实果粒纹理),边缘凝结半透明水珠特效,笔画表面折射彩虹光斑;副标题“第二件0元”使用气泡质感立体字,字符內部填充渐变珊瑚粉,底部连接嫩绿吸管投影,字母间悬浮立体柠檬片与薄荷叶。背景:深海蓝渐变叠加微光波纹(0.2pt 白色曲线动态扩散)点缀元素:立体果汁瓶、爆裂的「FREE」冰晶标签、环绕文字.的七彩糖粒光点。整体氛围:通过高饱和果色与深蓝背景形成 1:4 对比度,冰沙材质透光性与投影强化立体层次,保留20%清凉负空间,适合饮品零食类夏日促销,比例「9:16」",
+                "color": "#74B9FF"
+            },
+            {
+                "category": "時尚潮流",
+                "font_type": "高級3D電商字",
+                "description": "高級3D電商風格，多巴胺色彩，背後點綴花朵、雲朵、汽車等元素。",
+                "text": "雙十出遊季",
+                "prompt": "字体设计,高级3D 电商风格,中文“雙十出遊季”,英文“Fouble ten Day travel show”,创意字体设计 Logo,重点突出文字,花朵、云朵汽车、太阳、元素在文字背后点缀,简单图形,高级感,多巴胺色彩,3D渲染,超逼真材质细节质感,黑色背景,大师作品,比例「9:16」",
+                "color": "#FFB6C1"
+            },
+            {
+                "category": "時尚潮流",
+                "font_type": "高級3D電商字",
+                "description": "高級3D電商風格，多巴胺色彩，背後點綴花朵、太陽等元素。",
+                "text": "秋日清醒計劃",
+                "prompt": "字体设计,高级3D 电商风格,繁體中文文字“秋日清醒計劃”,英文“AUTUMN WAKE UP PLAN”,标志,创意字体设计 LOGO,重点突出文字,花朵、云朵、游泳圈、带墨镜的太阳元素在文字背后点缀,简单图形,高级感,多巴胺色彩,3D渲染,超逼真材质细节质感,黑色背景,大师作品。,比例「9:16」",
+                "color": "#FDCB6E"
+            },
+            {
+                "category": "食物材質",
+                "font_type": "3D奶油字",
+                "description": "C4D設計的奶油風格3D字體，具有立體感。",
+                "text": "1010狂歡開搶",
+                "prompt": "彩色文字“1010狂歡開搶”,奶油风,奶油材质,字体设计,3D,C4D,立体感黑色背景,比例 「9:16」",
+                "color": "#FFEAA7"
             }
         ];
 
@@ -2139,6 +2286,25 @@
                 color: "#FFEAA7"
             }
         ];
+        
+        const fontUsageData = [
+            { name: "時尚體", description: "設計前衛獨特，線條簡潔流暢，具有強烈現代感與潮流屬性。", suitable_for: ["時尚雜誌", "品牌LOGO", "潮流服飾", "音樂活動海報"], color: "#FF6B6B" },
+            { name: "極簡無襯線手寫", description: "筆劃簡潔流暢，線條粗細均勻，風格清新、自然，富有呼吸感。", suitable_for: ["文藝海報", "生活風格部落格", "產品說明", "清新風格的UI設計"], color: "#4ECDC4" },
+            { name: "細線體", description: "字形精緻纖細流暢，給人輕盈、優雅的感覺。", suitable_for: ["高端品牌", "化妝品包裝", "請柬設計", "女性時尚雜誌"], color: "#45B7D1" },
+            { name: "彎曲字體", description: "筆劃多曲線，線條流暢自然，整體柔和優雅，給人動感印象。", suitable_for: ["舞蹈或藝術海報", "手寫引言", "浪漫主題設計", "簽名式LOGO"], color: "#FFEAA7" },
+            { name: "塗鴉字體", description: "線條隨性、不對稱，粗獷生動，筆劃不規則自由，充滿街頭藝術感。", suitable_for: ["街頭文化", "音樂節", "極限運動", "年輕人潮流品牌"], color: "#DDA0DD" },
+            { name: "未來感字體", description: "線條簡潔硬朗，結構幾何化，充滿科技感與未來感。", suitable_for: ["科技產品", "科幻電影海報", "電競遊戲", "AI相關主題"], color: "#74B9FF" },
+            { name: "復古字體", description: "設計風格模仿古代或舊時代字體，具有懷舊古樸氣息。", suitable_for: ["復古主題派對", "歷史紀錄片", "傳統產品包裝", "咖啡館菜單"], color: "#A29BFE" },
+            { name: "哥特風格字體", description: "字體線條尖銳細長，筆劃粗細對比鮮明，風格莊嚴、神秘。", suitable_for: ["搖滾樂團LOGO", "奇幻或恐怖主題", "歷史書籍封面", "紋身設計"], color: "#636E72" },
+            { name: "可愛體", description: "筆劃圓潤流暢，結構扁圓，充滿童趣活力，風格俏皮活潑。", suitable_for: ["兒童產品", "卡通動畫", "節日賀卡", "可愛風格的社交貼文"], color: "#FFB6C1" },
+            { name: "軟糖體", description: "字體呈現出類似軟糖的柔軟、流動感，飽滿而有彈性，甜美可愛。", suitable_for: ["甜品店", "兒童派對", "YouTube可愛封面", "糖果包裝"], color: "#FF7675" },
+            { name: "草書風格", description: "筆劃簡化連貫，書寫流暢快速，藝術性高，動感十足。", suitable_for: ["中國風設計", "武俠主題", "藝術簽名", "餐廳招牌"], color: "#00B894" },
+            { name: "行書風格", description: "介於楷書與草書之間，筆劃連貫，書寫自然，兼具實用與藝術性。", suitable_for: ["文化展覽", "書籍封面", "信件與引言", "茶藝館"], color: "#FDCB6E" },
+            { name: "蒸汽朋克", description: "融合立體金屬質感、銅鐵銹跡、鉚釘紋理，充滿機械與復古工業感。", suitable_for: ["遊戲設計", "工業風格酒吧", "機械展覽", "奇幻小說封面"], color: "#E17055" },
+            { name: "賽博朋克", description: "粗線結構，幾何拆解，高對比未來感，常與霓虹效果結合。", suitable_for: ["電子音樂節", "科技新創公司", "科幻漫畫", "遊戲直播頻道"], color: "#DDA0DD" },
+            { name: "熱帶水果風", description: "由水果拼接而成，清新自然，立體豐盈，充滿夏日熱情。", suitable_for: ["果汁飲品廣告", "夏季促銷活動", "旅遊海報", "健康食品包裝"], color: "#FF7675" },
+            { name: "街頭嘻哈風", description: "飽滿圓潤，厚重立體，動感十足，常用於表達年輕、活力的街頭文化。", suitable_for: ["潮牌服飾", "街舞比賽", "嘻哈音樂專輯", "滑板店"], color: "#DDA0DD" }
+        ];
 
         // State management
         let currentSection = 'examples';
@@ -2153,6 +2319,7 @@
         const categoryFilter = document.getElementById('categoryFilter');
         const fontExamplesContainer = document.getElementById('fontExamples');
         const fontEffectsContainer = document.getElementById('fontEffects');
+        const fontUsageContainer = document.getElementById('fontUsageContainer');
         const customTextInput = document.getElementById('customText');
         const fontTypeSelect = document.getElementById('fontType');
         const fontEffectSelect = document.getElementById('fontEffect');
@@ -2170,6 +2337,7 @@
         function init() {
             renderFontExamples();
             renderFontEffects();
+            renderFontUsage();
             populateSelects();
             setupEventListeners();
         }
@@ -2305,7 +2473,7 @@
                 "清明": "044.png",
                 "鬼斧神工": "045.png",
                 "未來": "046.png",
-                "生日快樂": "047.png",
+                "生日快樂": "162.png",
                 "平平安安": "048.png",
                 "快樂星球 Planet Joy": "049.png",
                 "燃爆現場 Turn Up the Heat": "050.png",
@@ -2352,7 +2520,7 @@
                 "友誼長存,相伴一生": "091.png",
                 "幸福每一天": "092.png",
                 "晶瑩剔透": "093.png",
-                "春夏秋冬": "094.png",
+                "春夏秋冬": "128.png",
                 "生日快樂 (3D)": "095.png",
                 "您真有材": "096.png",
                 "全家 108 狂歡開門红": "097.png",
@@ -2386,7 +2554,6 @@
                 "不老還童": "125.png",
                 "秋日出遊 趣造世界": "126.png",
                 "懶豬": "127.png",
-                "春夏秋冬": "128.png",
                 "只想暴富": "129.png",
                 "下班擺攤": "130.png",
                 "天天吃瓜": "131.png",
@@ -2414,7 +2581,23 @@
                 "悟空傳奇": "153.png",
                 "童年糖果屋": "154.png",
                 "人生若初見,去有風的地方": "155.png",
-                "夏日狂歡": "156.png"
+                "夏日狂歡": "156.png",
+                "電競人生": "157.png",
+                "回味人生": "158.png",
+                "天賜良緣": "159.png",
+                "創意無限": "160.png",
+                "盛秋季 肆意派對": "161.png",
+                "陽光幾何": "163.png",
+                "年末狂歡購": "164.png",
+                "藝術家看到的比你多在哪": "165.png",
+                "週年慶中大促": "166.png",
+                "雙十大促銷": "167.png",
+                "雙十狂歡全場五折": "168.png",
+                "年末搶購": "169.png",
+                "果凍狂歡節": "170.png",
+                "雙十出遊季": "171.png",
+                "秋日清醒計劃": "172.png",
+                "1010狂歡開搶": "173.png"
             };
 
             const filteredExamples = filter === '全部' 
@@ -2459,6 +2642,21 @@
                     <p class="card-description">${effect.description}</p>
                     <div class="instruction-text">
                         <strong>適用場景：</strong>${effect.suitable_for.join('、')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render font usage explanations
+        function renderFontUsage() {
+            fontUsageContainer.innerHTML = fontUsageData.map(usage => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" style="color: ${usage.color}">${usage.name}</h3>
+                    </div>
+                    <p class="card-description">${usage.description}</p>
+                    <div class="instruction-text">
+                        <strong>適用場景：</strong>${usage.suitable_for.join('、')}
                     </div>
                 </div>
             `).join('');
