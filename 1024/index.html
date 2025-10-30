@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>財務分析教學指南 v1.0.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 頂部導航欄 -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <button class="menu-toggle" id="menuToggle" aria-label="切換選單">
+                <span class="hamburger"></span>
+            </button>
+            <h1 class="app-title">財務分析教學指南</h1>
+        </div>
+        <nav class="nav-center" id="navCenter">
+            <!-- 導航按鈕將由 JavaScript 動態生成 -->
+        </nav>
+        <div class="nav-right">
+            <span class="version-badge">v1.0.0</span>
+            <button class="icon-btn" id="fullscreenBtn" aria-label="全螢幕切換" title="全螢幕切換">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主要內容區域 -->
+    <div class="main-container">
+        <!-- 左側邊欄 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>章節導航</h3>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- 章節導航將由 JavaScript 動態生成 -->
+            </nav>
+        </aside>
+
+        <!-- 主要內容 -->
+        <main class="content" id="mainContent">
+            <!-- 內容將由 JavaScript 動態生成 -->
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
