@@ -145,10 +145,11 @@
                             <ul>
                                 <li><b>主題/標題 (Theme):</b> 明確海報主題，如電影名稱。例如: <code>"創作一張《星際穿越》電影海報"</code></li>
                                 <li><b>藝術風格 (Art Style):</b> 定義海報的整體藝術流派。例如: <code>"採用超現實主義風格"</code>, <code>"融合中國水墨意境"</code></li>
-                                <li><b>場景描述 (Scene):</b> 具體描述畫面內容、構圖與核心物件。例如: <code>"展現宏大的太空場景，一艘飛船穿越黑洞"</code></li>
-                                <li><b>色彩與氛圍 (Color & Mood):</b> 描述主色調與想要營造的氛圍。例如: <code>"色調以深藍、紫色和金色為主，營造神秘壯麗的氛圍"</code></li>
-                                <li><b>光影/特效 (Light/Effects):</b> 說明光線效果或特殊視覺處理。例如: <code>"模擬膠片顆粒感"</code>, <code>"展現'子彈時間'概念"</code></li>
-                                <li><b>文字排版 (Typography):</b> 描述標題和文字的設計要求。例如: <code>"標題使用未來感科技字體"</code></li>
+                                <li><b>場景描述 (Scene):</b> 具體描述畫面內容、構圖與核心物件。例如: <code>"展現宏大的太空場景"</code></li>
+                                <li><b>拍攝手法 (Technique):</b> 說明攝影視角或手法。例如: <code>"採用微距特寫"</code>, <code>"長焦鏡頭壓縮感"</code></li>
+                                <li><b>光線效果 (Lighting):</b> 描述光線的風格與質感。例如: <code>"倫勃朗光"</code>, <code>"體積光效果"</code></li>
+                                <li><b>色彩與氛圍 (Color & Mood):</b> 描述主色調與想要營造的氛圍。例如: <code>"色調以深藍、紫色和金色為主"</code></li>
+                                <li><b>特效/排版 (Effects/Typography):</b> 說明特殊視覺處理與文字要求。例如: <code>"模擬膠片顆粒感"</code>, <code>"標題使用未來感科技字體"</code></li>
                             </ul>
                         </div>
                     </div>
@@ -216,6 +217,33 @@
                              </div>
                              <div class="form-group"><label for="poster-scene">核心場景描述</label><textarea id="poster-scene" rows="3" placeholder="例如：一位宇航員站在荒蕪的紅色星球上，遠方有兩顆太陽。"></textarea></div>
                              <div class="form-group">
+                                <label for="poster-technique">拍攝手法</label>
+                                <select id="poster-technique">
+                                    <option value="">無</option>
+                                    <option value="微距特寫">微距特寫</option>
+                                    <option value="長焦鏡頭壓縮感">長焦壓縮</option>
+                                    <option value="廣角鏡頭的視覺張力">廣角張力</option>
+                                    <option value="魚眼鏡頭的誇張畸變">魚眼鏡頭</option>
+                                    <option value="航拍視角">航拍視角</option>
+                                    <option value="慢快門動感模糊效果">慢快門動感模糊</option>
+                                    <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="poster-technique-custom" class="custom-input" placeholder="請輸入自訂拍攝手法">
+                            </div>
+                             <div class="form-group">
+                                <label for="poster-lighting">光線效果</label>
+                                <select id="poster-lighting">
+                                    <option value="">無</option>
+                                    <option value="倫勃朗光">倫勃朗光</option>
+                                    <option value="柔和的散射光">柔和散射光</option>
+                                    <option value="強烈的邊緣輪廓光">邊緣輪廓光</option>
+                                    <option value="霓虹光效">霓虹光效</option>
+                                    <option value="體積光效果">體積光</option>
+                                    <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="poster-lighting-custom" class="custom-input" placeholder="請輸入自訂光線效果">
+                            </div>
+                             <div class="form-group">
                                 <label for="poster-color">色彩與氛圍</label>
                                 <select id="poster-color">
                                     <option value="色調以深藍、紫色和金色為主，營造神秘而壯麗的氛圍">神秘壯麗 (藍紫金)</option>
@@ -228,7 +256,7 @@
                                 <input type="text" id="poster-color-custom" class="custom-input" placeholder="請輸入自訂色彩與氛圍描述">
                             </div>
                              <div class="form-group">
-                                <label for="poster-details">字體/其他細節</label>
+                                <label for="poster-details">字體/特效</label>
                                 <select id="poster-details">
                                      <option value="">無</option>
                                      <option value="標題使用未來感科技字體">未來感科技字體</option>
@@ -238,7 +266,7 @@
                                      <option value="畫面呈現流動的綠色代碼雨效果">綠色代碼雨</option>
                                      <option value="custom">自訂...</option>
                                 </select>
-                                <input type="text" id="poster-details-custom" class="custom-input" placeholder="請輸入自訂字體或其他細節">
+                                <input type="text" id="poster-details-custom" class="custom-input" placeholder="請輸入自訂字體或特效">
                             </div>
                              <button id="generate-poster-btn" class="control-btn" style="width: 100%;">生成提示詞</button>
                         </div>
@@ -279,7 +307,7 @@
             { id: 37, category: 'poster', title: '童趣西瓜冰塊海報', imageUrl: '037.png', prompt: '用玩偶手办,方形的冰块,有些冰块里包裹着完整的未切开的绿色方形小西瓜,有些包裹着方形的红粉拼接的西瓜果肉里,散落开来,冰块上水珠滑落晶莹剔透的。童趣,乐趣,可爱,比例「9:16」' },
             { id: 38, category: 'poster', title: '端午艾草菖蒲海報', imageUrl: '038.png', prompt: '一束新鲜翠绿的艾草和菖蒲被精心摆放在深色背景前,叶片纹理清晰可见,金色装饰线条勾勒出传统节庆元素,明亮写实光线凸显植物表面晶莹露珠,简洁高雅的海报设计风格融合端午一束深绿色的艾草叶片与修长菖蒲被整齐捆绑,表面凝结着晶莹露珠,居中摆放在浅灰色渐变布料背景前,侧光精准勾勒植物纹理,浅灰色投影延伸至画面边缘,整体采用极简构图与专业商业摄影布光,海报版式预留标准文字编排区域,比例 「9:16」' },
             { id: 39, category: 'poster', title: '抽象水果噴繪海報', imageUrl: '039.png', prompt: '高速喷绘,水果在这个抽象的画面中滴落,鸟瞰角度,细节丰富,比例「9:16」' },
-            { id: 40, category: 'poster', title: '動畫電影 - 哪吒', imageUrl: '040.png', prompt: '生成一张动画电影《哪吒》的宣传海报,哪吒是中国神话中的一个流行人物,这张海报描给了一个戏剧性的场量:一条巨大的、充满威种的龙从海里冒出来,它的陵片和特征用蓝色和灰色的色酒进行了详细的描述,在前景中哪吒以一个动态的姿势出现,背对观众,在巨龙面前显得很小,但红色元素成为画面的亮点,暗示着行动和对抗,海报上的文字包括:哪吒之魔童闹海,《2025》(2025年11月6日),设计元寨和配色方案创造了一种史诗般的幻想和冒险感。,比例「9:16」' },
+            { id: 40, category: 'poster', title: '動畫電影 - 哪吒', imageUrl: '040.png', prompt: '生成一张动画电影《哪吒》的宣传海报,哪吒是中国神话中的一个流行人物,这张海报描给了一个戏剧性的场量:一条巨大的、充满威种的龙从海里冒出来,它的陵片和特征用蓝色和灰色的色酒进行了详细的描述,在前景中哪吒以一个动态的姿势出现,背对观众,在巨龙面前显得很小,但红色元素成为画面的亮点,暗示着行动和对抗,海報上的文字包括:哪吒之魔童闹海,《2025》(2025年11月6日),设计元寨和配色方案创造了一种史诗般的幻想和冒险感。,比例「9:16」' },
             { id: 41, category: 'poster', title: '城市概念 - 北京', imageUrl: '041.png', prompt: '“北京”竖版上下站立 3D 青铜立体艺术字文字海报,历史感,沧桑,远景古代建筑历史广告,正交等距视图,黃海创意合成原研哉设计美学,青铜质感,特写镜头,超微距,微缩摄影,历史感,正面图,以维托里奧·斯托拉罗般精妙的电影构图、唐纳德·贾德式的极简主义风格以及克里斯托弗·诺兰富有层次的导演叙事手法,打造具有高饱和度、震撼感、精致细节、品牌感強且故事感足的创意合成商业广告电影剧照,比例 「9:16」' },
             { id: 42, category: 'poster', title: '節氣海報 - 春分', imageUrl: '042.png', prompt: '一幅以“春分”二字为主体的独特设计海报,整体风格春天的气息万物生长生机勃勃,国风插画风格。画面中,“春”字內嵌了丰富的元素:有燕子,柳树,三三两两的朋友在忙碌的浇水、耕田的农夫和放风筝的,有成人有小孩。“分”字内嵌了发芽的树、盛开的樱花,油菜花、玉兰花等在春天盛开的花朵。背景是青山、绿水、云雾和细雨交织的自然图案,色调以青绿色为主,营造出自然韵味与人文气息。整体画面色调类似千里江山图青绿山水,既保留了传统文化的厚重感,又融入了现代设计的简约美,比例「9:16」' },
             { id: 43, category: 'poster', title: '新年賀卡 - 2026馬年', imageUrl: '043.png', prompt: '新年可贺:卡通金馬盘绕成数字"2026"造型,金馬闪耀金属光泽,背景大红烫金云纹底图,大主題"馬年送福 新春大吉"书法字体居中排布,生肖贺卡设计,红金撞色,祥云剪纸纹理,3D立体渲染,俯视视角,节日氛围浓郁,传统年画现代演绎。,比例 「9:16」' },
@@ -470,6 +498,8 @@
         setupCustomInputListener('logo-style', 'logo-style-custom');
         setupCustomInputListener('logo-details', 'logo-details-custom');
         setupCustomInputListener('poster-style', 'poster-style-custom');
+        setupCustomInputListener('poster-technique', 'poster-technique-custom');
+        setupCustomInputListener('poster-lighting', 'poster-lighting-custom');
         setupCustomInputListener('poster-color', 'poster-color-custom');
         setupCustomInputListener('poster-details', 'poster-details-custom');
 
@@ -494,12 +524,16 @@
             const subject = document.getElementById('poster-subject').value.trim();
             const style = getSelectOrCustomValue('poster-style', 'poster-style-custom');
             const scene = document.getElementById('poster-scene').value.trim();
+            const technique = getSelectOrCustomValue('poster-technique', 'poster-technique-custom');
+            const lighting = getSelectOrCustomValue('poster-lighting', 'poster-lighting-custom');
             const color = getSelectOrCustomValue('poster-color', 'poster-color-custom');
             const details = getSelectOrCustomValue('poster-details', 'poster-details-custom');
 
             let prompt = `創作一張關於 "${subject || '某個主題'}" 的電影海報。`;
             if (style) prompt += ` 藝術風格為${style}。`;
-            if (scene) prompt += ` 主要畫面為：${scene}`;
+            if (scene) prompt += ` 主要畫面為：${scene}。`;
+            if (technique) prompt += ` 採用${technique}。`;
+            if (lighting) prompt += ` 光線效果為${lighting}。`;
             if (color) prompt += ` ${color}。`;
             if (details) prompt += ` ${details}。`;
 
