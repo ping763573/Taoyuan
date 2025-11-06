@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 提示詞視覺化工具 v1.2.0</title>
+    <style>
+        /* --- 全局樣式與配色 --- */
+        :root {
+            --bg-color: #f8f9fa;
+            --main-text-color: #212529;
+            --secondary-text-color: #495057;
+            --primary-color: #007bff;
+            --primary-hover-color: #0056b3;
+            --secondary-color: #6c757d;
+            --card-bg-color: #ffffff;
+            --card-border-color: #dee2e6;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            --code-bg-color: #e9ecef;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--main-text-color);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 15px; }
+
+        /* --- 頁首 --- */
+        header { text-align: center; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border-color); padding-bottom: 1rem; }
+        header h1 { font-size: 2.5rem; color: var(--main-text-color); margin-bottom: 0.5rem; }
+        header p { font-size: 1.1rem; color: var(--secondary-text-color); margin-top: 0; }
+        #version-info { font-size: 0.9rem; color: #6c757d; }
+
+        /* --- 控制按鈕區 --- */
+        .controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 2rem; flex-wrap: wrap; }
+        .control-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; display: flex; align-items: center; gap: 8px; }
+        .control-btn:hover { background-color: var(--primary-hover-color); transform: translateY(-2px); }
+        .control-btn.secondary { background-color: var(--secondary-color); }
+        .control-btn.secondary:hover { background-color: #5a6268; }
+        .control-btn svg { width: 20px; height: 20px; }
+        
+        /* --- 範例篩選器 --- */
+        .filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-btn { background-color: #6c757d; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; transition: background-color 0.3s ease; }
+        .filter-btn.active { background-color: var(--primary-color); }
+
+        /* --- 範例卡片網格 --- */
+        .examples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .card { background-color: var(--card-bg-color); border: 1px solid var(--card-border-color); border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .card-img-container { width: 100%; padding-top: 100%; position: relative; background-color: #f0f0f0; }
+        .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { margin-top: 0; margin-bottom: 15px; font-size: 1.25rem; }
+        .prompt-container { background-color: var(--code-bg-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; flex-grow: 1; }
+        .prompt-text { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.9rem; color: var(--secondary-text-color); white-space: pre-wrap; word-wrap: break-word; margin: 0; }
+        .copy-btn { background-color: #28a745; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: background-color 0.3s ease; align-self: flex-end; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .copy-btn:hover { background-color: #218838; }
+
+        /* --- 生成器區塊 --- */
+        #generator-section { background-color: var(--card-bg-color); border: 1px solid var(--card-border-color); border-radius: 12px; padding: 2rem; margin-top: 2rem; box-shadow: var(--card-shadow); }
+        .generator-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .principles, .generator-form { padding: 1.5rem; border-radius: 8px; }
+        .principles { background-color: #f8f9fa; }
+        .principles h3 { margin-top: 0; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; }
+        .principles ul { padding-left: 20px; margin: 0; }
+        .principles li { margin-bottom: 0.75rem; }
+        .principles code { background-color: #e2e3e5; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+        .tabs { display: flex; border-bottom: 1px solid var(--card-border-color); margin-bottom: 1.5rem; }
+        .tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-size: 1.1rem; border-bottom: 3px solid transparent; }
+        .tab-btn.active { border-bottom-color: var(--primary-color); font-weight: bold; color: var(--primary-color); }
+        .form-content { display: none; }
+        .form-content.active { display: block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--card-border-color); border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+        
+        .custom-input {
+            display: none;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .generator-output { margin-top: 2rem; }
+        #generated-prompt { width: 100%; height: 150px; background-color: var(--code-bg-color); border-radius: 8px; padding: 15px; box-sizing: border-box; border: 1px solid var(--card-border-color); }
+
+        /* --- 響應式調整 --- */
+        @media (max-width: 992px) { .generator-container { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header h1 { font-size: 1.8rem; }
+            .examples-grid { grid-template-columns: 1fr; }
+            #generator-section { padding: 1rem; }
+            .principles, .generator-form { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>AI 提示詞視覺化工具</h1>
+            <p>一個整合 AI 生成 Logo 與海報設計的實用提示詞範例庫</p>
+            <span id="version-info">版本: 1.2.0</span>
+        </header>
+
+        <div class="controls">
+            <button id="show-generator-btn" class="control-btn secondary">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/><path d="M3.5 6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5M6 3.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 1 0 1h-1a.5.5 0 0 1 0-1zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m-1 2.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5"/></svg>
+                提示詞生成器
+            </button>
+            <button id="show-examples-btn" class="control-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 2A3.5 3.5 0 0 0 2 5.5v5A3.5 3.5 0 0 0 5.5 14h5a3.5 3.5 0 0 0 3.5-3.5V8a.5.5 0 0 1 1 0v2.5a4.5 4.5 0 0 1-4.5 4.5h-5A4.5 4.5 0 0 1 1 10.5v-5A4.5 4.5 0 0 1 5.5 1H8a.5.5 0 0 1 0 1H5.5z"/><path d="M10.5 5a.5.5 0 0 0 0 1h2.793l-9.147 9.146a.5.5 0 1 0 .708.708L15 6.707V9.5a.5.5 0 0 0 1 0v-5a.5.5 0 0 0-.5-.5h-5z"/></svg>
+                實際範例庫
+            </button>
+            <button id="fullscreen-btn" class="control-btn">
+                <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" style="display: block;"><path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z"/></svg>
+                <svg id="exit-fullscreen-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" style="display: none;"><path d="M5.5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4A.5.5 0 0 1 5.5 0zM10 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4H10.5a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1 0-1h4v-4a.5.5 0 0 1 .5-.5z"/></svg>
+                <span id="fullscreen-text">切換全螢幕</span>
+            </button>
+        </div>
+        
+        <main>
+            <!-- 生成器區塊 -->
+            <section id="generator-section" style="display: none;">
+                <div class="generator-container">
+                    <div class="principles">
+                        <div id="logo-principles">
+                            <h3>Logo 提示詞生成原則</h3>
+                            <ul>
+                                <li><b>主體 (Subject):</b> 明確品牌名稱或 Logo 用途。例如: <code>"設計一個'茶飲品牌'Logo"</code></li>
+                                <li><b>核心元素 (Elements):</b> 描述構成 Logo 的關鍵圖像符號。例如: <code>"核心元素: 茶葉+山形"</code></li>
+                                <li><b>設計風格 (Style):</b> 定義整體視覺風格。例如: <code>"風格: 極簡扁平化"</code>, <code>"手繪復古風"</code></li>
+                                <li><b>色彩 (Color):</b> 描述顏色，可使用色碼以求精確。例如: <code>"單色系 (#4A8C3F)"</code>, <code>"藍紫漸變"</code></li>
+                                <li><b>細節/特效 (Details):</b> 額外要求，如質感、光效、構圖等。例如: <code>"負空間運用"</code>, <code>"添加微光粒子特效"</code></li>
+                            </ul>
+                        </div>
+                         <div id="poster-principles" style="display: none;">
+                            <h3>海報 提示詞生成原則</h3>
+                            <ul>
+                                <li><b>主題/標題 (Theme):</b> 明確海報主題，如電影名稱。例如: <code>"創作一張《星際穿越》電影海報"</code></li>
+                                <li><b>藝術風格 (Art Style):</b> 定義海報的整體藝術流派。例如: <code>"採用超現實主義風格"</code>, <code>"融合中國水墨意境"</code></li>
+                                <li><b>場景描述 (Scene):</b> 具體描述畫面內容、構圖與核心物件。例如: <code>"展現宏大的太空場景，一艘飛船穿越黑洞"</code></li>
+                                <li><b>色彩與氛圍 (Color & Mood):</b> 描述主色調與想要營造的氛圍。例如: <code>"色調以深藍、紫色和金色為主，營造神秘壯麗的氛圍"</code></li>
+                                <li><b>光影/特效 (Light/Effects):</b> 說明光線效果或特殊視覺處理。例如: <code>"模擬膠片顆粒感"</code>, <code>"展現'子彈時間'概念"</code></li>
+                                <li><b>文字排版 (Typography):</b> 描述標題和文字的設計要求。例如: <code>"標題使用未來感科技字體"</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="generator-form">
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="logo">Logo 生成</button>
+                            <button class="tab-btn" data-tab="poster">海報 生成</button>
+                        </div>
+
+                        <!-- Logo 生成器表單 -->
+                        <div id="logo-form" class="form-content active">
+                            <div class="form-group"><label for="logo-subject">品牌/主體名稱</label><input type="text" id="logo-subject" placeholder="例如：咖啡館、科技公司"></div>
+                            <div class="form-group"><label for="logo-elements">核心元素 (用+號分隔)</label><input type="text" id="logo-elements" placeholder="例如：咖啡杯+羽毛筆"></div>
+                            <div class="form-group">
+                                <label for="logo-style">主要風格</label>
+                                <select id="logo-style">
+                                    <option value="極簡扁平化風格">極簡扁平化</option>
+                                    <option value="抽象幾何風格">抽象幾何</option>
+                                    <option value="手繪復古風格">手繪復古</option>
+                                    <option value="未來科技風格">未來科技</option>
+                                    <option value="自然有機風格">自然有機</option>
+                                    <option value="水墨暈染風格">水墨暈染</option>
+                                    <option value="Q版卡通風格">Q版卡通</option>
+                                    <option value="燙金浮雕質感風格">燙金浮雕</option>
+                                    <option value="霓虹燈管風格">霓虹燈管</option>
+                                    <option value="蠟筆手繪質感風格">蠟筆手繪</option>
+                                    <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="logo-style-custom" class="custom-input" placeholder="請輸入自訂風格">
+                            </div>
+                            <div class="form-group"><label for="logo-color">色彩描述 (可含色碼)</label><input type="text" id="logo-color" placeholder="例如：藍紫漸變 (#2A5C8F → #6E34B4)"></div>
+                            <div class="form-group">
+                                <label for="logo-details">其他細節/要求</label>
+                                 <select id="logo-details">
+                                    <option value="">無</option>
+                                    <option value="負空間運用">負空間運用</option>
+                                    <option value="添加微光粒子特效">微光粒子特效</option>
+                                    <option value="金屬質感">金屬質感</option>
+                                    <option value="動態傾斜構圖">動態傾斜構圖</option>
+                                    <option value="邊緣輕微磨損效果">邊緣磨損效果</option>
+                                    <option value="支援動態呼吸燈效果">支援呼吸燈效果</option>
+                                    <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="logo-details-custom" class="custom-input" placeholder="請輸入自訂細節">
+                            </div>
+                            <button id="generate-logo-btn" class="control-btn" style="width: 100%;">生成提示詞</button>
+                        </div>
+
+                        <!-- 海報 生成器表單 -->
+                        <div id="poster-form" class="form-content">
+                             <div class="form-group"><label for="poster-subject">主題/電影名稱</label><input type="text" id="poster-subject" placeholder="例如：《星際迷途》"></div>
+                             <div class="form-group">
+                                <label for="poster-style">藝術風格</label>
+                                <select id="poster-style">
+                                    <option value="超現實主義風格">超現實主義</option>
+                                    <option value="賽博龐克風格">賽博龐克</option>
+                                    <option value="融合中國水墨意境">中國水墨</option>
+                                    <option value="可愛手繪漫畫風格">手繪漫畫</option>
+                                    <option value="巴洛克戲劇性光影">巴洛克光影</option>
+                                    <option value="浮世繪風格">浮世繪</option>
+                                    <option value="極簡主義設計">極簡主義</option>
+                                    <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="poster-style-custom" class="custom-input" placeholder="請輸入自訂藝術風格">
+                             </div>
+                             <div class="form-group"><label for="poster-scene">核心場景描述</label><textarea id="poster-scene" rows="3" placeholder="例如：一位宇航員站在荒蕪的紅色星球上，遠方有兩顆太陽。"></textarea></div>
+                             <div class="form-group">
+                                <label for="poster-color">色彩與氛圍</label>
+                                <select id="poster-color">
+                                    <option value="色調以深藍、紫色和金色為主，營造神秘而壯麗的氛圍">神秘壯麗 (藍紫金)</option>
+                                    <option value="以高對比度的黑白色調為主，營造緊張懸疑的氛圍">緊張懸疑 (黑白)</option>
+                                    <option value="以溫暖的黃橙色調為主，營造溫馨浪漫的氛圍">溫馨浪漫 (黃橙)</option>
+                                    <option value="色彩飽和度高，以紅綠藍為主，營造復古港風氛圍">復古港風 (高飽和)</option>
+                                    <option value="以褪色的靛青與赭石為主，營造時間沉澱的質感">文藝復古 (靛青赭石)</option>
+                                    <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="poster-color-custom" class="custom-input" placeholder="請輸入自訂色彩與氛圍描述">
+                            </div>
+                             <div class="form-group">
+                                <label for="poster-details">字體/其他細節</label>
+                                <select id="poster-details">
+                                     <option value="">無</option>
+                                     <option value="標題使用未來感科技字體">未來感科技字體</option>
+                                     <option value="標題使用優雅的手寫字體">優雅手寫字體</option>
+                                     <option value="標題使用厚重的古風字體">厚重古風字體</option>
+                                     <option value="整體應用膠片質感的顆粒與輕微色差">膠片顆粒感</option>
+                                     <option value="畫面呈現流動的綠色代碼雨效果">綠色代碼雨</option>
+                                     <option value="custom">自訂...</option>
+                                </select>
+                                <input type="text" id="poster-details-custom" class="custom-input" placeholder="請輸入自訂字體或其他細節">
+                            </div>
+                             <button id="generate-poster-btn" class="control-btn" style="width: 100%;">生成提示詞</button>
+                        </div>
+                        
+                        <div class="generator-output">
+                             <label for="generated-prompt">生成結果</label>
+                             <textarea id="generated-prompt" readonly></textarea>
+                             <button id="copy-generated-btn" class="copy-btn" style="margin-top: 10px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5M3 1.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m-7 1.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0m1.5 0v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 1 0"/></svg>
+                                複製結果
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 範例庫區塊 -->
+            <div id="filters-container" class="filters" style="display: none;">
+                 <button class="filter-btn active" data-filter="all">全部範例</button>
+                 <button class="filter-btn" data-filter="logo">Logo 設計</button>
+                 <button class="filter-btn" data-filter="poster">海報設計</button>
+            </div>
+            <div id="examples-grid" class="examples-grid" style="display: none;">
+                <!-- 範例卡片動態生成 -->
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+    // --- 軟體設計大師 v1.2.0 ---
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 資料庫 (同 v1.1.0) ---
+        const promptData = [
+            { id: 1, category: 'logo', title: '極簡主義風格 - 茶飲品牌', imageUrl: '001.png', prompt: '設計 “茶飲品牌” Logo，核心元素：茶葉+山形，風格：極簡扁平化，單色系 (主色: #4A8C3F)，字體：無襯線粗體，要求符號與文字縱向排列，負空間運用明顯。' }, { id: 2, category: 'logo', title: '抽象幾何風格 - 科技公司', imageUrl: '002.png', prompt: '生成 “科技公司” Logo，以 “數據流動” 為概念，使用三角形與曲線漸變拼接，主色：藍紫漸變 (#2A5C8F → #6E34B4)，添加微光粒子特效，字體：未來感科技字體。' }, { id: 3, category: 'logo', title: '手繪復古風格 - 咖啡館', imageUrl: '003.png', prompt: '設計 “咖啡館” Logo，元素：咖啡杯+羽毛筆，風格：手繪線條+做舊紙張紋理，色彩：棕褐色 (#8B4513) +米白 (#F5F5DC)，字體：復古襯線體，邊緣輕微磨損效果。' }, { id: 4, category: 'logo', title: '兒童教育品牌 - 幼兒英語', imageUrl: '004.png', prompt: '生成 “幼兒英語機構” Logo，核心符號：卡通貓頭鷹+書本，風格：圓潤Q版，色彩：明黃色 (#FFD700) +天藍色 (#87CEEB)，字體：圓體帶俏皮弧度，添加星光點綴。關鍵詞參數：禁用尖銳棱角。' }, { id: 5, category: 'logo', title: '高端美妝品牌 - 護膚品', imageUrl: '005.png', prompt: '設計 “護膚品” Logo，元素：抽象花瓣+水滴，風格：金屬質感+極細線條，主色：玫瑰金 (#B76E79) +珍珠白 (#F8F8FF)，字體：纖細襯線體，整體呈現優雅輕奢感。附加要求：適配燙金工藝。' }, { id: 6, category: 'logo', title: '運動健身品牌 - 健身房', imageUrl: '006.png', prompt: '生成 “健身房” Logo，符號：抽象肌肉線條+閃電，風格：動態傾斜構圖，色彩：高飽和橙 (#FF6600) +黑 (#000000)，字體：粗體無襯線帶速度感斜切，添加力量感陰影。' }, { id: 7, category: 'logo', title: '負空間巧用 - 圖書館', imageUrl: '007.png', prompt: '設計 “圖書館” Logo，利用負空間將 “書本” 與 “貓” 輪廓融合，風格：單色黑白，線條簡潔，字體：等寬印刷體，整體傳遞靜謐與智慧感。技巧：優先測試 SVG 格式。' }, { id: 8, category: 'logo', title: '動態漸變融合 - 音樂節', imageUrl: '008.png', prompt: '生成 “音樂節” Logo，元素：音符+火焰，風格：流體漸變 (#FF6B6B → #FFE66D)，邊緣模糊化處理，字體：霓虹燈管風格，支持動態呼吸燈效果。' }, { id: 9, category: 'logo', title: '文化符號重構 - 非遺手工藝', imageUrl: '009.png', prompt: '設計 “非遺手工藝品牌” Logo, 將傳統剪紙紋樣與現代幾何結合, 主色: 中國紅 (#C03018) +金色 (#D4AF37), 字體: 書法體數位化處理, 保留筆墨飛白細節。注意: 需提供文化元素參考圖。' }, { id: 10, category: 'logo', title: '自然有機風格 - 有機農場', imageUrl: '010.png', prompt: '設計 “有機農場” Logo，核心元素：麥穗+陽光，風格：手繪水彩，色彩：大地綠 (#6B8E23) +暖黃 (#F4A460)，字體：自然肌理手寫體。' }, { id: 11, category: 'logo', title: '未來科技風格 - 航天科技', imageUrl: '011.png', prompt: '生成 “航天科技” Logo, 以 “星際軌道” 為概念, 使用環形幾何+星群點綴, 主色: 深空藍 (#001F3F) +銀灰 (#C0C0C0)。' }, { id: 12, category: 'logo', title: '古典雅致風格 - 文房品牌', imageUrl: '012.png', prompt: '設計 “文房品牌” Logo, 元素: 毛筆+硯台, 風格: 水墨暈染, 色彩: 墨黑 (#000000) +宣紙白 (#FFFFF0)。' }, { id: 13, category: 'logo', title: '童趣益智風格 - 積木玩具', imageUrl: '013.png', prompt: '生成 “積木玩具” Logo, 符號: 堆疊方塊+笑臉, 風格: 圓角多邊形, 色彩: 明紅 (#FF3333) +亮藍 (#3399FF)。' }, { id: 14, category: 'logo', title: '清新花藝風格 - 花店', imageUrl: '014.png', prompt: '設計 “花店” Logo, 核心元素: 鬱金香+水滴, 風格: 簡約線描, 主色: 櫻花粉 (#FFB6C1) +薄荷綠 (#98FB98)。' }, { id: 15, category: 'logo', title: '極速動感風格 - 自行車品牌', imageUrl: '015.png', prompt: '生成 “自行車品牌” Logo, 符號: 齒輪+風痕, 風格: 傾斜動態構圖, 色彩: 螢光綠 (#00FF00) +碳黑 (#222222)。' }, { id: 16, category: 'logo', title: '文化融合風格 - 茶器品牌', imageUrl: '016.png', prompt: '設計 “茶器品牌” Logo, 將宋代瓷紋與現代極簡結合, 主色: 天青 (#7EC0EE) +象牙白 (#FFFFF0)。' }, { id: 17, category: 'logo', title: '萌寵互動風格 - 寵物用品', imageUrl: '017.png', prompt: '生成 “寵物用品” Logo, 核心元素: 狗爪印+骨頭, 風格: 柔光漸變, 色彩: 珊瑚橙 (#FF7F50) +雲朵白 (#F5F5F5)。' }, { id: 18, category: 'logo', title: '星空幻想風格 - 天文館', imageUrl: '018.png', prompt: '設計 “天文館” Logo, 利用負空間將 “望遠鏡” 與 “星座” 融合, 風格: 深藍漸變 (#000080 → #000000)。' }, { id: 19, category: 'logo', title: '節日慶典風格 - 婚慶策劃', imageUrl: '019.png', prompt: '設計 “婚慶策劃品牌” Logo, 元素: 交織雙環+綻放玫瑰, 風格: 燙金浮雕質感。' }, { id: 20, category: 'logo', title: '圖書教育風格 - 兒童教育', imageUrl: '020.png', prompt: '生成 “兒童教育品牌” Logo, 核心符號: 立體書本+彩虹橋, 風格: 蠟筆手繪質感。' }, { id: 21, category: 'logo', title: '極地探險風格 - 戶外裝備', imageUrl: '021.png', prompt: '設計 “戶外裝備品牌” Logo, 元素: 三角山峰+指南針指針, 風格: 冰晶切割效果。' }, { id: 22, category: 'poster', title: '藝術電影 - 東邪西毒', imageUrl: '022.png', prompt: '為王家衛《東邪西毒》設計一幅藝術海報，捕捉電影超然的美學境界與哲思深度。主視覺採用極簡主義手法：畫面以留白為主，僅在中央區域呈現一把懸浮的殘破兵器剪影（寫意感），其形態若隱若現，邊緣溶解成墨暈狀。背景採用手工水墨渲染，呈現出沙漠與天空交界的抽象意境，不求具象再現，而求神韻表達。色彩極為克制：主色調為褪色的靛青(#2D4654)與赭石(#A86F4F)，輔以微妙的金黃(#C8A951)光暈，整體呈現出時間沉澱的質感。所有色彩如同老照片般帶有歲月侵蝕的痕跡，顆粒感與滲透感並存。' }, { id: 23, category: 'poster', title: '科幻電影 - 星際穿越', imageUrl: '023.png', prompt: '創建一張《星際穿越》(Interstellar) 電影海報，展現宏大的太空場景，一艘宇宙飛船穿越壯觀的黑洞，周圍有扭曲的時空和星光。遠處是一顆藍色宜居星球，近處有宇航員漂浮在太空中。海報上方用優雅的中文字體寫着"星際穿越"，下方是英文"INTERSTELLAR"，字體需要有未來感和科技感。色調以深藍、紫色和金色為主，營造出神秘而壯麗的宇宙氛圍。海報底部有一行文字："愛，是唯一能夠穿越時空的力量"。整體設計需平衡複雜的宇宙元素和简洁的排版，體現人類探索未知與親情羈絆的雙重主題。' }, { id: 24, category: 'poster', title: '懸疑電影 - 盜夢空間', imageUrl: '024.png', prompt: '設計一張《盜夢空間》(Inception) 電影海報，採用埃舍爾式的視覺錯覺與超現實主義風格。畫面呈現多層夢境的垂直剖面圖，每層夢境以不同的視角和物理法則展現：現實層是雨中的城市街道，第一層夢境是旋轉走廊的酒店，第二層是重力失效的雪山要塞，第三層是廢棄的夢境城市，最深處是原始的潛意識荒原。這些場景通過不可能建築結構無縫連接，建築物在各個方向彎折、倒置和扭曲，挑戰觀者的空間認知。主角科布站在畫面前景，背對觀眾，身影被分割成多個部分，分別存在于不同夢境層級，暗示身份的分裂。他手中旋轉的陀螺被放大，成為畫面中央的焦點，周圍環繞着懸浮的碎片，這些碎片近看是記憶片段，遠看組成了已故妻子的剪影。' }, { id: 25, category: 'poster', title: '恐怖電影 - 沉默的羔羊', imageUrl: '025.png', prompt: '創作一張《沉默的羔羊》(The Silence of the Lambs) 電影海報，融合巴洛克戲劇性光影與現代心理恐怖元素。畫面採用達·芬奇式的左右對稱構圖，中央是女主角克拉麗斯·史達琳的面部特寫，她的表情複雜而微妙，眼神既表現出脆弱又透露出堅韌。她的面部被精心分割：一半沐浴在 FBI 學院冷調審訊室的藍色螢光燈下，另一半隱藏在漢尼拔地牢的陰影中，暗示她內心的光明與黑暗交織。她的瞳孔中精確反射出漢尼拔·萊克特博士的輪廓，瞳孔深處是一扇半開的門，象徵未知恐懼的入口。背景採用多層次設計：最近層是死亡之頭蛾的翅膀，翅膀上的骷髏圖案被放大，形成一種超現實的視覺效果。' }, { id: 26, category: 'poster', title: '武俠電影 - 臥虎藏龍', imageUrl: '026.png', prompt: '創作《臥虎藏龍》(Crouching Tiger, Hidden Dragon)電影海報，融合中國傳統水墨意境與現代電影視覺語言。海報採用豎構圖，留白得當。上方三分之一處，雲霧繚繞間若隱若現的山巒，以淡墨暈染，不求形似而求神似。中央主體為李慕白與玉嬌龍的身影，二人一上一下，呈太極之勢。不以寫實手法呈現面部細節，而以側影與輪廓勾勒，保留東方人物的神韻。李慕白持劍立于竹梢，身形沉穩如山；玉嬌龍輕盈若燕，似欲騰空而起。下方三分之一處，竹海延綿，以簡約筆觸勾勒，疏密有致。整幅海報以水墨為基調，主色調為墨黑、竹青、朱砂點綴。' }, { id: 27, category: 'poster', title: '動畫電影 - 千與千尋', imageUrl: '027.png', prompt: '設計一張《千與千尋》(Spirited Away) 電影海報，融合日本浮世繪與現代超現實主義的視覺語言。畫面呈現神秘浴場的垂直剖面圖，如同一個充滿生命的蟻巢，展現多層次的奇幻世界。中央是千尋站在連接人界與神界的紅色拱橋上，她的形象隨著視線上移而逐漸從普通人類女孩轉變為半透明的靈體，象徵身份的轉變。浴場建築採用日本傳統建築與超現實主義相結合的設計，屋檐如波浪般起伏，窗戶形狀各異，內部空間比外部看起來更加廣闊，違反物理法則。' }, { id: 28, category: 'poster', title: '科幻電影 - 黑客帝國', imageUrl: '028.png', prompt: '創作一幅 2:3 比例的《黑客帝國》(The Matrix)電影海報，作為對這部科幻經典的藝術致敬與學習。海報採用豎構圖，背景是流動的綠色代碼雨，從上至下漸變成深邃的黑色。中央是尼奧的側影，身着黑色風衣，姿態自信而警覺。他的身體部分像數據一樣分解，暗示虛擬與現實的界限模糊。上方漂浮着幾枚靜止的子彈，周圍時空扭曲，展現"子彈時間"的概念。下方是破碎的鏡面，反射出不同的現實片段。整體色調以黑、綠為主，點綴紅色藥丸的亮色，象徵關鍵選擇。' }, { id: 29, category: 'poster', title: '奇幻電影 - 指環王', imageUrl: '029.png', prompt: '創作一幅 2:3 比例的《指環王：王者歸來》電影海報，作為對托爾金世界與彼得·傑克遜電影的藝術致敬與學習。海報採用豎構圖，上方是曙光照耀下的白城米那斯提力斯，城塔巍峨壯觀。中央是阿拉貢手持安都瑞爾重鑄之劍，身着王者戰甲，背影挺拔而孤獨，面向遠方。他的影子卻化作遊俠形象，象徵雙重身份。弗羅多與山姆的小小身影攀爬着末日火山，周圍岩漿翻滾。甘道夫騎着白馬，率領軍隊迎戰黑暗勢力。遠處，巨大的索倫之眼若隱若現，光芒攝人。整體色調以金色與深藍為主，象徵希望與黑暗的對比。' }, { id: 30, category: 'poster', title: '都市電影 - 重慶森林', imageUrl: '030.png', prompt: '海報採用雙層敘事結構，通過精心設計的色彩分割與光影交錯表達電影的雙線敘事：上半部分：以藍綠色調為基礎，呈現雨夜中的香港街景。金黃色的霓虹燈在雨中氤氳擴散，形成朦朧光暈。663 號警察(梁朝偉)的側影立于街角，被雨水模糊的霓虹灯光勾勒出輪廓，他望向遠方，姿態孤獨而沉思。下半部分：以溫暖的黃橙色調為主，陽光穿過百葉窗，在公寓牆面投下條紋狀光影。阿菲(王菲)戴着墨鏡和耳機，身着制服，在陽光與陰影交錯中若隱若現。' }, { id: 31, category: 'poster', title: '愛情電影 - 花樣年華', imageUrl: '031.png', prompt: '創作《花樣年華》抽象概念海報，捕捉電影中壓抑的情感與時間的流逝。構圖採用窺視角，透過一扇老式木窗的縫隙看進室內。窗外是模糊的雨夜街景，霓虹燈光滲透進來。室內，一件色彩濃郁的旗袍（非人形）懸掛在昏暗的光線中，旗袍上的花紋精緻而憂鬱。旁邊的桌子上，一個老式時鐘的指針停在特定的時刻，鐘面玻璃上有一滴凝結的水珠，彷彿淚滴。一縷若有若無的香煙煙霧纏繞在旗袍與時鐘之間，象徵著無法言說的情感。色彩以深紅、墨綠和暗金色為主，營造出六十年代香港的復古、潮濕且曖昧的氛圍。' }, { id: 32, category: 'poster', title: '文藝電影 - 阿飛正傳', imageUrl: '032.png', prompt: '創作《阿飛正傳》抽象概念海報，2:3 比例，捕捉六十年代香港青春迷失與身份探索主題。構圖採用垂直三段式：上部：熱帶雨林抽象表現，深淺不一的綠色色塊與光影交錯。一隻熱帶鳥羽毛漂浮其中。中部：老式唱片機局部特寫，唱針與黑膠唱片接觸瞬間。下部：雨中街道抽象表現，濕潤路面反光與模糊霓虹燈倒影。色彩方案：復古綠、暗金與深藍為主，點綴霓虹粉。' }, { id: 33, category: 'poster', title: '科幻電影 - 2046', imageUrl: '033.png', prompt: '創作《2046》抽象概念海報，2:3 比例，捕捉電影中未來與過去、記憶與想像的交織。構圖採用垂直分層結構：上部(未來)：2046 抽象科幻景觀，幾何線條、光點與色塊組合。高速列車光軌以動態模糊效果穿越畫面。中部(過渡)：標誌性紅色窗簾意象的抽象呈現，通過紅色色塊的流動與褶皺暗示。下部(過去)：六十年代香港抽象印象，復古色調與紋理。"時空折疊"概念：三個部分通過視覺元素延伸交錯實現無縫過渡。' }, { id: 34, category: 'poster', title: '虛構科幻 - 星際迷途', imageUrl: '034.png', prompt: '《星際迷途：最後的邊界》一艘未來主義宇宙飛船穿越璀璨星雲，背景是廣闊宇宙和遙遠星系。飛船周圍有激光戰鬥場景，主角身着未來科技戰甲站在前景，手持高科技武器。色調以深藍、紫色和霓虹色為主，標題使用金屬質感字體，底部有一行小字："超越已知，探索無限"。' }, { id: 35, category: 'poster', title: '手繪風格 - 好東西', imageUrl: '035.png', prompt: '可愛手繪漫畫風格《好東西》電影海報：畫面中心是兩位女主角，一位短髮幹練的單親媽媽，眼神溫暖、姿態自信；另一位長髮女性表面陽光但眼中透露一絲憂鬱。畫面下方坐着一個專注寫作業的小女孩，彩色思緒泡泡、音符和漫畫風格文字從她向上盤旋，形成連接她與兩位女性的視覺橋梁。周圍漂浮着各種誇張卡通化的日常物品。背景是簡化處理的上海天際線，以平面色塊呈現。整體色調採用明亮的粉色、黃色和藍色，營造溫馨邀人的氛圍。' }
+        ];
+
+        // --- DOM 元素獲取 ---
+        const showExamplesBtn = document.getElementById('show-examples-btn');
+        const showGeneratorBtn = document.getElementById('show-generator-btn');
+        const examplesGrid = document.getElementById('examples-grid');
+        const generatorSection = document.getElementById('generator-section');
+        const filtersContainer = document.getElementById('filters-container');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const fullscreenText = document.getElementById('fullscreen-text');
+        const fullscreenIcon = document.getElementById('fullscreen-icon');
+        const exitFullscreenIcon = document.getElementById('exit-fullscreen-icon');
+        const generatedPromptTextarea = document.getElementById('generated-prompt');
+
+        // --- 通用功能函數 ---
+
+        const setupCustomInputListener = (selectId, inputId) => {
+            const selectElement = document.getElementById(selectId);
+            const inputElement = document.getElementById(inputId);
+            selectElement.addEventListener('change', () => {
+                inputElement.style.display = selectElement.value === 'custom' ? 'block' : 'none';
+            });
+        };
+
+        const getSelectOrCustomValue = (selectId, inputId) => {
+            const select = document.getElementById(selectId);
+            if (select.value === 'custom') {
+                return document.getElementById(inputId).value.trim();
+            }
+            return select.value;
+        };
+        
+        const renderExamples = (filter = 'all') => {
+            examplesGrid.innerHTML = '';
+            const filteredData = promptData.filter(item => filter === 'all' || item.category === filter);
+            filteredData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-img-container"><img src="${item.imageUrl}" alt="${item.title}" class="card-img" loading="lazy"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">${item.title}</h3>
+                        <div class="prompt-container"><p class="prompt-text">${item.prompt}</p></div>
+                        <button class="copy-btn" data-prompt-id="${item.id}">複製提示詞</button>
+                    </div>
+                `;
+                examplesGrid.appendChild(card);
+            });
+        };
+        
+        const updateFilterButtons = (activeButton) => {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            activeButton.classList.add('active');
+        };
+
+        const copyToClipboard = (text, buttonElement) => {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = buttonElement.innerHTML;
+                const originalColor = buttonElement.style.backgroundColor;
+                buttonElement.innerHTML = '複製成功!';
+                buttonElement.style.backgroundColor = '#007bff';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalHTML;
+                    buttonElement.style.backgroundColor = originalColor || '';
+                }, 2000);
+            }).catch(err => {
+                console.error('複製失敗: ', err);
+                alert('複製失敗，請檢查瀏覽器權限。');
+            });
+        };
+
+        // --- 事件監聽器綁定 ---
+
+        // 主控制按鈕
+        showExamplesBtn.addEventListener('click', () => {
+            generatorSection.style.display = 'none'; 
+            const isHidden = examplesGrid.style.display === 'none' || !examplesGrid.style.display;
+            if (isHidden) {
+                renderExamples();
+                examplesGrid.style.display = 'grid';
+                filtersContainer.style.display = 'flex';
+                updateFilterButtons(document.querySelector('.filter-btn[data-filter="all"]'));
+            } else {
+                examplesGrid.style.display = 'none';
+                filtersContainer.style.display = 'none';
+            }
+        });
+
+        showGeneratorBtn.addEventListener('click', () => {
+            examplesGrid.style.display = 'none'; 
+            filtersContainer.style.display = 'none';
+            const isHidden = generatorSection.style.display === 'none' || !generatorSection.style.display;
+            generatorSection.style.display = isHidden ? 'block' : 'none';
+        });
+
+        // 全螢幕
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`錯誤：無法進入全螢幕模式: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+        
+        document.addEventListener('fullscreenchange', () => {
+            const isFullscreen = !!document.fullscreenElement;
+            fullscreenText.textContent = isFullscreen ? '離開全螢幕' : '切換全螢幕';
+            fullscreenIcon.style.display = isFullscreen ? 'none' : 'block';
+            exitFullscreenIcon.style.display = isFullscreen ? 'block' : 'none';
+        });
+
+        // 範例庫
+        filtersContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                const filter = e.target.dataset.filter;
+                updateFilterButtons(e.target);
+                renderExamples(filter);
+            }
+        });
+
+        examplesGrid.addEventListener('click', (e) => {
+            if (e.target.classList.contains('copy-btn')) {
+                const promptId = parseInt(e.target.dataset.promptId, 10);
+                const item = promptData.find(p => p.id === promptId);
+                if (item) {
+                    copyToClipboard(item.prompt, e.target);
+                }
+            }
+        });
+
+        // --- 生成器 ---
+
+        // Tab 切換
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const formContents = document.querySelectorAll('.form-content');
+        const principles = { logo: document.getElementById('logo-principles'), poster: document.getElementById('poster-principles') };
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const tab = btn.dataset.tab;
+                formContents.forEach(content => content.classList.toggle('active', content.id === `${tab}-form`));
+                Object.values(principles).forEach(p => p.style.display = 'none');
+                principles[tab].style.display = 'block';
+            });
+        });
+
+        // 綁定自訂選項
+        setupCustomInputListener('logo-style', 'logo-style-custom');
+        setupCustomInputListener('logo-details', 'logo-details-custom');
+        setupCustomInputListener('poster-style', 'poster-style-custom');
+        setupCustomInputListener('poster-color', 'poster-color-custom');
+        setupCustomInputListener('poster-details', 'poster-details-custom');
+
+        // 生成按鈕
+        document.getElementById('generate-logo-btn').addEventListener('click', () => {
+            const subject = document.getElementById('logo-subject').value.trim();
+            const elements = document.getElementById('logo-elements').value.trim();
+            const style = getSelectOrCustomValue('logo-style', 'logo-style-custom');
+            const color = document.getElementById('logo-color').value.trim();
+            const details = getSelectOrCustomValue('logo-details', 'logo-details-custom');
+            
+            let prompt = `設計一個 "${subject || '通用'}" 的Logo。`;
+            if (elements) prompt += ` 核心元素為 "${elements}"。`;
+            if (style) prompt += ` 整體採用${style}。`;
+            if (color) prompt += ` 色彩為 "${color}"。`;
+            if (details) prompt += ` 附加要求：${details}。`;
+            
+            generatedPromptTextarea.value = prompt;
+        });
+
+        document.getElementById('generate-poster-btn').addEventListener('click', () => {
+            const subject = document.getElementById('poster-subject').value.trim();
+            const style = getSelectOrCustomValue('poster-style', 'poster-style-custom');
+            const scene = document.getElementById('poster-scene').value.trim();
+            const color = getSelectOrCustomValue('poster-color', 'poster-color-custom');
+            const details = getSelectOrCustomValue('poster-details', 'poster-details-custom');
+
+            let prompt = `創作一張關於 "${subject || '某個主題'}" 的電影海報。`;
+            if (style) prompt += ` 藝術風格為${style}。`;
+            if (scene) prompt += ` 主要畫面為：${scene}`;
+            if (color) prompt += ` ${color}。`;
+            if (details) prompt += ` ${details}。`;
+
+            generatedPromptTextarea.value = prompt;
+        });
+        
+        // 複製生成結果
+        document.getElementById('copy-generated-btn').addEventListener('click', (e) => {
+            copyToClipboard(generatedPromptTextarea.value, e.currentTarget);
+        });
+
+    });
+    </script>
+</body>
+</html>
