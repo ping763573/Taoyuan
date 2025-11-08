@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sora 2 提示指南 - 互動式網頁</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="main-title">Sora 2 提示指南</h1>
+                <span class="version-badge">v1.0.0</span>
+            </div>
+            <div class="header-right">
+                <button id="fullscreen-btn" class="btn btn--outline" aria-label="切換全螢幕">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                    <span class="btn-text">全螢幕</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <h3 class="nav-title">目錄導航</h3>
+                <ul class="nav-menu">
+                    <li><a href="#section-prompt-generator" class="nav-link">提示詞產生器</a></li>
+                    <li><a href="#section-before-start" class="nav-link">開始提示之前</a></li>
+                    <li><a href="#section-api-params" class="nav-link">API參數設定</a></li>
+                    <li><a href="#section-prompt-structure" class="nav-link">有效的提示結構</a></li>
+                    <li><a href="#section-visual-tips" class="nav-link">視覺提示技巧</a></li>
+                    <li><a href="#section-motion-control" class="nav-link">運動和時間控制</a></li>
+                    <li><a href="#section-lighting" class="nav-link">光線和色彩一致性</a></li>
+                    <li><a href="#section-image-input" class="nav-link">使用圖像輸入進行控制</a></li>
+                    <li><a href="#section-dialogue" class="nav-link">對話和音效</a></li>
+                    <li><a href="#section-remix" class="nav-link">使用混音功能迭代</a></li>
+                    <li><a href="#section-templates" class="nav-link">提示模板和範例</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content" id="main-content">
+            <div class="content-wrapper">
+
+                <!-- Section: Prompt Generator -->
+                <section id="section-prompt-generator" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Sora 2 提示詞產生器</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>透過以下步驟引導，一步步建立一個結構完整、效果出色的 Sora 2 提示詞。您可以填寫每個欄位，或載入範本進行修改。</p>
+                        
+                        <div class="generator-grid">
+                            <!-- Step 1: Style -->
+                            <div class="form-group">
+                                <label for="prompt-style" class="form-label">風格 (Style)</label>
+                                <textarea id="prompt-style" class="form-control" rows="4" placeholder="例如：手繪2D/3D混合動畫，具有柔和筆刷紋理... 或 1970年代浪漫劇，用35mm膠片拍攝..."></textarea>
+                            </div>
+
+                            <!-- Step 2: Scene Description -->
+                            <div class="form-group">
+                                <label for="prompt-description" class="form-label">場景描述 (Scene Description)</label>
+                                <textarea id="prompt-description" class="form-control" rows="5" placeholder="描述角色、服裝、風景、天氣等散文細節。"></textarea>
+                            </div>
+                            
+                            <!-- Step 3: Cinematography -->
+                            <div class="form-group">
+                                <label class="form-label">攝影 (Cinematography)</label>
+                                <div class="sub-grid">
+                                    <input type="text" id="prompt-camera" class="form-control" placeholder="攝影機：中近景，慢推進...">
+                                    <input type="text" id="prompt-lens" class="form-control" placeholder="鏡頭：35mm虛擬鏡頭...">
+                                    <input type="text" id="prompt-lighting" class="form-control" placeholder="光線：溫暖關鍵光...">
+                                    <input type="text" id="prompt-mood" class="form-control" placeholder="情緒：溫柔、異想天開...">
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Action -->
+                            <div class="form-group">
+                                <label for="prompt-action" class="form-label">動作 (Action)</label>
+                                <textarea id="prompt-action" class="form-control" rows="4" placeholder="用條列式描述具體動作：&#10;- 機器人敲擊燈泡；火花爆裂。&#10;- 她旋轉；她的裙子展開..."></textarea>
+                            </div>
+
+                            <!-- Step 5: Dialogue -->
+                            <div class="form-group">
+                                <label for="prompt-dialogue" class="form-label">對話 (Dialogue)</label>
+                                <textarea id="prompt-dialogue" class="form-control" rows="3" placeholder="角色說的簡短台詞：&#10;女子（笑）：&#34;看？連城市今晚都與我們一起跳舞。&#34;"></textarea>
+                            </div>
+
+                            <!-- Step 6: Sound -->
+                            <div class="form-group">
+                                <label for="prompt-sound" class="form-label">背景聲音 (Background Sound)</label>
+                                <textarea id="prompt-sound" class="form-control" rows="2" placeholder="環境音效，如：雨聲、滴答聲、輕柔機械嗡嗡聲..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="generator-controls">
+                            <button id="load-example1-btn" class="btn btn--secondary">動畫</button>
+                            <button id="load-example2-btn" class="btn btn--secondary">復古</button>
+                            <button id="load-example3-btn" class="btn btn--secondary">科幻</button>
+                            <button id="load-example4-btn" class="btn btn--secondary">自然</button>
+                            <button id="load-example5-btn" class="btn btn--secondary">奇幻</button>
+                            <button id="load-example6-btn" class="btn btn--secondary">恐怖</button>
+                            <button id="load-example7-btn" class="btn btn--secondary">美食</button>
+                            <button id="load-example8-btn" class="btn btn--secondary">Lofi</button>
+                            <button id="reset-generator-btn" class="btn btn--outline">全部清除</button>
+                        </div>
+
+                        <h3 class="subsection-title">產生的提示詞</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">組合提示詞</span>
+                                <button class="copy-btn" data-clipboard-target="#generated-prompt-code">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                    複製
+                                </button>
+                            </div>
+                            <pre><code id="generated-prompt-code" class="language-markdown">請在上方欄位輸入內容以產生提示詞...</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Section: Before Start -->
+                <section id="section-before-start" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">開始提示之前</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>將提示想像成向一位從未見過你分鏡腳本的攝影師進行簡報。如果你遺漏細節，他們會即興發揮——而你可能無法得到你所預想的結果。通過具體說明「鏡頭」應該達到什麼效果，你可以為模型提供更多控制和一致性。</p>
+                        
+                        <p>但保留一些細節開放也同樣強大。給模型更多創意自由可以帶來令人驚喜的變化和意想不到的美麗詮釋。兩種方法都是有效的：</p>
+                        
+                        <div class="highlight-box">
+                            <p><strong>詳細的提示給你控制和一致性，而較輕的提示為創意結果開放空間。</strong> 正確的平衡取決於你的目標和期望的結果。</p>
+                        </div>
+                        
+                        <p>將你的提示視為創意願望清單，而不是合約。就像ChatGPT一樣，<strong>多次使用相同的提示會產生不同的結果</strong>——這是一個特性，不是錯誤。每次生成都是全新的詮釋，有時第二或第三個選項會更好。</p>
+                        
+                        <p>最重要的是，準備好迭代。攝影機、光線或動作的微小變化都可能顯著改變結果。與模型協作：你提供方向，模型提供創意變化。</p>
+                        
+                        <p>這不是精確的科學——將下面的指導視為我們從與模型合作中學到的有用建議。</p>
+                    </div>
+                </section>
+
+                <!-- Section: API Parameters -->
+                <section id="section-api-params" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">API參數</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>提示控制影片的內容，但某些屬性僅由API參數控制。你無法在文字中請求它們，必須在API呼叫中明確設定：</p>
+                        
+                        <div class="parameter-list">
+                            <div class="parameter-item">
+                                <code class="parameter-name">model</code>: <code>sora-2</code> 或 <code>sora-2-pro</code>
+                            </div>
+                            
+                            <div class="parameter-item">
+                                <code class="parameter-name">size</code>: 格式為{寬度}x{高度}的字串。支援的解析度取決於模型選擇：
+                                <ul>
+                                    <li>sora-2: 1280x720, 720x1280</li>
+                                    <li>sora-2-pro: 1280x720, 720x1280, 1024x1792, 1792x1024</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="parameter-item">
+                                <code class="parameter-name">seconds</code>: 剪輯長度，支援值："4", "8", "12"。預設值為"4"。
+                            </div>
+                        </div>
+                        
+                        <p>這些參數是影片的容器——解析度、持續時間和品質不會根據"讓它更長"這樣的文字而改變。在API呼叫中明確設定它們；你的提示控制其他一切（主題、運動、光線、風格）。</p>
+                        
+                        <h3 class="subsection-title">影片解析度</h3>
+                        <p>影片解析度直接影響Sora中的視覺保真度和運動一致性。較高的解析度能更準確地生成細節、紋理和光線過渡，而較低的解析度會壓縮視覺資訊，經常引入柔和或瑕疵。</p>
+                        
+                        <h3 class="subsection-title">影片長度</h3>
+                        <p>模型在較短的剪輯中通常更可靠地遵循指令。為了獲得最佳結果，請瞄準簡潔的鏡頭。如果你的專案允許，你可能會通過在編輯中拼接兩個4秒剪輯而不是生成單個8秒剪輯來看到更好的結果。</p>
+                    </div>
+                </section>
+
+                <!-- Section: Prompt Structure -->
+                <section id="section-prompt-structure" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">有效的提示結構</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>清晰的提示描述一個鏡頭，就像你將它畫在分鏡腳本上一樣。說明攝影機構圖，註明景深，按節拍描述動作，並設置光線和調色。用一些特色細節來固定你的主題保持其可識別性，而單一、合理的動作使鏡頭更容易跟隨。</p>
+                        
+                        <p>在單個提示中描述多個鏡頭也是有效的，如果你需要涵蓋一個序列。當你這樣做時，保持每個鏡頭塊的獨特性：一個攝影機設置，一個主題動作，一次一個光線配方。這給你靈活性來生成短的獨立剪輯或更長的連續時刻，取決於你的專案。將每個鏡頭視為一個創意單位，你可以在編輯中將它們拼接在一起，或讓它們作為一個序列連續播放。</p>
+                        
+                        <ul>
+                            <li>較短的提示給模型更多創意自由。期待令人驚喜的結果。</li>
+                            <li>較長、更詳細的提示限制模型的創意。它會嘗試遵循你的指導，但可能不總是可靠地做到這一點。</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section: Visual Tips -->
+                <section id="section-visual-tips" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">視覺提示技巧</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>在編寫提示時，<strong>風格是引導模型朝向你期望結果的最強大槓桿之一</strong>。描述整體美學——例如，"1970年代電影"、"史詩級IMAX規模場景"或"16mm黑白電影"——設定一個視覺基調，框定所有其他選擇。早期建立這種風格，以便模型能夠一致地貫徹。</p>
+                        
+                        <p>根據你是要求精美的好萊塢劇情片、手持智慧型手機剪輯還是顆粒感復古商業廣告，相同的細節會有非常不同的呈現。一旦基調設定，就用鏡頭、動作和光線來分層具體內容。</p>
+                        
+                        <div class="tip-box">
+                            <p><strong>清晰獲勝。</strong> 與其使用模糊的提示如"美麗的街道"，不如寫"濕瀝青、斑馬線、霓虹燈招牌倒影"。與其"快速移動"，不如指定"慢跑三步並在路邊停下"。指向可見結果的動詞和名詞總會給你更清晰、更一致的輸出。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Motion Control -->
+                <section id="section-motion-control" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">控制運動和時間</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>運動往往是最難正確掌握的部分，所以保持簡單。每個鏡頭應該有一個清晰的攝影機移動和一個清晰的主題動作。當以節拍或計數描述動作時效果最好——小步驟、手勢或暫停——這樣它們在時間上感覺接地。</p>
+                        
+                        <div class="example-comparison">
+                            <div class="comparison-item bad">
+                                <span class="label">❌ 模糊</span>
+                                <p>"演員走過房間"</p>
+                            </div>
+                            <div class="comparison-item good">
+                                <span class="label">✅ 具體</span>
+                                <p>"演員向窗戶走四步，暫停，並在最後一秒拉窗簾"</p>
+                            </div>
+                        </div>
+                        
+                        <p>像上面這樣的台詞使時間精確且可實現。</p>
+                    </div>
+                </section>
+
+                <!-- Section: Lighting -->
+                <section id="section-lighting" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">光線和色彩一致性</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>光線決定情緒就像動作或設置一樣。橫跨畫面的漫射光感覺平靜和中性，而單一強光源創造尖銳對比和張力。當你想要將多個剪輯剪輯在一起時，保持光線邏輯一致是使編輯無縫的關鍵。</p>
+                        
+                        <p>描述光線的品質和加強它的色彩錨點。與其說"明亮照明的房間"這樣的廣泛註釋，不如指定光源和色調的混合："柔和的窗光與溫暖的燈填充和來自走廊的涼爽邊緣"。命名三到五種顏色有助於保持調色板在鏡頭間穩定。</p>
+                    </div>
+                </section>
+
+                <!-- Section: Image Input -->
+                <section id="section-image-input" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">使用圖像輸入進行更多控制</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>為了對鏡頭的<strong>構圖和風格</strong>有更精細的控制，你可以使用<strong>圖像輸入</strong>作為視覺參考。你可以使用照片、數位藝術作品或AI生成的視覺效果。這鎖定了角色設計、服裝、佈景裝飾或整體美學等元素。模型使用圖像作為第一幀的錨點，而你的文字提示定義接下來發生什麼。</p>
+                        
+                        <h3 class="subsection-title">如何使用</h3>
+                        <p>在你的POST /videos請求中將圖像文件作為input_reference參數包含。</p>
+                        <ul>
+                            <li>圖像必須與目標影片的解析度（大小）匹配。</li>
+                            <li>支援的文件格式是：<code>image/jpeg</code>、<code>image/png</code>和<code>image/webp</code>。</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section: Dialogue -->
+                <section id="section-dialogue" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">對話和音效</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>對話必須在你的提示中直接描述。將其放在你的散文描述下方的塊中，以便模型清楚地區分視覺描述和口語台詞。保持台詞簡潔自然，並嘗試將交流限制在幾句話內，以便時間能夠匹配你的剪輯長度。對於多角色場景，一致地標記說話者並使用交替轉換；這有助於模型將每條台詞與正確角色的手勢和表情相關聯。</p>
+                        
+                        <p>你還應該考慮節奏和時間：4秒鏡頭通常能容納一到兩個短交流，而8秒剪輯可以支援更多。長而複雜的演講不太可能同步良好，可能會破壞節奏。</p>
+                        
+                        <p>如果你的鏡頭是無聲的，你仍然可以用一個小聲音建議節奏，如"遠方交通嘶嘶聲"或"清脆的響聲"。將其視為節奏提示而不是完整配樂。</p>
+                    </div>
+                </section>
+
+                <!-- Section: Remix -->
+                <section id="section-remix" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">使用混音功能迭代</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <p>混音用於微調，而不是賭博。使用它來進行受控的變更——一次一個——並說出你在改變什麼："相同鏡頭，切換到85mm"或"相同光線，新調色板：青綠、沙色、鐵鏽色"。當結果接近時，將其固定為參考並只描述調整。這樣，已經有效的一切都保持鎖定。</p>
+                        
+                        <p>如果鏡頭持續出錯，將其簡化：凍結攝影機，簡化動作，清除背景。一旦它有效，逐步分層增加複雜性。</p>
+                    </div>
+                </section>
+
+                <!-- Section: Templates -->
+                <section id="section-templates" class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">提示模板和範例</h2>
+                        <button class="collapse-btn" aria-label="摺疊章節">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <h3 class="subsection-title">提示結構</h3>
+                        <p>編寫提示的一個有效方法是分離你希望模型使用的不同類型資訊。這<strong>不是成功的萬能配方</strong>，但它給你一個清晰的框架並使保持一致性更容易。不是每個細節都需要包含——如果某些東西對鏡頭不重要，你可以忽略它。</p>
+                        
+                        <p>實際上，<strong>保持某些元素開放式會鼓勵模型更有創意</strong>。你指定的每個視覺選擇越不嚴格，模型就有越多空間來詮釋並用意想不到但通常美麗的變化來驚喜你。高度描述性的提示產生更一致、受控的結果，而較輕的提示可以解鎖感覺新鮮和富有想像力的多樣化結果。</p>
+                        
+                        <h3 class="subsection-title">描述性提示模板</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">提示模板</span>
+                                <button class="copy-btn" data-clipboard-target=".template-code">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                    複製
+                                </button>
+                            </div>
+                            <pre class="template-code"><code>[用簡單語言進行散文場景描述。描述角色、服裝、風景、天氣和其他細節。盡可能描述性以生成符合你願景的影片。]
+
+攝影:
+攝影機鏡頭: [構圖和角度，如廣角建立鏡頭，平視]
+情緒: [整體基調，如電影化和緊張，俏皮和懸疑，奢華期待]
+
+動作:
+- [動作1：清晰、具體的節拍或手勢]
+- [動作2：剪輯中的另一個獨特節拍]
+- [動作3：另一個動作或對話台詞]
+
+對話:
+[如果鏡頭有對話，在這裡或作為動作列表的一部分添加簡短自然的台詞。保持簡潔以匹配剪輯長度。]</code></pre>
+                        </div>
+                        
+                        <h3 class="subsection-title">範例1：動畫風格</h3>
+                        <div class="example-block">
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-label">動畫風格範例</span>
+                                    <button class="copy-btn" data-clipboard-target=".example1-code">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        複製
+                                    </button>
+                                </div>
+                                <pre class="example1-code"><code>風格: 手繪2D/3D混合動畫，具有柔和筆刷紋理、溫暖鎢絲燈光和觸覺定格動畫感。美學喚起2000年代中期故事書動畫——舒適、不完美、充滿機械魅力。微妙的水彩洗和繪畫紋理；暖冷平衡分級；電影運動模糊用於動畫真實感。
+
+在一個雜亂的工作室內，架子上溢滿了齒輪、螺栓和泛黃的藍圖。在中心，一個小圓機器人坐在木長凳上，其凹陷的身體用不匹配的板材和舊油漆層修補。它的大發光眼睛閃爍淡藍色，緊張地擺弄著一個嗡嗡響的燈泡。空氣中充滿安靜的機械呼呼聲，雨水拍打在窗戶上，時鐘在背景中穩定滴答。
+
+攝影:
+攝影機: 中近景，慢推進與來自懸掛工具的溫和視差
+鏡頭: 35mm虛擬鏡頭；淺景深以軟化背景雜亂
+光線: 來自頂部實用的溫暖關鍵光；來自窗戶的涼爽溢出形成對比
+情緒: 溫柔、異想天開，一絲懸疑
+
+動作:
+- 機器人敲擊燈泡；火花爆裂。
+- 它畏縮，掉落燈泡，眼睛睜大。
+- 燈泡慢動作翻滾；它及時抓住它。
+- 一股蒸汽從其胸部逸出——寬慰和驕傲。
+- 機器人輕聲說："差點丟了它...但我抓住了！"
+
+背景聲音:
+雨聲、滴答聲、輕柔機械嗡嗡聲、微弱燈泡嘶嘶聲。</code></pre>
+                            </div>
+                        </div>
+                        
+                        <h3 class="subsection-title">範例2：復古劇情風格</h3>
+                        <div class="example-block">
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-label">復古劇情風格範例</span>
+                                    <button class="copy-btn" data-clipboard-target=".example2-code">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        複製
+                                    </button>
+                                </div>
+                                <pre class="example2-code"><code>風格: 1970年代浪漫劇，用35mm膠片拍攝，自然光暈、柔焦和溫暖暈光。輕微膠片晃動和手持微震動喚起復古親密感。溫暖柯達風格分級；燈泡上輕微暈光；膠片顆粒和柔和暈影用於時代真實性。
+
+在黃金時刻，磚砌公寓屋頂變成一個小舞台。掛著白床單的晾衣繩在風中搖擺，捕捉最後的陽光。一串不匹配的仙女燈泡在頭頂微弱嗡嗡響。一個穿著飄逸紅絲裙的年輕女子赤腳跳舞，捲髮在漸逝的光線中發光。她的舞伴——袖子捲起，吊帶鬆散——鼓掌，笑容寬闊而毫無防備。下方，城市嗡嗡響著汽車喇叭、地鐵震動和遠方笑聲。
+
+攝影:
+攝影機: 中廣角鏡頭，從平視緩慢推軌
+鏡頭: 40mm球面；淺焦點以將情侶從天際線中分離
+光線: 黃金自然關鍵光與鎢絲反彈；來自仙女燈泡的邊緣
+情緒: 懷舊、溫柔、電影化
+
+動作:
+- 她旋轉；她的裙子展開，捕捉陽光。
+- 女子（笑）："看？連城市今晚都與我們一起跳舞。"
+- 他步入，抓住她的手，將她浸入陰影中。
+- 男子（微笑）："只因為你領舞。"
+- 床單飄過畫面，短暫遮蔽天際線然後再次分開。
+
+背景聲音:
+僅自然環境：微弱風聲、織物飄動、街道噪音、悶響音樂。無添加配樂。</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="切換選單">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+
+    <script src="app.js"></script>
+</body>
+</html>
