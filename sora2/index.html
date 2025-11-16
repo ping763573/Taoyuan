@@ -1,486 +1,1159 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sora 2 提示指南 - 互動式網頁</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css">
+    <title>Sora 互動式提示詞產生器 V1.0.5</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 icon (用於全螢幕按鈕) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 自訂樣式 */
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+        .prompt-generator {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+        }
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background-color: #fdfdfd;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        select:focus, input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+        .btn-fullscreen {
+            background-color: #ffffff;
+            color: #4b5563;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn-fullscreen:hover {
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        .nav-btn {
+            border-bottom: 3px solid transparent;
+            color: #6b7280;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-btn.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        .nav-btn:not(.active):hover {
+            color: #1f2937;
+            border-bottom-color: #e5e7eb;
+        }
+        .category-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+        .category-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .category-btn:not(.active):hover {
+            background-color: #e5e7eb;
+        }
+        .principle-content {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 1.5rem 2rem;
+            line-height: 1.75;
+        }
+        .principle-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-top: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .principle-content p {
+            margin-top: 1rem;
+            color: #4b5563;
+        }
+        .principle-content ul {
+            margin-top: 1rem;
+            padding-left: 1.25rem;
+            list-style-type: disc;
+            color: #4b5563;
+        }
+        .principle-content li {
+            margin-top: 0.5rem;
+        }
+        .principle-content code {
+            background-color: #f3f4f6;
+            color: #dc2626;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .principle-content .good {
+            color: #16a34a;
+        }
+        .principle-content .bad {
+            color: #dc2626;
+        }
+        .history-entry {
+            transition: all 0.3s ease;
+        }
+        .history-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <h1 class="main-title">Sora 2 提示指南</h1>
-                <span class="version-badge">v1.0.0</span>
-            </div>
-            <div class="header-right">
-                <button id="fullscreen-btn" class="btn btn--outline" aria-label="切換全螢幕">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-                    </svg>
-                    <span class="btn-text">全螢幕</span>
+<body class="text-gray-800">
+
+    <!-- 頂部固定導覽列 -->
+    <nav id="main-nav" class="sticky top-0 z-50 bg-white shadow-md w-full px-4 py-3">
+        <div class="max-w-screen-xl mx-auto flex justify-between items-center">
+            <!-- 標題 -->
+            <h1 class="text-2xl font-bold text-gray-900 whitespace-nowrap">
+                Sora 提示詞 <span id="version-display" class="text-lg font-normal text-blue-600 ml-1">V1.0.5</span>
+            </h1>
+            
+            <!-- 導覽按鈕 -->
+            <div class="flex space-x-2 md:space-x-4 mx-2">
+                <button class="nav-btn px-2 py-2 font-medium text-sm rounded-md" data-target="demo-section">
+                    <i class="fas fa-video sm:mr-1"></i> <span class="hidden sm:inline">功能練習示範</span>
+                </button>
+                <button class="nav-btn px-2 py-2 font-medium text-sm rounded-md" data-target="generator-section">
+                    <i class="fas fa-magic sm:mr-1"></i> <span class="hidden sm:inline">提示詞產生器</span>
+                </button>
+                <!-- 修改：Sora-2 原則按鈕現在會跳轉到外部網址 -->
+                <button id="principles-btn" class="nav-btn px-2 py-2 font-medium text-sm rounded-md">
+                    <i class="fas fa-book-open sm:mr-1"></i> <span class="hidden sm:inline">Sora-2 原則</span>
+                </button>
+                <button class="nav-btn px-2 py-2 font-medium text-sm rounded-md" data-target="history-section">
+                    <i class="fas fa-history sm:mr-1"></i> <span class="hidden sm:inline">歷史版本文件</span>
                 </button>
             </div>
+            
+            <!-- 全螢幕按鈕 -->
+            <button id="fullscreen-btn" class="btn btn-fullscreen w-10 h-10 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-expand"></i>
+            </button>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Content -->
-    <div class="main-layout">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-content">
-                <h3 class="nav-title">目錄導航</h3>
-                <ul class="nav-menu">
-                    <li><a href="#section-prompt-generator" class="nav-link">提示詞產生器</a></li>
-                    <li><a href="#section-before-start" class="nav-link">開始提示之前</a></li>
-                    <li><a href="#section-api-params" class="nav-link">API參數設定</a></li>
-                    <li><a href="#section-prompt-structure" class="nav-link">有效的提示結構</a></li>
-                    <li><a href="#section-visual-tips" class="nav-link">視覺提示技巧</a></li>
-                    <li><a href="#section-motion-control" class="nav-link">運動和時間控制</a></li>
-                    <li><a href="#section-lighting" class="nav-link">光線和色彩一致性</a></li>
-                    <li><a href="#section-image-input" class="nav-link">使用圖像輸入進行控制</a></li>
-                    <li><a href="#section-dialogue" class="nav-link">對話和音效</a></li>
-                    <li><a href="#section-remix" class="nav-link">使用混音功能迭代</a></li>
-                    <li><a href="#section-templates" class="nav-link">提示模板和範例</a></li>
-                </ul>
+    <div class="main-container px-4">
+        
+        <!-- 1. 練習示範功能區 -->
+        <section id="demo-section" class="page-section mb-8">
+            <h2 class="text-2xl font-semibold mb-4">功能練習示範</h2>
+            
+            <!-- 分類按鈕區域 -->
+            <div class="mb-4">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button class="category-btn active" data-category="all">
+                        <i class="fas fa-layer-group mr-1"></i>全部範例
+                    </button>
+                    <button class="category-btn" data-category="urban">
+                        <i class="fas fa-city mr-1"></i>城市生活
+                    </button>
+                    <button class="category-btn" data-category="nature">
+                        <i class="fas fa-tree mr-1"></i>自然景觀
+                    </button>
+                    <button class="category-btn" data-category="animals">
+                        <i class="fas fa-paw mr-1"></i>動物世界
+                    </button>
+                    <button class="category-btn" data-category="fantasy">
+                        <i class="fas fa-dragon mr-1"></i>奇幻想像
+                    </button>
+                    <button class="category-btn" data-category="sci-fi">
+                        <i class="fas fa-rocket mr-1"></i>科幻未來
+                    </button>
+                    <button class="category-btn" data-category="animation">
+                        <i class="fas fa-film mr-1"></i>動畫風格
+                    </button>
+                    <button class="category-btn" data-category="historical">
+                        <i class="fas fa-landmark mr-1"></i>歷史復古
+                    </button>
+                    <button class="category-btn" data-category="abstract">
+                        <i class="fas fa-shapes mr-1"></i>抽象創意
+                    </button>
+                </div>
+                <div class="text-sm text-gray-500 mb-2">
+                    目前顯示: <span id="current-category">全部範例</span> (<span id="demo-count">0</span> 個範例)
+                </div>
             </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="content" id="main-content">
-            <div class="content-wrapper">
-
-                <!-- Section: Prompt Generator -->
-                <section id="section-prompt-generator" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Sora 2 提示詞產生器</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
+            
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <!-- 上方展示區：影片 -->
+                <div class="video-container bg-black flex justify-center items-center min-h-[400px]">
+                    <video id="demo-video" controls class="w-full max-h-[400px]" src="https://cdn.openai.com/sora/videos/tokyo-walk.mp4" type="video/mp4">
+                        您的瀏覽器不支援 Video 標籤。
+                    </video>
+                    <!-- 影片預留位置 -->
+                    <div id="video-placeholder" class="hidden w-full h-[400px] bg-gray-200 flex items-center justify-center text-gray-500 text-center p-4">
+                        尚無影片。<br>請在程式碼的 `demos` 陣列中補上影片網址。
                     </div>
-                    <div class="section-content">
-                        <p>透過以下步驟引導，一步步建立一個結構完整、效果出色的 Sora 2 提示詞。您可以填寫每個欄位，或載入範本進行修改。</p>
-                        
-                        <div class="generator-grid">
-                            <!-- Step 1: Style -->
-                            <div class="form-group">
-                                <label for="prompt-style" class="form-label">風格 (Style)</label>
-                                <textarea id="prompt-style" class="form-control" rows="4" placeholder="例如：手繪2D/3D混合動畫，具有柔和筆刷紋理... 或 1970年代浪漫劇，用35mm膠片拍攝..."></textarea>
-                            </div>
-
-                            <!-- Step 2: Scene Description -->
-                            <div class="form-group">
-                                <label for="prompt-description" class="form-label">場景描述 (Scene Description)</label>
-                                <textarea id="prompt-description" class="form-control" rows="5" placeholder="描述角色、服裝、風景、天氣等散文細節。"></textarea>
-                            </div>
-                            
-                            <!-- Step 3: Cinematography -->
-                            <div class="form-group">
-                                <label class="form-label">攝影 (Cinematography)</label>
-                                <div class="sub-grid">
-                                    <input type="text" id="prompt-camera" class="form-control" placeholder="攝影機：中近景，慢推進...">
-                                    <input type="text" id="prompt-lens" class="form-control" placeholder="鏡頭：35mm虛擬鏡頭...">
-                                    <input type="text" id="prompt-lighting" class="form-control" placeholder="光線：溫暖關鍵光...">
-                                    <input type="text" id="prompt-mood" class="form-control" placeholder="情緒：溫柔、異想天開...">
-                                </div>
-                            </div>
-
-                            <!-- Step 4: Action -->
-                            <div class="form-group">
-                                <label for="prompt-action" class="form-label">動作 (Action)</label>
-                                <textarea id="prompt-action" class="form-control" rows="4" placeholder="用條列式描述具體動作：&#10;- 機器人敲擊燈泡；火花爆裂。&#10;- 她旋轉；她的裙子展開..."></textarea>
-                            </div>
-
-                            <!-- Step 5: Dialogue -->
-                            <div class="form-group">
-                                <label for="prompt-dialogue" class="form-label">對話 (Dialogue)</label>
-                                <textarea id="prompt-dialogue" class="form-control" rows="3" placeholder="角色說的簡短台詞：&#10;女子（笑）：&#34;看？連城市今晚都與我們一起跳舞。&#34;"></textarea>
-                            </div>
-
-                            <!-- Step 6: Sound -->
-                            <div class="form-group">
-                                <label for="prompt-sound" class="form-label">背景聲音 (Background Sound)</label>
-                                <textarea id="prompt-sound" class="form-control" rows="2" placeholder="環境音效，如：雨聲、滴答聲、輕柔機械嗡嗡聲..."></textarea>
-                            </div>
-                        </div>
-
-                        <div class="generator-controls">
-                            <button id="load-example1-btn" class="btn btn--secondary">動畫</button>
-                            <button id="load-example2-btn" class="btn btn--secondary">復古</button>
-                            <button id="load-example3-btn" class="btn btn--secondary">科幻</button>
-                            <button id="load-example4-btn" class="btn btn--secondary">自然</button>
-                            <button id="load-example5-btn" class="btn btn--secondary">奇幻</button>
-                            <button id="load-example6-btn" class="btn btn--secondary">恐怖</button>
-                            <button id="load-example7-btn" class="btn btn--secondary">美食</button>
-                            <button id="load-example8-btn" class="btn btn--secondary">Lofi</button>
-                            <button id="reset-generator-btn" class="btn btn--outline">全部清除</button>
-                        </div>
-
-                        <h3 class="subsection-title">產生的提示詞</h3>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-label">組合提示詞</span>
-                                <button class="copy-btn" data-clipboard-target="#generated-prompt-code">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                    複製
-                                </button>
-                            </div>
-                            <pre><code id="generated-prompt-code" class="language-markdown">請在上方欄位輸入內容以產生提示詞...</code></pre>
-                        </div>
+                </div>
+                <!-- 下方提示字 -->
+                <div class="p-4">
+                    <p class="text-sm text-gray-500 mb-1">影片網址：<span id="video-url">https://cdn.openai.com/sora/videos/tokyo-walk.mp4</span></p>
+                    <p id="demo-prompt" class="text-base text-gray-700 font-medium">
+                        一位時尚女性穿著一件黑色皮夾克，一条長長的紅色裙子和黑色靴子，手上拎著一個黑色的包，在熱鬧的東京街道上行走。周圍有溫暖的霓虹燈和動態的城市標誌。她戴著太陽眼鏡和紅色口紅，自信而隨意地行走街道。街道潮濕而反光，形成了五彩燈光的鏡面效果。行人在周圍走動。
+                    </p>
+                </div>
+                <!-- 範例切換按鈕 -->
+                <div class="p-4 bg-gray-50 border-t border-gray-200 flex flex-wrap items-center gap-4">
+                    <button id="prev-demo-btn" class="btn btn-secondary">
+                        <i class="fas fa-chevron-left mr-2"></i>上一個範例
+                    </button>
+                    <button id="next-demo-btn" class="btn btn-secondary">下一個範例</button>
+                    <button id="copy-prompt-btn" class="btn btn-primary bg-green-600 hover:bg-green-700">
+                        <i class="fas fa-copy mr-2"></i>複製提示詞
+                    </button>
+                    <span id="copy-feedback" class="text-green-600 font-medium ml-2 hidden">已複製！</span>
+                    <div class="ml-auto text-sm text-gray-500">
+                        <span id="demo-index">1</span> / <span id="demo-total">0</span>
                     </div>
-                </section>
-
-
-                <!-- Section: Before Start -->
-                <section id="section-before-start" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">開始提示之前</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>將提示想像成向一位從未見過你分鏡腳本的攝影師進行簡報。如果你遺漏細節，他們會即興發揮——而你可能無法得到你所預想的結果。通過具體說明「鏡頭」應該達到什麼效果，你可以為模型提供更多控制和一致性。</p>
-                        
-                        <p>但保留一些細節開放也同樣強大。給模型更多創意自由可以帶來令人驚喜的變化和意想不到的美麗詮釋。兩種方法都是有效的：</p>
-                        
-                        <div class="highlight-box">
-                            <p><strong>詳細的提示給你控制和一致性，而較輕的提示為創意結果開放空間。</strong> 正確的平衡取決於你的目標和期望的結果。</p>
-                        </div>
-                        
-                        <p>將你的提示視為創意願望清單，而不是合約。就像ChatGPT一樣，<strong>多次使用相同的提示會產生不同的結果</strong>——這是一個特性，不是錯誤。每次生成都是全新的詮釋，有時第二或第三個選項會更好。</p>
-                        
-                        <p>最重要的是，準備好迭代。攝影機、光線或動作的微小變化都可能顯著改變結果。與模型協作：你提供方向，模型提供創意變化。</p>
-                        
-                        <p>這不是精確的科學——將下面的指導視為我們從與模型合作中學到的有用建議。</p>
-                    </div>
-                </section>
-
-                <!-- Section: API Parameters -->
-                <section id="section-api-params" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">API參數</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>提示控制影片的內容，但某些屬性僅由API參數控制。你無法在文字中請求它們，必須在API呼叫中明確設定：</p>
-                        
-                        <div class="parameter-list">
-                            <div class="parameter-item">
-                                <code class="parameter-name">model</code>: <code>sora-2</code> 或 <code>sora-2-pro</code>
-                            </div>
-                            
-                            <div class="parameter-item">
-                                <code class="parameter-name">size</code>: 格式為{寬度}x{高度}的字串。支援的解析度取決於模型選擇：
-                                <ul>
-                                    <li>sora-2: 1280x720, 720x1280</li>
-                                    <li>sora-2-pro: 1280x720, 720x1280, 1024x1792, 1792x1024</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="parameter-item">
-                                <code class="parameter-name">seconds</code>: 剪輯長度，支援值："4", "8", "12"。預設值為"4"。
-                            </div>
-                        </div>
-                        
-                        <p>這些參數是影片的容器——解析度、持續時間和品質不會根據"讓它更長"這樣的文字而改變。在API呼叫中明確設定它們；你的提示控制其他一切（主題、運動、光線、風格）。</p>
-                        
-                        <h3 class="subsection-title">影片解析度</h3>
-                        <p>影片解析度直接影響Sora中的視覺保真度和運動一致性。較高的解析度能更準確地生成細節、紋理和光線過渡，而較低的解析度會壓縮視覺資訊，經常引入柔和或瑕疵。</p>
-                        
-                        <h3 class="subsection-title">影片長度</h3>
-                        <p>模型在較短的剪輯中通常更可靠地遵循指令。為了獲得最佳結果，請瞄準簡潔的鏡頭。如果你的專案允許，你可能會通過在編輯中拼接兩個4秒剪輯而不是生成單個8秒剪輯來看到更好的結果。</p>
-                    </div>
-                </section>
-
-                <!-- Section: Prompt Structure -->
-                <section id="section-prompt-structure" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">有效的提示結構</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>清晰的提示描述一個鏡頭，就像你將它畫在分鏡腳本上一樣。說明攝影機構圖，註明景深，按節拍描述動作，並設置光線和調色。用一些特色細節來固定你的主題保持其可識別性，而單一、合理的動作使鏡頭更容易跟隨。</p>
-                        
-                        <p>在單個提示中描述多個鏡頭也是有效的，如果你需要涵蓋一個序列。當你這樣做時，保持每個鏡頭塊的獨特性：一個攝影機設置，一個主題動作，一次一個光線配方。這給你靈活性來生成短的獨立剪輯或更長的連續時刻，取決於你的專案。將每個鏡頭視為一個創意單位，你可以在編輯中將它們拼接在一起，或讓它們作為一個序列連續播放。</p>
-                        
-                        <ul>
-                            <li>較短的提示給模型更多創意自由。期待令人驚喜的結果。</li>
-                            <li>較長、更詳細的提示限制模型的創意。它會嘗試遵循你的指導，但可能不總是可靠地做到這一點。</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <!-- Section: Visual Tips -->
-                <section id="section-visual-tips" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">視覺提示技巧</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>在編寫提示時，<strong>風格是引導模型朝向你期望結果的最強大槓桿之一</strong>。描述整體美學——例如，"1970年代電影"、"史詩級IMAX規模場景"或"16mm黑白電影"——設定一個視覺基調，框定所有其他選擇。早期建立這種風格，以便模型能夠一致地貫徹。</p>
-                        
-                        <p>根據你是要求精美的好萊塢劇情片、手持智慧型手機剪輯還是顆粒感復古商業廣告，相同的細節會有非常不同的呈現。一旦基調設定，就用鏡頭、動作和光線來分層具體內容。</p>
-                        
-                        <div class="tip-box">
-                            <p><strong>清晰獲勝。</strong> 與其使用模糊的提示如"美麗的街道"，不如寫"濕瀝青、斑馬線、霓虹燈招牌倒影"。與其"快速移動"，不如指定"慢跑三步並在路邊停下"。指向可見結果的動詞和名詞總會給你更清晰、更一致的輸出。</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section: Motion Control -->
-                <section id="section-motion-control" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">控制運動和時間</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>運動往往是最難正確掌握的部分，所以保持簡單。每個鏡頭應該有一個清晰的攝影機移動和一個清晰的主題動作。當以節拍或計數描述動作時效果最好——小步驟、手勢或暫停——這樣它們在時間上感覺接地。</p>
-                        
-                        <div class="example-comparison">
-                            <div class="comparison-item bad">
-                                <span class="label">❌ 模糊</span>
-                                <p>"演員走過房間"</p>
-                            </div>
-                            <div class="comparison-item good">
-                                <span class="label">✅ 具體</span>
-                                <p>"演員向窗戶走四步，暫停，並在最後一秒拉窗簾"</p>
-                            </div>
-                        </div>
-                        
-                        <p>像上面這樣的台詞使時間精確且可實現。</p>
-                    </div>
-                </section>
-
-                <!-- Section: Lighting -->
-                <section id="section-lighting" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">光線和色彩一致性</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>光線決定情緒就像動作或設置一樣。橫跨畫面的漫射光感覺平靜和中性，而單一強光源創造尖銳對比和張力。當你想要將多個剪輯剪輯在一起時，保持光線邏輯一致是使編輯無縫的關鍵。</p>
-                        
-                        <p>描述光線的品質和加強它的色彩錨點。與其說"明亮照明的房間"這樣的廣泛註釋，不如指定光源和色調的混合："柔和的窗光與溫暖的燈填充和來自走廊的涼爽邊緣"。命名三到五種顏色有助於保持調色板在鏡頭間穩定。</p>
-                    </div>
-                </section>
-
-                <!-- Section: Image Input -->
-                <section id="section-image-input" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">使用圖像輸入進行更多控制</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>為了對鏡頭的<strong>構圖和風格</strong>有更精細的控制，你可以使用<strong>圖像輸入</strong>作為視覺參考。你可以使用照片、數位藝術作品或AI生成的視覺效果。這鎖定了角色設計、服裝、佈景裝飾或整體美學等元素。模型使用圖像作為第一幀的錨點，而你的文字提示定義接下來發生什麼。</p>
-                        
-                        <h3 class="subsection-title">如何使用</h3>
-                        <p>在你的POST /videos請求中將圖像文件作為input_reference參數包含。</p>
-                        <ul>
-                            <li>圖像必須與目標影片的解析度（大小）匹配。</li>
-                            <li>支援的文件格式是：<code>image/jpeg</code>、<code>image/png</code>和<code>image/webp</code>。</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <!-- Section: Dialogue -->
-                <section id="section-dialogue" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">對話和音效</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>對話必須在你的提示中直接描述。將其放在你的散文描述下方的塊中，以便模型清楚地區分視覺描述和口語台詞。保持台詞簡潔自然，並嘗試將交流限制在幾句話內，以便時間能夠匹配你的剪輯長度。對於多角色場景，一致地標記說話者並使用交替轉換；這有助於模型將每條台詞與正確角色的手勢和表情相關聯。</p>
-                        
-                        <p>你還應該考慮節奏和時間：4秒鏡頭通常能容納一到兩個短交流，而8秒剪輯可以支援更多。長而複雜的演講不太可能同步良好，可能會破壞節奏。</p>
-                        
-                        <p>如果你的鏡頭是無聲的，你仍然可以用一個小聲音建議節奏，如"遠方交通嘶嘶聲"或"清脆的響聲"。將其視為節奏提示而不是完整配樂。</p>
-                    </div>
-                </section>
-
-                <!-- Section: Remix -->
-                <section id="section-remix" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">使用混音功能迭代</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <p>混音用於微調，而不是賭博。使用它來進行受控的變更——一次一個——並說出你在改變什麼："相同鏡頭，切換到85mm"或"相同光線，新調色板：青綠、沙色、鐵鏽色"。當結果接近時，將其固定為參考並只描述調整。這樣，已經有效的一切都保持鎖定。</p>
-                        
-                        <p>如果鏡頭持續出錯，將其簡化：凍結攝影機，簡化動作，清除背景。一旦它有效，逐步分層增加複雜性。</p>
-                    </div>
-                </section>
-
-                <!-- Section: Templates -->
-                <section id="section-templates" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">提示模板和範例</h2>
-                        <button class="collapse-btn" aria-label="摺疊章節">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="section-content">
-                        <h3 class="subsection-title">提示結構</h3>
-                        <p>編寫提示的一個有效方法是分離你希望模型使用的不同類型資訊。這<strong>不是成功的萬能配方</strong>，但它給你一個清晰的框架並使保持一致性更容易。不是每個細節都需要包含——如果某些東西對鏡頭不重要，你可以忽略它。</p>
-                        
-                        <p>實際上，<strong>保持某些元素開放式會鼓勵模型更有創意</strong>。你指定的每個視覺選擇越不嚴格，模型就有越多空間來詮釋並用意想不到但通常美麗的變化來驚喜你。高度描述性的提示產生更一致、受控的結果，而較輕的提示可以解鎖感覺新鮮和富有想像力的多樣化結果。</p>
-                        
-                        <h3 class="subsection-title">描述性提示模板</h3>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-label">提示模板</span>
-                                <button class="copy-btn" data-clipboard-target=".template-code">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                    複製
-                                </button>
-                            </div>
-                            <pre class="template-code"><code>[用簡單語言進行散文場景描述。描述角色、服裝、風景、天氣和其他細節。盡可能描述性以生成符合你願景的影片。]
-
-攝影:
-攝影機鏡頭: [構圖和角度，如廣角建立鏡頭，平視]
-情緒: [整體基調，如電影化和緊張，俏皮和懸疑，奢華期待]
-
-動作:
-- [動作1：清晰、具體的節拍或手勢]
-- [動作2：剪輯中的另一個獨特節拍]
-- [動作3：另一個動作或對話台詞]
-
-對話:
-[如果鏡頭有對話，在這裡或作為動作列表的一部分添加簡短自然的台詞。保持簡潔以匹配剪輯長度。]</code></pre>
-                        </div>
-                        
-                        <h3 class="subsection-title">範例1：動畫風格</h3>
-                        <div class="example-block">
-                            <div class="code-block">
-                                <div class="code-header">
-                                    <span class="code-label">動畫風格範例</span>
-                                    <button class="copy-btn" data-clipboard-target=".example1-code">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                        </svg>
-                                        複製
-                                    </button>
-                                </div>
-                                <pre class="example1-code"><code>風格: 手繪2D/3D混合動畫，具有柔和筆刷紋理、溫暖鎢絲燈光和觸覺定格動畫感。美學喚起2000年代中期故事書動畫——舒適、不完美、充滿機械魅力。微妙的水彩洗和繪畫紋理；暖冷平衡分級；電影運動模糊用於動畫真實感。
-
-在一個雜亂的工作室內，架子上溢滿了齒輪、螺栓和泛黃的藍圖。在中心，一個小圓機器人坐在木長凳上，其凹陷的身體用不匹配的板材和舊油漆層修補。它的大發光眼睛閃爍淡藍色，緊張地擺弄著一個嗡嗡響的燈泡。空氣中充滿安靜的機械呼呼聲，雨水拍打在窗戶上，時鐘在背景中穩定滴答。
-
-攝影:
-攝影機: 中近景，慢推進與來自懸掛工具的溫和視差
-鏡頭: 35mm虛擬鏡頭；淺景深以軟化背景雜亂
-光線: 來自頂部實用的溫暖關鍵光；來自窗戶的涼爽溢出形成對比
-情緒: 溫柔、異想天開，一絲懸疑
-
-動作:
-- 機器人敲擊燈泡；火花爆裂。
-- 它畏縮，掉落燈泡，眼睛睜大。
-- 燈泡慢動作翻滾；它及時抓住它。
-- 一股蒸汽從其胸部逸出——寬慰和驕傲。
-- 機器人輕聲說："差點丟了它...但我抓住了！"
-
-背景聲音:
-雨聲、滴答聲、輕柔機械嗡嗡聲、微弱燈泡嘶嘶聲。</code></pre>
-                            </div>
-                        </div>
-                        
-                        <h3 class="subsection-title">範例2：復古劇情風格</h3>
-                        <div class="example-block">
-                            <div class="code-block">
-                                <div class="code-header">
-                                    <span class="code-label">復古劇情風格範例</span>
-                                    <button class="copy-btn" data-clipboard-target=".example2-code">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                        </svg>
-                                        複製
-                                    </button>
-                                </div>
-                                <pre class="example2-code"><code>風格: 1970年代浪漫劇，用35mm膠片拍攝，自然光暈、柔焦和溫暖暈光。輕微膠片晃動和手持微震動喚起復古親密感。溫暖柯達風格分級；燈泡上輕微暈光；膠片顆粒和柔和暈影用於時代真實性。
-
-在黃金時刻，磚砌公寓屋頂變成一個小舞台。掛著白床單的晾衣繩在風中搖擺，捕捉最後的陽光。一串不匹配的仙女燈泡在頭頂微弱嗡嗡響。一個穿著飄逸紅絲裙的年輕女子赤腳跳舞，捲髮在漸逝的光線中發光。她的舞伴——袖子捲起，吊帶鬆散——鼓掌，笑容寬闊而毫無防備。下方，城市嗡嗡響著汽車喇叭、地鐵震動和遠方笑聲。
-
-攝影:
-攝影機: 中廣角鏡頭，從平視緩慢推軌
-鏡頭: 40mm球面；淺焦點以將情侶從天際線中分離
-光線: 黃金自然關鍵光與鎢絲反彈；來自仙女燈泡的邊緣
-情緒: 懷舊、溫柔、電影化
-
-動作:
-- 她旋轉；她的裙子展開，捕捉陽光。
-- 女子（笑）："看？連城市今晚都與我們一起跳舞。"
-- 他步入，抓住她的手，將她浸入陰影中。
-- 男子（微笑）："只因為你領舞。"
-- 床單飄過畫面，短暫遮蔽天際線然後再次分開。
-
-背景聲音:
-僅自然環境：微弱風聲、織物飄動、街道噪音、悶響音樂。無添加配樂。</code></pre>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                </div>
             </div>
-        </main>
+        </section>
+
+        <!-- 2. Sora 提示詞產生器 -->
+        <section id="generator-section" class="page-section mb-8 hidden">
+            <h2 class="text-2xl font-semibold mb-4">提示詞產生器</h2>
+            <!-- 欄位順序已調整並新增欄位 -->
+            <div class="prompt-generator grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- 1. 主題 -->
+                <div>
+                    <label for="prompt-subject" class="block text-sm font-medium text-gray-700 mb-2">1. 主題 (Subject)</label>
+                    <input type="text" id="prompt-subject" placeholder="例如：一位30歲的太空人、幾隻巨大的長毛猛獁象">
+                </div>
+                
+                <!-- 2. 場景 -->
+                <div>
+                    <label for="prompt-scene" class="block text-sm font-medium text-gray-700 mb-2">2. 場景 / 呼吸 (Scene)</label>
+                    <input type="text" id="prompt-scene" placeholder="例如：在熱鬧的東京街道、積雪覆蓋的草地">
+                </div>
+
+                <!-- 3. 風格 -->
+                <div>
+                    <label for="prompt-style" class="block text-sm font-medium text-gray-700 mb-2">3. 風格 (Style)</label>
+                    <select id="prompt-style" onchange="checkCustom(this, 'custom-style')">
+                        <option value="">選擇風格...</option>
+                        <option value="電影風格，35毫米膠片拍攝">電影風格 (35mm)</option>
+                        <option value="電影風格，70毫米膠片拍攝">電影風格 (70mm)</option>
+                        <option value="動畫場景，3D和生動的藝術風格">3D動畫</option>
+                        <option value="手繪2D/3D混合動畫">手繪2D/3D混合動畫</option>
+                        <option value="一個絢麗的紙藝世界">紙藝世界</option>
+                        <option value="歷史影像">歷史影像</option>
+                        <option value="卡通風格">卡通風格</option>
+                        <option value="紀錄片風格">紀錄片風格</option>
+                        <option value="科幻風格">科幻風格</option>
+                        <option value="1970年代浪漫劇風格">1970年代復古劇</option>
+                        <option value="復古風格">復古風格</option>
+                        <!-- 新增選項 -->
+                        <option value="電影感">電影感</option>
+                        <option value="3D數位渲染藝術風格">3D數位渲染藝術風格</option>
+                        <option value="黑白影調">黑白影調</option>
+                        <option value="老電影風格的顆粒感">老電影風格的顆粒感</option>
+                        <option value="星軌長曝光">星軌長曝光</option>
+                        <option value="街頭紀實風格">街頭紀實風格</option>
+                        <option value="HDR高動態範圍">HDR高動態範圍</option>
+                        <option value="創意光繪">創意光繪</option>
+                        <option value="虛擬實境全景">虛擬實境全景</option>
+                        <option value="動漫或互動藝術風格">動漫或互動藝術風格</option>
+                        <option value="夢幻效果">夢幻效果</option>
+                        <!-- 自訂 -->
+                        <option value="custom">自訂風格...</option>
+                    </select>
+                    <input type="text" id="custom-style" class="mt-2 hidden" placeholder="請輸入自訂風格">
+                </div>
+
+                <!-- 4. 拍攝手法 -->
+                <div>
+                    <label for="prompt-shot" class="block text-sm font-medium text-gray-700 mb-2">4. 拍攝手法 (Shot Technique)</label>
+                    <select id="prompt-shot" onchange="checkCustom(this, 'custom-shot')">
+                        <option value="">選擇拍攝手法...</option>
+                        <option value="無人機攝影">無人機攝影</option>
+                        <option value="低角度的攝影鏡頭">低角度鏡頭</option>
+                        <option value="重點鏡頭">重點鏡頭</option>
+                        <option value="微距攝影">微距攝影</option>
+                        <option value="慢動作拍攝">慢動作拍攝</option>
+                        <option value="時光流逝攝影">時光流逝攝影</option>
+                        <option value="使用手機相機拍攝">手機相機拍攝</option>
+                        <option value="手持微震動">手持微震動</option>
+                        <!-- 新增選項 -->
+                        <option value="35毫米電影膠片拍攝">35毫米電影膠片拍攝</option>
+                        <option value="70毫米電影膠片拍攝">70毫米電影膠片拍攝</option>
+                        <!-- 自訂 -->
+                        <option value="custom">自訂拍攝手法...</option>
+                    </select>
+                    <input type="text" id="custom-shot" class="mt-2 hidden" placeholder="請輸入自訂拍攝手法">
+                </div>
+
+                <!-- 5. 構圖 -->
+                <div>
+                    <label for="prompt-composition" class="block text-sm font-medium text-gray-700 mb-2">5. 構圖 / 鏡頭 (Composition)</label>
+                    <select id="prompt-composition" onchange="checkCustom(this, 'custom-composition')">
+                        <option value="">選擇構圖...</option>
+                        <option value="景深感非常強烈">強烈景深</option>
+                        <option value="背景模糊">背景模糊</option>
+                        <option value="寬幅鏡頭">寬幅鏡頭</option>
+                        <option value="畫面清晰銳利">畫面清晰銳利</option>
+                        <option value="中近景，慢推進">中近景，慢推進</option>
+                        <!-- 新增選項 -->
+                        <option value="景深">景深</option>
+                        <option value="畫面清晰銳利，淺景深">畫面清晰銳利，淺景深</option>
+                        <!-- 自訂 -->
+                        <option value="custom">自訂構圖...</option>
+                    </select>
+                    <input type="text" id="custom-composition" class="mt-2 hidden" placeholder="請輸入自訂構圖">
+                </div>
+
+                <!-- 6. 光線 / 情緒 -->
+                <div>
+                    <label for="prompt-mood" class="block text-sm font-medium text-gray-700 mb-2">6. 光線 / 情緒 (Lighting/Mood)</label>
+                    <select id="prompt-mood" onchange="checkCustom(this, 'custom-mood')">
+                        <option value="">選擇光線/情緒...</option>
+                        <option value="周圍有溫暖的霓虹燈">溫暖的霓虹燈</option>
+                        <option value="午後的光線">午後的光線</option>
+                        <option value="夕陽的金光">夕陽金光</option>
+                        <option value="溫暖色調/戲劇性光線">溫暖色調/戲劇性光線</option>
+                        <option value="魔幻的黃昏">魔幻的黃昏</option>
+                        <option value="溫柔、異想天開">溫柔、異想天開</option>
+                        <option value="懷舊、溫柔、電影化">懷舊、溫柔、電影化</option>
+                        <option value="歡快">歡快</option>
+                        <option value="懷舊">懷舊</option>
+                        <option value="緊張">緊張</option>
+                        <option value="浪漫">浪漫</option>
+                        <!-- 新增選項 -->
+                        <option value="日落金時光">日落金時光</option>
+                        <!-- 自訂 -->
+                        <option value="custom">自訂光線/情緒...</option>
+                    </select>
+                    <input type="text" id="custom-mood" class="mt-2 hidden" placeholder="請輸入自訂光線/情緒">
+                </div>
+
+                <!-- 7. 技術效果 -->
+                <div>
+                    <label for="prompt-tech-effect" class="block text-sm font-medium text-gray-700 mb-2">7. 技術效果 (Technical Effect)</label>
+                    <select id="prompt-tech-effect" onchange="checkCustom(this, 'custom-tech-effect')">
+                        <option value="">選擇技術效果...</option>
+                        <option value="穩定間距">穩定間距</option>
+                        <option value="色彩校正">色彩校正</option>
+                        <option value="光線效果">光線效果</option>
+                        <option value="綠幕摳圖">綠幕摳圖</option>
+                        <option value="影片轉場">影片轉場</option>
+                        <option value="文字動畫">文字動畫</option>
+                        <option value="時間軸編輯">時間軸編輯</option>
+                        <option value="custom">自訂技術效果...</option>
+                    </select>
+                    <input type="text" id="custom-tech-effect" class="mt-2 hidden" placeholder="請輸入自訂技術效果">
+                </div>
+
+                <!-- 8. 特殊效果 -->
+                <div>
+                    <label for="prompt-spec-effect" class="block text-sm font-medium text-gray-700 mb-2">8. 特殊效果 (Special Effect)</label>
+                    <select id="prompt-spec-effect" onchange="checkCustom(this, 'custom-spec-effect')">
+                        <option value="">選擇特殊效果...</option>
+                        <option value="VR/360度影片">VR/360度影片</option>
+                        <option value="AR效果">AR效果</option>
+                        <option value="音訊效果">音訊效果</option>
+                        <option value="互動影片">互動影片</option>
+                        <option value="custom">自訂特殊效果...</option>
+                    </select>
+                    <input type="text" id="custom-spec-effect" class="mt-2 hidden" placeholder="請輸入自訂特殊效果">
+                </div>
+
+                <!-- 權重/重點 -->
+                <div class="md:col-span-2 lg:col-span-3">
+                    <label for="prompt-weight" class="block text-sm font-medium text-gray-700 mb-2">9. 重點強調 (Weighting / Focus)</label>
+                    <input type="text" id="prompt-weight" placeholder="（選填）額外強調的細節，例如：重點放在光線和紋理上">
+                </div>
+
+                <!-- 對白/旁白 -->
+                <div class="md:col-span-2 lg:col-span-3">
+                    <label for="prompt-dialogue" class="block text-sm font-medium text-gray-700 mb-2">10. 主角旁白/對白 (Dialogue)</label>
+                    <textarea id="prompt-dialogue" rows="2" placeholder="（選填）輸入主角的對白。例如：機器人(輕聲說)：『差點丟了它...但我抓住了！』"></textarea>
+                </div>
+
+                <!-- 操作按鈕 -->
+                <div class="md:col-span-2 lg:col-span-3 flex flex-col sm:flex-row gap-4">
+                    <button id="generate-btn" class="btn btn-primary flex-1">
+                        <i class="fas fa-magic mr-2"></i>生成並儲存新版本
+                    </button>
+                    <button id="reset-btn" class="btn btn-secondary bg-red-500 hover:bg-red-600">
+                        <i class="fas fa-undo mr-2"></i>重設欄位
+                    </button>
+                </div>
+
+                <!-- 產生器運用說明 -->
+                <div class="md:col-span-2 lg:col-span-3 mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2"><i class="fas fa-info-circle mr-2"></i>提示詞核心原則 (Sora-2)</h4>
+                    <p class="text-sm text-blue-700 space-y-2">
+                        <strong>1. 風格 (Style) 是最強大的槓桿：</strong>
+                        在Sora中，風格（例如："1970年代電影"、"手繪2D/3D混合動畫"、"16mm黑白電影"）是引導模型的最強工具。它設定了視覺基調，並框定了所有其他選擇。
+                        <br>
+                        <strong>2. 清晰度致勝 (Clarity Wins)：</strong>
+                        避免使用模糊的詞彙。Sora需要具體的、可見的描述。
+                        <br>
+                        <span class="ml-4"><strong>(X) 模糊：</strong> "美麗的街道"</span><br>
+                        <span class="ml-4"><strong>(O) 具體：</strong> "潮濕的瀝青路面、斑馬線、霓虹燈招牌的倒影"</span>
+                        <br>
+                        <strong>3. 平衡控制與創意：</strong>
+                        <ul>
+                            <li><strong>詳細提示：</strong> (如本產生器) 給予Sora更多限制，以獲得更可控、更一致的結果。</li>
+                            <li><strong>簡短提示：</strong> (例如： "公園裡的猴子下棋") 給予Sora更多創意自由，可能會產生令人驚喜的結果。</li>
+                        </ul>
+                        <strong>4. 描述動作和對白：</strong>
+                        <ul>
+                            <li><strong>動作：</strong> 保持動作簡單、合理。Sora擅長處理單一、清晰的動作。</li>
+                            <li><strong>對白：</strong> Sora Pro模型支援對嘴。請將對白（如 `主角(說)：『...』`）填入「主角旁白/對白」欄位。</li>
+                        </ul>
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. & 4. 版本文件區 -->
+        <section id="history-section" class="page-section mb-8 hidden">
+            <h2 class="text-2xl font-semibold mb-4">歷史版本文件 ( <span id="version-count">0</span> )</h2>
+            <div id="history-container" class="space-y-4">
+                <!-- 歷史版本會動態插入到這裡 -->
+                <p id="history-placeholder" class="text-gray-500 text-center py-4">尚未生成任何版本。</p>
+            </div>
+        </section>
+
     </div>
 
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="切換選單">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-    </button>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            // --- 狀態變數 ---
+            let currentVersion = { major: 1, minor: 0, patch: 5 }; // 從 1.0.5 開始
+            let history = [];
+            let currentDemoIndex = 0;
+            let currentCategory = 'all';
+            let filteredDemos = [];
 
-    <script src="app.js"></script>
+            // --- 示範影片資料 (包含 PDF 中的所有新範例) ---
+            const demos = [
+                {
+                    video: "https://cdn.openai.com/sora/videos/tokyo-walk.mp4",
+                    prompt: "一位時尚女性穿著一件黑色皮夾克，一条長長的紅色裙子和黑色靴子，手上拎著一個黑色的包，在熱鬧的東京街道上行走。周圍有溫暖的霓虹燈和動態的城市標誌。她戴著太陽眼鏡和紅色口紅，自信而隨意地行走街道。街道潮濕而反光,形成了五彩燈光的鏡面效果。行人在周圍走動。",
+                    category: "urban"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/wooly-mammoth.mp4",
+                    prompt: "幾隻巨大的長毛猛獁象漫步在積雪覆蓋的草地上，它們的長毛在微風中輕輕飄動，遠處是積雪覆蓋的樹木和戲劇性的雪山，午後的光線和稀薄的雲彩以及高高懸掛的太陽形成了溫暖的光線。低角度的攝影鏡頭引人注目,捕捉了這些大型毛茸茸的重物和美麗的攝影,景深感非常強烈。",
+                    category: "nature"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/mitten-astronaut.mp4",
+                    prompt: "一部電影預告片，講述了一位30歲的太空人的冒險故事，他穿著一頂紅色的羊毛編織頭盔，藍天，鹽沙漠，電影風格，35毫米膠片拍攝，色彩繽紛。",
+                    category: "sci-fi"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/big-sur.mp4",
+                    prompt: "無人機頂著波濤洶湧的大蘇爾加雷角海灘的崎峭壁。藍色的海水拍打著，形成了白色的平滑，而夕陽的金光照亮了海岸。遠處有一座燈塔的小島，懸崖邊覆蓋著綠色的叢林。從道路到海灘的陡峭接下來是一個戲劇性的舉起，懸崖邊突出在海域。這是一個捕捉到海岸的原始美麗和太平洋海岸高原崎風景的視野。",
+                    category: "nature"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/monster-with-melting-candle.mp4",
+                    prompt: "動畫場景展示了一個近距離的短毛怪物跪在正在融化的紅色蠟燭旁。藝術風格是3D和生動的，重點放在光線和紋理上。畫面的情緒是清醒有趣的，怪物睜大眼睛，張著大嘴掐著火焰。它的姿勢和表情傳達出一種天真的和俏皮的感覺，似乎是第一次探索周圍的世界。溫暖的色調和戲劇性的光線增強了進一步的舒適燈光。",
+                    category: "animation"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/origami-undersea.mp4",
+                    prompt: "一個絢麗的紙藝世界，一個珊瑚礁，到處都是色彩繽紛的魚類和海洋生物。",
+                    category: "abstract"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/victoria-crowned-pigeon.mp4", 
+                    prompt: "這個重點鏡頭展示了維多利亞皇冠鴿子引人注目的藍色羽毛和紅色胸胸。它的羽冠由精緻的蕾絲羽毛製成，而它的眼睛是醒目的紅色。鳥的頭微微傾斜，給人一種威嚴威嚴的印象。背景模糊,突出了鳥的外觀的引人注目。",
+                    category: "animals"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/ships-in-coffee.mp4", 
+                    prompt: "兩名海盜在船上興奮地寫下了實景視頻,他們在一杯咖啡中航行。",
+                    category: "fantasy"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/man-on-the-cloud.mp4", 
+                    prompt: "一位20歲左右的年輕男子坐在天空中的一朵雲朵上,讀著一本書。",
+                    category: "fantasy"
+                },
+                // --- 以下為 PDF 中無影片網址的範例 (完整保留) ---
+                { 
+                    video: "https://cdn.openai.com/sora/videos/gold-rush.mp4", 
+                    prompt: "加州淘金熱的歷史影像。",
+                    category: "historical"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/zen-garden-gnome.mp4", 
+                    prompt: "一個玻璃球的顯著視角,裡面有一個竹林的禪園,一個小矮人正在禪園裡轉動平沙子,並在沙子上創造圖案。",
+                    category: "abstract"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/closeup-of-womans-eye.mp4", 
+                    prompt: "在魔幻的黃昏中,一個24歲女子的眼睛在眨眼,站在馬拉喀什,70毫米膠片拍攝的電影,景深、鮮豔的色彩,電影感覺的攝影。",
+                    category: "urban"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/dancing-kangaroo.mp4", 
+                    prompt: "一隻卡通袋鼠在迪斯可舞動。",
+                    category: "animation"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/lagos.mp4", 
+                    prompt: "一個精美的自製視頻,展示了2056年尼日利亞拉各斯的人們。使用手機相機拍攝。",
+                    category: "sci-fi"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/big-eyed-fluff-ball.mp4", 
+                    prompt: "3D動畫中,一個小,圓,毛茸茸的生物,擁有巨大的,有表情的眼睛,探索著一個充滿生機的,神奇的魔法森林。這個生物是兔子和鬆的奇妙融合,擁有柔軟的藍色皮毛和一條鬆軟的,帶有條紋的尾巴。",
+                    category: "animation"
+                },
+                { 
+                    video: "https://cdn.openai.com/sora/videos/train-window.mp4", 
+                    prompt: "火車路線經東京市中心的可視參考。",
+                    category: "urban"
+                },
+                { 
+                    video: "https://ping763573.github.io/Taoyuan/sora2/001.mp4",  
+                    prompt: "一隻小熊貓和一隻巨嘴鳥是最好的朋友,在聖托里尼的藍色時刻徒步旅行。",
+                    category: "animals"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一名水肺潛水員發現了一艘隱藏的未來主義沉船,裡面有賽博海洋生物和先進的外星科技。",
+                    category: "sci-fi"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一個人在夏威夷的熱帶雨林進行基地跳傘。他的寵物金剛鸚鵡在他身邊飛行。",
+                    category: "nature"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一隻玻璃做成的烏龜,缺口用金色修復修復過,正走在日落時分的黑沙灘上。",
+                    category: "abstract"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一群薩摩耶幼兒學習成為廚師的宣傳影片。",
+                    category: "animals"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "夜間鏡頭,一隻寄居蟹把白色燈泡當作殼。",
+                    category: "animals"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一片葉子的微距鏡頭,展示了微小的火車穿越它的葉脈。",
+                    category: "abstract"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一個由水構成的行走人形體參觀了一個藝術畫廊,裡面有許多不同風格的美麗作品。",
+                    category: "abstract"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "穿著雄偉王冠的小馬鈴薯國王,坐在王座上,監視著他們的馬鈴G王國,裝滿了馬鈴薯臣民和馬鈴薯城堡。",
+                    category: "fantasy"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "公園裡的猴子下棋。",
+                    category: "animals"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一個黑色連帽衛衣的電腦駭客拉布拉多在電腦前面坐著,螢幕的反鍵盤在狗下面,它正在快速打字。",
+                    category: "animals"
+                },
+                // --- 2025/11/15 新增範例 (V1.0.1) ---
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一隻穿著維多利亞時代服裝的貓，正在倫敦一條鵝卵石街道上悠閒地喝茶，周圍有霧氣繚繞。",
+                    category: "historical"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一個由數千隻蝴蝶組成的巨大龍捲風，正緩慢地穿過一片色彩繽紛的鬱金香花田，採用無人機廣角拍攝。",
+                    category: "nature"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "特寫鏡頭，一個機械蜂鳥正在吸取一朵未來主義金屬花朵的花蜜，背景是霓虹閃爍的賽博龐克城市。",
+                    category: "sci-fi"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "水下攝影，一座完全由水晶和光構成的失落城市，一群發光的Jellyfish（水母）生物在其中游弋。",
+                    category: "fantasy"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "一個古老的圖書館，書本在空中飄浮，自行翻頁，一個年輕的魔法師正在專心學習，光影戲劇性地變化。",
+                    category: "fantasy"
+                },
+                { 
+                    video: "", // 預留欄位
+                    prompt: "時光流逝攝影，一棵巨大的橡樹經歷春夏秋冬四季的變化，從發芽到落葉，最後被白雪覆蓋，一切都在一分鐘內完成。",
+                    category: "nature"
+                },
+                // --- 2025/11/15 新增範例 (V1.0.2 - 來自 Sora-2 網址) ---
+                {
+                    video: "", // 預留欄位
+                    prompt: "風格: 手繪2D/3D混合動畫，具有柔和筆刷紋理、溫暖鎢絲燈光和觸覺定格動畫感。美學喚起2000年代中期故事書動畫——舒適、不完美、充滿機械魅力。微妙的水彩洗和繪畫紋理；暖冷平衡分級；電影運動模糊用於動畫真實感。在一個雜亂的工作室內，架子上溢滿了齒輪、螺栓和泛黃的藍圖。在中心，一個小圓機器人坐在木長凳上，其凹陷的身體用不匹配的板材和舊油漆層修補。它的大發光眼睛閃爍淡藍色，緊張地擺弄著一個嗡嗡響的燈泡。空氣中充滿安靜的機械呼呼聲，雨水拍打在窗戶上，時鐘在背景中穩定滴答。攝影: 攝影機: 中近景，慢推進與來自懸掛工具的溫和視差。鏡頭: 35mm虛擬鏡頭；淺景深以軟化背景雜亂。光線: 來自頂部實用的溫暖關鍵光；來自窗戶的涼爽溢出形成對比。情緒: 溫柔、異想天開，一絲懸疑。動作: - 機器人敲擊燈泡；火花爆裂。- 它畏縮，掉落燈泡，眼睛睜大。- 燈泡慢動作翻滾；它及時抓住它。- 一股蒸汽從其胸部逸出——寬慰和驕傲。- 機器人(輕聲說)：『差點丟了它...但我抓住了！』 背景聲音: 雨聲、滴答聲、輕柔機械嗡嗡聲、微弱燈泡嘶嘶聲。",
+                    category: "animation"
+                },
+                {
+                    video: "", // 預留欄位
+                    prompt: "風格: 1970年代浪漫劇，用35mm膠片拍攝，自然光暈、柔焦和溫暖暈光。輕微膠片晃動和手持微震動喚起復古親密感。溫暖柯達風格分級；燈泡上輕微暈光；膠片顆粒和柔和暈影用於時代真實性。在黃金時刻，磚砌公寓屋頂變成一個小舞台。掛著白床單的晾衣繩在風中搖擺，捕捉最後的陽光。一串不匹配的仙女燈泡在頭頂微弱嗡嗡響。一個穿著飄逸紅絲裙的年輕女子赤腳跳舞，捲髮在漸逝的光線中發光。她的舞伴——袖子捲起，吊帶鬆散——鼓掌，笑容寬闊而毫無防備。下方，城市嗡嗡響著汽車喇叭、地圖震動和遠方笑聲。攝影: 攝影機: 中廣角鏡頭，從平視緩慢推軌。鏡頭: 40mm球面；淺焦點以將情侶從天際線中分離。光線: 黃金自然關鍵光與鎢絲反彈；來自仙女燈泡的邊緣。情緒: 懷舊、溫柔、電影化。動作: - 她旋轉；她的裙子展開，捕捉陽光。- 女子(笑)：『看？連城市今晚都與我們一起跳舞。』 - 他步入，抓住她的手，將她浸入陰影中。- 男子(微笑)：『只因為你領舞。』 - 床單飄過畫面，短暫遮蔽天際線然後再次分開。背景聲音: 僅自然環境：微弱風聲、織物飄動、街道噪音、悶響音樂。無添加配樂。",
+                    category: "historical"
+                },
+                // ===== 從 PDF 添加的新範例 =====
+                
+                // Page 1 範例
+                {
+                    video: "",
+                    prompt: "[畫面比例：16:9，長度：12秒，型號：sora-2-pro] 一段電影般的開箱視頻，一台高端無反相機被放置在木桌上。鏡頭1（0-3秒）：鏡頭從右側緩慢推拉，淺景深，溫暖的晨光透過窗戶灑入，可以看到灰塵顆粒。鏡頭2（3-8秒）：45度俯視鏡頭，雙手打開包裝盒，配上紙板的輕柔摩擦聲和磁吸聲。鏡頭3（8-12秒）：切換到相機四分之三側邊鏡頭，相機放置在天鵝絨布上，鏡頭略微產生光暈，配上柔和的小玻璃合成器音效。旁白（女聲，平靜，16-18秒）：「認識你下一個故事的焦點。」11秒加入柔和的環境音和相機快門聲。",
+                    category: "urban"
+                },
+                {
+                    video: "",
+                    prompt: "[畫面比例：9:16 垂直屏，長度：10秒，型號：sora-2] 垂直螢幕片段：兩夜的東京後街。霓虹燈倒映在濕漉漉的瀝青路面上。鏡頭緊跟著一位抱著木吉他的街頭藝人（三十多歲，身穿破舊夾克）。鏡頭從後方跟隨，然後環繞拍攝，最終定格在撥動琴弦的手指特寫上。環境音：兩打兩傘的聲音、遠處車流聲、微弱的吉他聲、人群低沉的嗡嗡聲。氛圍：憂鬱，電影感十足。",
+                    category: "urban"
+                },
+                {
+                    video: "",
+                    prompt: "[畫面比例：1:1 正方形，長度：6秒，型號：sora-2-pro] 一段精緻的品牌宣傳片：鏡頭拉近一個明亮的圓形光圈，光圈逐漸過渡到公司標誌（簡潔的幾何圖案）。開頭是柔和的散景高光，快速旋轉180°（2秒），壓縮成閃亮的3D標誌，最後以一段簡短的電子和弦和一聲持續的鈸聲結束。畫面乾淨、簡潔、高對比。",
+                    category: "abstract"
+                },
+                {
+                    video: "",
+                    prompt: "[畫面比例：16:9，長度：15秒，型號：sora-2-pro] 一段10秒的手繪白板動畫，講解「我們的AI如何縮短新用戶註冊時間」。畫面：簡潔的黑色墨水素描，包括一台筆記型電腦、一個時鐘和一個開心的人。鏡頭：穩定的正面視角，略微平移。時間軸：0:03時，時鐘縮小，筆記型電腦螢幕上出現速度條；0:07時，這個人舉起雙臂慶祝。旁白：友善、歡快的女聲：「使用更聰明的模板，將新用戶註冊時間縮短一半。」輕柔的撥弦木琴背景音樂。風格：簡潔的教育白板風格，手寫標籤，以藍色為主色調的極簡色彩點綴。",
+                    category: "animation"
+                },
+                
+                // Page 2 範例
+                {
+                    video: "",
+                    prompt: "[畫面比例：9:16，長度：8秒，型號：sora-2-pro] 使用上傳的臉部影像（單張正面照）製作動畫客串：虛擬形像走進舒適的客廳，坐在扶手椅上，熱情友好地問候：「嘿——歡迎回來！」。口型必須自然流暢；環境音效：背景中傳來水壺的叮噹聲和輕柔的唱片摩擦聲。尊重隱私：請勿顯示任何可識別的現實世界地標。",
+                    category: "animation"
+                },
+                {
+                    video: "",
+                    prompt: "[畫面比例：16:9，長度：10秒，型號：sora-2] 一段風格化的縮時攝影，展現了海岸懸崖上的日出。鏡頭以緩慢移動的雲朵開始（0-4秒），接著隨著光線逐漸增強（4-8秒），畫面速度加快，最後定格在懸崖邊一個孤獨身影的剪影上（8-10秒）。配上柔和的海洋環境音、海鷗鳴叫聲和一段鋼琴旋律。色彩處理：高對比度，黃金時段飽和度。",
+                    category: "nature"
+                },
+                {
+                    video: "",
+                    prompt: "[畫面比例：21:9 電影感，長度：14秒，模型：sora-2-pro（高解析度）] 夜幕降臨，一條小巷裡氣氛緊張：霓虹燈閃爍，水窪倒映著一盞路燈。角色A（低語）：「你被跟蹤了。」鏡頭緊貼角色B的眼睛，可以看到他呼出的氣息。鏡頭快速切換到角色A的手，他手裡拿著一個小型數據盤（12-14秒）。音效：遠處傳來警笛聲，低沉的合成器貝斯，鏡頭一轉，布料沙沙作響。燈光：主光強烈，冷色調的青色邊緣光。",
+                    category: "sci-fi"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/petri-dish-pandas.mp4",
+                    prompt: "培育了許多著名彩繪紛的色彩繪紛的紙藝世界。",
+                    category: "abstract"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/stack-of-tvs.mp4",
+                    prompt: "曼哈頓圍繞著一系列大量展示不同節目的老式電視，1950年代的科幻電影，恐怖電影，新聞，靜態畫面，1970年代的情境喜劇等，設置在紐約一家大型博物館畫廊內。",
+                    category: "historical"
+                },
+                
+                // Page 3 範例
+                {
+                    video: "https://cdn.openai.com/sora/videos/suv-in-the-dust.mp4",
+                    prompt: "亞特蘭大跟隨著一輛白色老式 SUV，車頂有一個黑色行李架，它快速地駛過陡峭的山路，周圍是松樹，車輪的四面飛揚，陽光照在 SUV 上，照在山路上，給整個景色帶來了溫暖的陽光。土路緩慢彎曲，遠處看不下去到其他汽車或車輛。路兩旁的樹是紅杉樹，零零散散地散佈著布被綠色植被。車輛從視線瞄準輕鬆地跟隨彎道山谷，似在崎嶇的動作中移動一樣。土路本身陡峭的山丘和山脈所環繞，天空晴朗，白雲飄蕩。",
+                    category: "nature"
+                },
+                {
+                    video: "https://cdn.openai.com/sora/videos/amalfi-coast.mp4",
+                    prompt: "無人機攝影展示了一座建在阿馬爾菲海岸高地上的美麗歷史教堂，視角展示了歷史悠久且宏偉的建築細節，以及分層的路徑和窪地，海平面下的海浪拍打在底部的岩石上，遠眺海岸森林和意大利阿馬爾菲海岸的丘陵風景，幾遠處的人在行走，並在欣賞風景的峽谷上欣賞風景，午後的美麗高原",
+                    category: "nature"
+                },
+                
+                // ==== 從 PDF 添加的完整新範例 ====
+                
+                // 城市生活類
+                {
+                    video: "",
+                    prompt: "京都古街散步（和服 × 櫻花 × 生活氣息）角色穿著：女子粉白漸層和服、腰帶上別著小花飾、木屐輕輕敲地，手中白色和紙傘半開。場景元素：石板路、兩旁木造町家、門口掛紅燈籠、路邊稻草裝飾、抹茶店外的木牌輕晃。燈光：柔光日照、櫻花遮蔭下的碎光、偶爾反射自水溝的亮點。鏡頭：中景跟拍和服擺動，低角度仰拍櫻花如雨般飄落，手部特寫輕拂紙傘，背後跟拍，路面反射光拉出長線。互動角色：路旁婆婆遞上小點心、小孩追逐櫻花、街貓從門邊探頭。",
+                    category: "urban"
+                },
+                {
+                    video: "",
+                    prompt: "紐約爵士酒吧（舞台 × 觀眾 × 多層次光影）角色穿著：男主深酒紅西裝、絲質黑領結；女爵士歌手穿銀色亮片貼身禮服、戴長手套。場景元素：木質舞台、老式麥克風、紅色絨布幕、吧檯酒瓶折射琥珀光、天花板風扇慢轉。燈光：金色聚光打臉、藍紫背光勾邊、空氣中有淡淡煙霧形成光束。鏡頭：超特寫嘴唇貼近麥克風，慢推移到舞台全景，低角度拍鋼琴手手指跳動，背肩鏡頭拍觀眾微笑與點頭。互動角色：薩克斯手像在對主角「回應」，吧檯客人輕敲桌面打節奏，服務生端酒穿過畫面。",
+                    category: "urban"
+                },
+                {
+                    video: "",
+                    prompt: "巴黎雨夜咖啡館（氛圍 × 浪漫 × 都市節奏）角色穿著：女子紅圍巾、羊毛大衣，男子深灰風衣、黑傘滴水。場景元素：濕亮鵝卵石街道、霓虹招牌倒影、雨滴打在窗邊形成流線、室內有木椅與小圓桌。燈光：街燈柔黃光、雨後光暈、咖啡館暖橘光灑滿窗邊水珠。鏡頭：玻璃外的半模糊視角，特寫咖啡蒸氣上升，中景捕捉兩人坐下的瞬間，推鏡跨過窗台，如潛入故事。互動角色：店員微笑端咖啡、路人快速撐傘跑過、外面有一名街頭藝人吹著手風琴。",
+                    category: "urban"
+                },
+                {
+                    video: "",
+                    prompt: "倫敦薄霧清晨（氣氛 × 城市節奏）角色穿著：羊毛大衣、格紋圍巾、皮革側背包。場景元素：霧中紅色巴士、濕氣讓街燈形成光圈、地面微反光。燈光：清晨灰藍色自然光、霧中柔光散射。鏡頭：遠距拍巴士穿出霧中，中景人物步行、呼出的白霧，手部特寫拿熱飲，俯拍街道鳥瞰。互動角色：路人遛狗、小鳥成群起飛、報童推車經過。",
+                    category: "urban"
+                },
+                {
+                    video: "",
+                    prompt: "台北夜市（香氣 × 喧鬧 × 食物特寫）角色穿著：短袖、斜背小包、戴著簡單手環。場景元素：霓虹燈牌、烤魷魚油亮反光、地面濕亮、電扇吹動旗幟。燈光：攤位暖黃、周圍紅藍霓虹混光、油煙形成光暈。鏡頭：魷魚翻面的超特寫，攤販手勢快速翻炒，人群穿流的街拍感，頭上燈光反射形成散景。互動角色：攤販熱情招呼、小孩拿糖葫蘆、附近店家拎走垃圾。",
+                    category: "urban"
+                },
+                
+                // 自然景觀類
+                {
+                    video: "",
+                    prompt: "冰島極光旅程（自然 × 人物 × 生態）角色穿著：厚黑色羽絨大衣、毛帽、脖子露出一點白色羽毛圍巾。場景元素：雪地微風、遠方山稜線、腳下踩雪發出細碎聲響。燈光：天空綠紫極光流動、雪面柔和反光、月光淡藍色補光。鏡頭：航拍下降到旅人背影，360度鏡拍極光，微距拍雪花落在手套上，低角度拍角色抬頭凝視光彩。互動角色：旅伴拿出相機拍照、遠處有馴鹿穿越雪地、冰湖反射極光如鏡子。",
+                    category: "nature"
+                },
+                {
+                    video: "",
+                    prompt: "瑞士聖誕市集（雪 × 光 × 人群）角色穿著：厚毛大衣、毛帽、皮手套。場景元素：木屋攤販、雪花飄落、手工飾品掛滿燈飾、熱可可蒸氣升騰。燈光：白雪反光、暖橘燈串、店家內部的黃白光交疊。鏡頭：推鏡穿越市集中央，特寫手拿溫熱可可，慢速拍雪花落在外套上，轉場到廣角的整個市集全景。互動角色：攤販招呼試喝、小孩玩木製玩具、街頭歌手演唱聖誕歌。",
+                    category: "nature"
+                },
+                {
+                    video: "",
+                    prompt: "峇里島日出瑜珈（自然 × 身體線條 × 寧靜）角色穿著：全白瑜珈服、簡單髮髻。場景元素：海平面泛金、浪花輕拍岸邊、遠方小船慢滑。燈光：粉橘日出逆光輪廓、輕霧讓光線柔化。鏡頭：側光剪影呈現瑜珈動作線條，慢推鏡捕捉深呼吸瞬間，微距拍沙粒從指間落下，空拍呈現人物與海岸幾何構圖。互動角色：旁邊的同伴也在伸展、海鳥低飛掠過、風吹動瑜珈墊。",
+                    category: "nature"
+                },
+                
+                // 歷史復古類
+                {
+                    video: "",
+                    prompt: "1930年代上海街景（旗袍 × 懷舊 × 歷史氛圍）角色穿著：1930s旗袍上半身，絲質披肩在微風中輕動，金色街燈照在布料上形成光影紋理。場景元素：懷舊街道建築、黃包車、報童叫賣。燈光：金色暖光、街道濕潤反光。鏡頭：慢推拍旗袍行走姿態，男子復古長禮服同行，俯拍街道全景呈現歷史感氛圍。互動角色：黃包車經過、報童叫賣、路人穿著復古服裝漫步。",
+                    category: "historical"
+                },
+                
+                // 動物世界類
+                {
+                    video: "",
+                    prompt: "泰國大象保育（生態 × 互動 × 叢林）角色穿著：藍布服、草帽上半身。場景元素：叢林小徑、晨霧透過樹葉、大象皮膚細節。燈光：晨霧柔和光線、斑駁樹葉光影。鏡頭：手觸摸大象皮膚特寫，中景拍大象與人互動，低角度拍大象腳步與地面濕潤土壤。互動角色：保育員指導動作、大象溫和回應、樹葉上水珠閃爍光點。",
+                    category: "animals"
+                },
+                
+                // 抽象創意類
+                {
+                    video: "",
+                    prompt: "韓國汗蒸幕（放鬆 × 蒸氣 × 生活感）角色穿著：橘色汗蒸服、毛巾頭巾。場景元素：木頭蒸室、地面蒸氣緩緩上升、米釀飲品。燈光：暖光柔和、木質環境金黃色調。鏡頭：近拍角色喝米釀特寫，中景拍蒸室環境與朋友互動，俯拍地面木板紋路與生活物件。互動角色：朋友敷面膜聊天、蒸氣繚繞形成柔和氛圍。",
+                    category: "abstract"
+                },
+                
+                // 奇幻類
+                {
+                    video: "",
+                    prompt: "沙漠駱駝隊列（夕陽 × 沙丘 × 旅行）角色穿著：藍色穆斯林袍、頭巾邊緣橘金色。場景元素：沙丘延伸、日落強逆光、沙塵漂浮。燈光：日落逆光輪廓、沙塵光暈、橘粉漸層天空。鏡頭：逆光剪影特寫，長鏡頭捕捉駱駝隊列移動，近拍沙子紋路與駱駝腳步細節。互動角色：旅伴交談笑聲、駱駝腳步踩沙、風傳感覺的自然音效。",
+                    category: "fantasy"
+                }
+            ];
+
+            // --- DOM 元素 ---
+            const demoVideo = document.getElementById('demo-video');
+            const videoUrl = document.getElementById('video-url');
+            const demoPrompt = document.getElementById('demo-prompt');
+            const nextDemoBtn = document.getElementById('next-demo-btn');
+            const prevDemoBtn = document.getElementById('prev-demo-btn');
+            const videoPlaceholder = document.getElementById('video-placeholder'); 
+            const copyPromptBtn = document.getElementById('copy-prompt-btn'); 
+            const copyFeedback = document.getElementById('copy-feedback'); 
+            const demoIndex = document.getElementById('demo-index');
+            const demoTotal = document.getElementById('demo-total');
+            const currentCategoryDisplay = document.getElementById('current-category');
+            const demoCount = document.getElementById('demo-count');
+            
+            const generateBtn = document.getElementById('generate-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn'); 
+            const versionDisplay = document.getElementById('version-display'); 
+            const historyContainer = document.getElementById('history-container');
+            const historyPlaceholder = document.getElementById('history-placeholder');
+            const versionCount = document.getElementById('version-count');
+            
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const pageSections = document.querySelectorAll('.page-section');
+            const principlesBtn = document.getElementById('principles-btn'); // 新增：Sora-2 原則按鈕
+            const categoryButtons = document.querySelectorAll('.category-btn'); // 新增：分類按鈕
+
+            // --- 1. 示範功能 ---
+            const filterDemosByCategory = (category) => {
+                if (category === 'all') {
+                    return [...demos];
+                }
+                return demos.filter(demo => demo.category === category);
+            };
+
+            const updateDemoView = () => {
+                if (filteredDemos.length === 0) {
+                    // 沒有符合條件的範例
+                    demoVideo.src = "";
+                    demoVideo.classList.add('hidden');
+                    videoPlaceholder.classList.remove('hidden');
+                    videoUrl.textContent = "N/A (此分類暫無範例)";
+                    demoPrompt.textContent = "此分類暫無範例提示詞。";
+                    demoIndex.textContent = "0";
+                    demoTotal.textContent = "0";
+                    return;
+                }
+
+                const demo = filteredDemos[currentDemoIndex];
+
+                if (demo.video && demo.video !== "") {
+                    // 有影片
+                    demoVideo.src = demo.video;
+                    videoUrl.textContent = demo.video;
+                    demoVideo.classList.remove('hidden');
+                    videoPlaceholder.classList.add('hidden');
+                    demoVideo.load();
+                    demoVideo.play().catch(e => console.log("Autoplay prevented"));
+                } else {
+                    // 沒有影片,顯示 placeholder
+                    demoVideo.src = "";
+                    demoVideo.classList.add('hidden');
+                    videoPlaceholder.classList.remove('hidden');
+                    videoUrl.textContent = "N/A (尚無影片)";
+                }
+                
+                demoPrompt.textContent = demo.prompt;
+                demoIndex.textContent = currentDemoIndex + 1;
+                demoTotal.textContent = filteredDemos.length;
+            };
+
+            const updateCategoryDisplay = () => {
+                // 更新分類顯示
+                const categoryNames = {
+                    'all': '全部範例',
+                    'urban': '城市生活',
+                    'nature': '自然景觀',
+                    'animals': '動物世界',
+                    'fantasy': '奇幻想像',
+                    'sci-fi': '科幻未來',
+                    'animation': '動畫風格',
+                    'historical': '歷史復古',
+                    'abstract': '抽象創意'
+                };
+                
+                currentCategoryDisplay.textContent = categoryNames[currentCategory];
+                demoCount.textContent = filteredDemos.length;
+            };
+
+            const switchCategory = (category) => {
+                currentCategory = category;
+                filteredDemos = filterDemosByCategory(category);
+                currentDemoIndex = 0;
+                
+                // 更新分類按鈕狀態
+                categoryButtons.forEach(btn => {
+                    if (btn.dataset.category === category) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                updateCategoryDisplay();
+                updateDemoView();
+            };
+
+            nextDemoBtn.addEventListener('click', () => {
+                if (filteredDemos.length === 0) return;
+                currentDemoIndex = (currentDemoIndex + 1) % filteredDemos.length;
+                updateDemoView();
+            });
+
+            prevDemoBtn.addEventListener('click', () => {
+                if (filteredDemos.length === 0) return;
+                currentDemoIndex = (currentDemoIndex - 1 + filteredDemos.length) % filteredDemos.length;
+                updateDemoView();
+            });
+
+            copyPromptBtn.addEventListener('click', () => {
+                const textToCopy = demoPrompt.textContent;
+                
+                const textArea = document.createElement('textarea');
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyFeedback.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyFeedback.classList.add('hidden');
+                    }, 2000); 
+                } catch (err) {
+                    console.error('無法複製文字: ', err);
+                    alert('複製失敗，請手動複製。');
+                }
+                document.body.removeChild(textArea);
+            });
+
+            // 分類按鈕事件監聽
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchCategory(button.dataset.category);
+                });
+            });
+
+            // --- 2. 提示詞產生器 ---
+            
+            // 檢查自訂選項
+            window.checkCustom = (selectElement, inputId) => {
+                const inputElement = document.getElementById(inputId);
+                if (selectElement.value === 'custom') {
+                    inputElement.classList.remove('hidden');
+                } else {
+                    inputElement.classList.add('hidden');
+                }
+            };
+
+            // 獲取選擇值或自訂值
+            const getValue = (selectId, inputId) => {
+                const select = document.getElementById(selectId);
+                if (select.value === 'custom') {
+                    return document.getElementById(inputId).value;
+                }
+                return select.value;
+            };
+
+            // 重設欄位
+            resetBtn.addEventListener('click', () => {
+                const inputs = document.querySelectorAll('.prompt-generator input[type="text"]');
+                const selects = document.querySelectorAll('.prompt-generator select');
+                const textareas = document.querySelectorAll('.prompt-generator textarea'); 
+                
+                inputs.forEach(input => {
+                    input.value = '';
+                    if (input.id.startsWith('custom-')) {
+                        input.classList.add('hidden');
+                    }
+                });
+                
+                selects.forEach(select => {
+                    select.selectedIndex = 0;
+                });
+
+                textareas.forEach(textarea => { 
+                    textarea.value = '';
+                });
+            });
+
+            // --- 3. & 4. 版本控制 ---
+
+            // 更新版本號顯示
+            const updateVersionDisplay = () => {
+                const { major, minor, patch } = currentVersion;
+                
+                const versionString = `V${major}.${minor}.${patch}`;
+                versionDisplay.textContent = versionString;
+                document.title = `Sora 互動式提示詞產生器 ${versionString}`;
+            };
+            
+            // 生成並儲存
+            generateBtn.addEventListener('click', () => {
+                // 遞增版本號
+                if (history.length === 0) {
+                    // 這是第一次生成
+                    currentVersion.patch = 5; // 從 1.0.5 開始
+                } else {
+                    // 如果已經有歷史紀錄，則 patch + 1
+                    currentVersion.patch += 1;
+                }
+               
+                const versionString = `V${currentVersion.major}.${currentVersion.minor}.${currentVersion.patch}`;
+                
+                // 收集提示詞 (包含新欄位)
+                const parts = [
+                    document.getElementById('prompt-subject').value,
+                    document.getElementById('prompt-scene').value,
+                    getValue('prompt-style', 'custom-style'),
+                    getValue('prompt-shot', 'custom-shot'),
+                    getValue('prompt-composition', 'custom-composition'),
+                    getValue('prompt-mood', 'custom-mood'),
+                    // 收集新欄位的值
+                    getValue('prompt-tech-effect', 'custom-tech-effect'),
+                    getValue('prompt-spec-effect', 'custom-spec-effect'),
+                    document.getElementById('prompt-weight').value,
+                    document.getElementById('prompt-dialogue').value 
+                ];
+                
+                // 過濾空字串並用逗號和句號組合
+                const generatedPrompt = parts.filter(p => p && p.trim() !== '').join('，') + '。';
+
+                if (generatedPrompt === '。') {
+                    alert('請至少填寫一個欄位！');
+                    // 如果是第一次點擊但沒填內容，版本號不應增加，所以退回
+                    if(history.length === 0) {
+                         currentVersion.patch = 5; // 重置回 5
+                    } else {
+                         currentVersion.patch -= 1; // 撤銷增加
+                    }
+                    // 確保顯示是正確的基礎版本號
+                    updateVersionDisplay();
+                    return;
+                }
+
+                // 儲存到歷史紀錄
+                const newEntry = {
+                    version: versionString,
+                    prompt: generatedPrompt,
+                    timestamp: new Date().toLocaleString('zh-TW')
+                };
+                history.unshift(newEntry); // 加到最前面
+
+                // 更新顯示
+                updateVersionDisplay();
+                renderHistory();
+            });
+
+            // 渲染歷史紀錄
+            const renderHistory = () => {
+                if (history.length === 0) {
+                    historyPlaceholder.classList.remove('hidden');
+                    versionCount.textContent = '0';
+                    return;
+                }
+
+                historyPlaceholder.classList.add('hidden');
+                historyContainer.innerHTML = ''; // 清空
+                versionCount.textContent = history.length;
+
+                history.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.className = 'history-entry bg-white p-4 rounded-lg shadow-sm border border-gray-200';
+                    entryDiv.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="text-lg font-semibold text-blue-700">${entry.version}</h4>
+                            <span class="text-xs text-gray-500">${entry.timestamp}</span>
+                        </div>
+                        <p class="text-gray-800">${entry.prompt}</p>
+                    `;
+                    historyContainer.appendChild(entryDiv);
+                });
+            };
+
+            // --- 全螢幕功能 ---
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen()
+                        .then(() => {
+                            fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                        })
+                        .catch(err => {
+                            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                        });
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen()
+                            .then(() => {
+                                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                            });
+                    }
+                }
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                }
+            });
+            
+            // --- 導覽/分頁功能 ---
+            const switchPage = (targetId) => {
+                // 隱藏所有頁面
+                pageSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // 顯示目標頁面
+                const targetPage = document.getElementById(targetId);
+                if (targetPage) {
+                    targetPage.classList.remove('hidden');
+                }
+
+                // 更新按鈕
+                navButtons.forEach(btn => {
+                    if (btn.dataset.target === targetId) {
+                        btn.classList.add('active'); // 'active' class 控制樣式
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            };
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchPage(button.dataset.target);
+                });
+            });
+
+            // --- 新增：Sora-2 原則按鈕跳轉到外部網址 ---
+            principlesBtn.addEventListener('click', () => {
+                window.open('https://ping763573.github.io/Taoyuan/sora2/index01.html', '_blank');
+            });
+
+            // --- 初始化 ---
+            
+            // 設定初始版本號為 V1.0.5
+            currentVersion = { major: 1, minor: 0, patch: 5 }; 
+            
+            // 預設顯示第一個頁面
+            switchPage('demo-section');
+            switchCategory('all'); // 初始化分類
+            renderHistory(); 
+            updateVersionDisplay(); 
+        });
+    </script>
 </body>
 </html>
