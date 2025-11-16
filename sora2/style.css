@@ -1436,6 +1436,43 @@ pre code {
   transform: scale(1.05);
 }
 
+/* 返回首頁按鈕樣式 */
+.home-button-container {
+    position: fixed;
+    top: var(--space-20);
+    right: var(--space-20);
+    z-index: 1000;
+}
+
+.home-button-container .btn {
+    box-shadow: var(--shadow-lg);
+    border: none;
+}
+
+.home-button-container .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .home-button-container {
+        top: var(--space-16);
+        right: var(--space-16);
+    }
+    
+    .home-button-container .btn-text {
+        display: none;
+    }
+    
+    .home-button-container .btn {
+        width: 48px;
+        height: 48px;
+        padding: var(--space-8);
+        border-radius: var(--radius-full);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .header-content {
