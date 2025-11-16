@@ -15,6 +15,12 @@ class SoraGuideApp {
     }
 
     bindEvents() {
+        // 返回首頁按鈕
+        const homeBtn = document.getElementById('home-btn');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', () => this.goToHomePage());
+        }
+
         // Fullscreen toggle
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         if (fullscreenBtn) {
@@ -44,6 +50,12 @@ class SoraGuideApp {
 
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', (e) => this.handleOutsideClick(e));
+    }
+
+    // 返回首頁功能
+    goToHomePage() {
+        // 跳轉到首頁
+        window.location.href = 'index.html';
     }
 
     toggleFullscreen() {
