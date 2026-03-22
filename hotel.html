@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>沐石·湯宿 | 極致品味 - 頂級溫泉飯店</title>
     
+    <!-- Frameworks -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
@@ -25,279 +27,235 @@
             font-family: 'Noto Serif TC', serif;
             color: var(--charcoal);
             overflow-x: hidden;
-            cursor: none;
+            margin: 0;
         }
 
         h1, h2, h3, .serif-eng {
             font-family: 'Playfair Display', serif;
         }
 
-        /* 噪點紋理疊加層 */
+        /* 噪點紋理 */
         .noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.12;
+            opacity: 0.1;
             pointer-events: none;
             z-index: 9999;
         }
 
-        .paper-texture {
-            background-image: url('https://www.transparenttextures.com/patterns/handmade-paper.png');
+        /* 圖片佔位與載入動畫 */
+        .img-wrapper {
+            background-color: #E5E1D8;
+            position: relative;
+            overflow: hidden;
         }
 
+        .img-wrapper::after {
+            content: "MU SHI";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5em;
+            opacity: 0.2;
+            font-size: 0.8rem;
+        }
+
+        .reveal-box {
+            position: relative;
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .reveal-box.active {
+            clip-path: inset(0 0 0 0);
+        }
+
+        /* 自定義游標 */
         .custom-cursor {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             background: var(--burgundy);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 10000;
             mix-blend-mode: multiply;
-            transition: transform 0.15s ease-out;
             transform: translate(-50%, -50%);
+            display: none;
         }
 
-        /* 圖片揭露動畫效果 */
-        .reveal-img-container {
-            overflow: hidden;
-            clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
-            transition: clip-path 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        @media (min-width: 768px) {
+            .custom-cursor { display: block; }
+            body { cursor: none; }
         }
 
-        .reveal-img-container.active {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-        }
-
-        /* 自定義捲動條 */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--burgundy); }
-
-        .asymmetric-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
+        nav.scrolled {
+            background: rgba(245, 240, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(93, 25, 22, 0.1);
         }
     </style>
 </head>
-<body class="paper-texture">
+<body>
     <div class="noise-overlay"></div>
-    <div class="custom-cursor hidden md:block" id="cursor"></div>
+    <div class="custom-cursor" id="cursor"></div>
 
-    <nav class="fixed w-full z-50 px-8 py-6 flex justify-between items-center mix-blend-difference">
-        <div class="text-2xl font-bold tracking-widest text-white">沐石·湯宿</div>
-        <div class="hidden md:flex space-x-12 text-sm tracking-widest text-white opacity-80 uppercase">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 px-8 py-6 flex justify-between items-center transition-all duration-500">
+        <div class="text-2xl font-bold tracking-widest text-burgundy">沐石·湯宿</div>
+        <div class="hidden md:flex space-x-12 text-sm tracking-widest text-burgundy opacity-70 uppercase">
             <a href="#about" class="hover:opacity-100 transition">隱世之居</a>
             <a href="#experience" class="hover:opacity-100 transition">感官體驗</a>
-            <a href="#cta" class="hover:opacity-100 transition">預訂查詢</a>
+            <a href="#cta" class="hover:opacity-100 transition">立即預訂</a>
         </div>
-        <a href="#cta" class="px-6 py-2 border border-white text-white text-sm tracking-widest hover:bg-white hover:text-black transition duration-500">
-            BOOK NOW
-        </a>
+        <button class="px-6 py-2 border border-burgundy text-burgundy text-xs tracking-[0.3em] hover:bg-burgundy hover:text-white transition duration-500">
+            BOOKING
+        </button>
     </nav>
 
-    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <!-- Hero -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden bg-charcoal">
         <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-black/40 z-10"></div>
-            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=90&w=2000" 
-                 alt="Hot Spring Resort" 
-                 class="w-full h-full object-cover scale-110" id="hero-bg">
+            <div class="absolute inset-0 bg-black/30 z-10"></div>
+            <!-- 主視覺：奢華溫泉池 -->
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&w=1600" 
+                 alt="[頂級溫泉飯店主視覺]" 
+                 class="w-full h-full object-cover" id="hero-img">
         </div>
-        
         <div class="relative z-20 text-center text-white">
-            <span class="block text-sm tracking-[0.6em] mb-4 opacity-0" id="hero-sub">PRIVATE ONSEN / TAIWAN</span>
-            <h1 class="text-6xl md:text-9xl mb-8 opacity-0 leading-tight" id="hero-title">
-                沐石 <span class="italic serif-eng text-4xl md:text-6xl">Zen Silence</span> 湯宿
+            <span class="block text-sm tracking-[0.8em] mb-6 opacity-0 translate-y-4" id="hero-tag">ORIENTAL RETREAT</span>
+            <h1 class="text-6xl md:text-9xl mb-8 opacity-0 translate-y-8" id="hero-title">
+                沐石 <span class="italic serif-eng text-4xl md:text-6xl">Zen</span> 湯宿
             </h1>
-            <p class="text-lg md:text-xl tracking-[0.3em] font-light opacity-0" id="hero-desc">
-                極致品味 ｜ 尊榮至上 ｜ 絕對私密
+            <p class="text-lg md:text-xl tracking-[0.4em] font-light opacity-0 translate-y-4" id="hero-desc">
+                尊榮至上 ｜ 極致品味 ｜ 絕對私密
             </p>
-        </div>
-
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-white/50">
-            <iconify-icon icon="ph:arrow-down-light" class="text-3xl"></iconify-icon>
         </div>
     </section>
 
-    <section id="about" class="py-32 px-8 md:px-24">
-        <div class="asymmetric-grid gap-8 items-center">
-            <div class="col-span-12 md:col-span-5 mb-12 md:mb-0" id="about-text">
-                <span class="text-burgundy tracking-widest text-xs mb-4 block">THE ESSENCE OF STONE</span>
-                <h2 class="text-4xl md:text-5xl text-burgundy mb-8 leading-snug">
-                    在原石與泉水之間，<br>聽見內心的靜謐。
-                </h2>
-                <p class="text-gray-600 leading-loose text-justify text-lg">
-                    沐石·湯宿坐落於靜謐山谷，以「侘寂」為建築靈魂。我們捨棄華麗的裝飾，回歸材質的本質。
-                    讓肌膚觸碰石材的涼意，讓心靈沉浸溫熱的泉水中，重拾那份失落已久的平靜。
-                </p>
+    <!-- Intro Section (修正禪意空間圖片) -->
+    <section id="about" class="py-32 px-8 md:px-24 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div class="order-2 md:order-1">
+                <div class="reveal-box active img-wrapper aspect-[4/5] shadow-2xl">
+                    <!-- 禪意空間圖片：使用多重備援機制 -->
+                    <img id="intro-img" 
+                         src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&w=1000" 
+                         alt="[禪意空間圖片]" 
+                         class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1505672938882-17eaa7d8683b?auto=format&w=1000';">
+                </div>
             </div>
-            <div class="col-span-12 md:col-span-6 md:col-start-7">
-                <div class="reveal-img-container relative group">
-                    <img src="https://images.unsplash.com/photo-1515362655657-9a8d5099378e?auto=format&fit=crop&q=80&w=1200" 
-                         alt="Zen Garden" 
-                         class="w-full grayscale hover:grayscale-0 transition-all duration-1000 object-cover aspect-[4/5]">
-                    <div class="absolute -bottom-6 -left-6 bg-white p-8 shadow-sm hidden md:block">
-                        <span class="serif-eng text-3xl italic text-burgundy">Simplicity</span>
-                    </div>
+            <div class="order-1 md:order-2 space-y-8">
+                <h2 class="text-4xl md:text-5xl text-burgundy leading-tight">
+                    大地的脈動，<br>在泉水中靜靜流淌。
+                </h2>
+                <p class="text-gray-600 leading-loose text-lg text-justify">
+                    沐石·湯宿不僅是一處居所，更是一場關於感官的修行。我們將天然原石與當代建築語彙結合，
+                    在繁華之外開闢一方淨土。讓溫熱的泉水洗去塵囂，讓木頭的香氣安撫心神。
+                </p>
+                <div class="pt-4">
+                    <a href="#" class="inline-flex items-center space-x-4 group">
+                        <span class="text-burgundy tracking-widest text-sm">探索空間細節</span>
+                        <iconify-icon icon="ph:arrow-right-light" class="text-xl group-hover:translate-x-2 transition-transform text-burgundy"></iconify-icon>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="experience" class="py-24 bg-[#EAE3D5] paper-texture overflow-hidden">
-        <div class="px-8 md:px-24 mb-16 text-center">
-            <span class="text-burgundy tracking-widest text-sm">— PHILOSOPHY</span>
-            <h2 class="text-4xl mt-4">極致品味的具象化</h2>
+    <!-- Experience Section (修正其他圖片) -->
+    <section id="experience" class="py-32 bg-[#E8E2D6]">
+        <div class="px-8 md:px-24 mb-20 text-center md:text-left">
+            <span class="text-burgundy tracking-[0.3em] text-xs uppercase block mb-4">Core Values</span>
+            <h2 class="text-4xl md:text-5xl">極致品味的定義</h2>
         </div>
         
-        <div class="flex flex-wrap md:flex-nowrap gap-6 px-8 md:px-24">
-            <div class="w-full md:w-1/3 group">
-                <div class="relative overflow-hidden h-[600px] reveal-img-container">
-                    <img src="https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&q=80&w=1000" 
-                         alt="Absolute Privacy" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-500"></div>
-                    <div class="absolute inset-0 flex flex-col justify-end p-10 text-white">
-                        <span class="text-xs tracking-[0.3em] mb-2 opacity-70">PRIVACY</span>
-                        <h3 class="text-2xl mb-4 font-bold">絕對私密</h3>
-                        <p class="text-sm opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 font-light leading-relaxed">
-                            獨立的出入口與一站式管家服務，確保您的隱私不受外界任何干擾。
-                        </p>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-8 md:px-12">
+            <!-- 絕對私密 -->
+            <div class="group">
+                <div class="reveal-box mb-8 aspect-[3/4] img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&w=800" 
+                         alt="[絕對私密客房圖片]" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                         onerror="this.src='https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&w=800'">
                 </div>
+                <h3 class="text-2xl mb-4 text-burgundy font-bold">絕對私密</h3>
+                <p class="text-gray-600 leading-relaxed font-light">獨立電梯直達專屬湯室，一站式隱形管家服務。</p>
             </div>
-            <div class="w-full md:w-1/3 group md:mt-20">
-                <div class="relative overflow-hidden h-[600px] reveal-img-container">
-                    <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=1000" 
-                         alt="Tea Ceremony" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-500"></div>
-                    <div class="absolute inset-0 flex flex-col justify-end p-10 text-white">
-                        <span class="text-xs tracking-[0.3em] mb-2 opacity-70">RITUAL</span>
-                        <h3 class="text-2xl mb-4 font-bold">精緻茶席</h3>
-                        <p class="text-sm opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 font-light leading-relaxed">
-                            選用台灣深山極品春茶，讓身心在茶香與氤氳水氣中獲得淨化。
-                        </p>
-                    </div>
+
+            <!-- 極致溫泉 -->
+            <div class="group md:mt-24">
+                <div class="reveal-box mb-8 aspect-[3/4] img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&w=800" 
+                         alt="[溫泉體驗圖片]" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
                 </div>
+                <h3 class="text-2xl mb-4 text-burgundy font-bold">極致溫泉</h3>
+                <p class="text-gray-600 leading-relaxed font-light">選用最深層的地熱泉水，富含礦物質。</p>
             </div>
-            <div class="w-full md:w-1/3 group">
-                <div class="relative overflow-hidden h-[600px] reveal-img-container">
-                    <img src="https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=80&w=1000" 
-                         alt="Crafted Space" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-500"></div>
-                    <div class="absolute inset-0 flex flex-col justify-end p-10 text-white">
-                        <span class="text-xs tracking-[0.3em] mb-2 opacity-70">SPACE</span>
-                        <h3 class="text-2xl mb-4 font-bold">匠心空間</h3>
-                        <p class="text-sm opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 font-light leading-relaxed">
-                            融合天然大理石與深色木質，打造具備當代藝術感的東方禪意美學居所。
-                        </p>
-                    </div>
+
+            <!-- 匠心空間 -->
+            <div class="group">
+                <div class="reveal-box mb-8 aspect-[3/4] img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&w=800" 
+                         alt="[匠心空間設計圖片]" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
                 </div>
+                <h3 class="text-2xl mb-4 text-burgundy font-bold">匠心空間</h3>
+                <p class="text-gray-600 leading-relaxed font-light">融合原石紋理與深色橡木，打造藝廊般的體驗。</p>
             </div>
         </div>
     </section>
 
-    <section id="cta" class="relative py-48 flex flex-col items-center justify-center text-center px-8 overflow-hidden">
-        <div class="absolute inset-0 z-0 opacity-25">
-            <img src="https://images.unsplash.com/photo-1621293954908-907159247fc8?auto=format&fit=crop&q=80&w=2000" 
-                 class="w-full h-full object-cover grayscale">
+    <!-- Call to Action -->
+    <section id="cta" class="py-48 relative overflow-hidden flex flex-col items-center justify-center text-center px-8 bg-charcoal">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1621293954908-907159247fc8?auto=format&w=1600" 
+                 alt="[風景背景]" class="w-full h-full object-cover opacity-30 grayscale">
         </div>
-        <div class="relative z-10">
-            <span class="text-burgundy tracking-[0.5em] mb-6 block">RESERVATIONS</span>
-            <h2 class="text-5xl md:text-8xl mb-12 text-burgundy italic serif-eng">Return to Nature</h2>
-            <p class="text-lg md:text-xl mb-12 tracking-widest max-w-2xl mx-auto opacity-70">
-                將世俗的塵囂留在山谷之外，我們已準備好為您洗滌身心的疲憊。
-            </p>
-            <button class="group relative px-16 py-6 overflow-hidden bg-burgundy text-white text-lg tracking-[0.3em] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(93,25,22,0.3)]">
-                <span class="relative z-10">立即預訂體驗</span>
-                <div class="absolute inset-0 bg-charcoal scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></div>
+        <div class="relative z-10 space-y-12">
+            <h2 class="text-5xl md:text-8xl text-[#D9D2C5] italic serif-eng">The Silence Awaits</h2>
+            <button class="bg-burgundy text-white px-16 py-6 rounded-full text-lg tracking-[0.3em] hover:bg-white hover:text-burgundy transition-all duration-500">
+                立即預訂
             </button>
         </div>
     </section>
 
-    <footer class="bg-charcoal text-[#D9D2C5] py-20 px-8 md:px-24">
-        <div class="flex flex-col md:flex-row justify-between items-start border-b border-gray-700 pb-16">
-            <div class="mb-12 md:mb-0">
-                <div class="text-3xl font-bold mb-6 tracking-widest text-white">沐石·湯宿</div>
-                <p class="opacity-50 max-w-xs leading-relaxed text-sm">
-                    尋找生活中的留白，<br>
-                    在自然中，找回最真實的自己。
-                </p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32">
-                <div>
-                    <h4 class="text-white mb-6 uppercase tracking-widest text-sm">CONTACT</h4>
-                    <ul class="space-y-4 text-xs opacity-60">
-                        <li>02-2345-6789</li>
-                        <li>service@mushi-inn.com</li>
-                        <li>宜蘭縣礁溪鄉石隱路 88 號</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white mb-6 uppercase tracking-widest text-sm">FOLLOW</h4>
-                    <div class="flex space-x-6">
-                        <iconify-icon icon="ph:instagram-logo-light" class="text-2xl hover:text-white transition cursor-pointer"></iconify-icon>
-                        <iconify-icon icon="ph:facebook-logo-light" class="text-2xl hover:text-white transition cursor-pointer"></iconify-icon>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="mt-8 text-[10px] opacity-30 flex flex-col md:flex-row justify-between uppercase tracking-widest">
-            <span>© 2026 MUSHI INN. DESIGNED FOR TRANQUILITY.</span>
-            <span class="mt-4 md:mt-0">Privacy Policy / Terms of Service / Cookie Policy</span>
-        </div>
-    </footer>
-
     <script>
-        // Custom Cursor Logic
+        // Custom Cursor
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', (e) => {
             gsap.to(cursor, {
                 x: e.clientX,
                 y: e.clientY,
-                duration: 0.2,
-                ease: "power2.out"
+                duration: 0.1,
+                ease: "power1.out"
             });
         });
 
-        // GSAP Initialization
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled', 'py-4');
+            } else {
+                nav.classList.remove('scrolled', 'py-4');
+            }
+        });
+
+        // GSAP
         gsap.registerPlugin(ScrollTrigger);
 
-        // Hero Animation
         const tl = gsap.timeline();
-        tl.to("#hero-sub", { opacity: 1, y: 0, duration: 1, delay: 0.5 })
-          .to("#hero-title", { opacity: 1, y: 0, duration: 1.2 }, "-=0.5")
-          .to("#hero-desc", { opacity: 1, y: 0, duration: 1 }, "-=0.8")
-          .from("#hero-bg", { scale: 1.3, duration: 3, ease: "power2.out" }, 0);
+        tl.to("#hero-tag", { opacity: 1, y: 0, duration: 1, delay: 0.3 })
+          .to("#hero-title", { opacity: 1, y: 0, duration: 1 }, "-=0.6")
+          .to("#hero-desc", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6");
 
-        // Scroll Reveal Animations for Images
-        document.querySelectorAll('.reveal-img-container').forEach(container => {
+        document.querySelectorAll('.reveal-box').forEach(box => {
             ScrollTrigger.create({
-                trigger: container,
-                start: "top 85%",
-                onEnter: () => container.classList.add('active')
-            });
-        });
-
-        // Parallax Effect for Hero
-        gsap.to("#hero-bg", {
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom top",
-                scrub: true
-            },
-            y: 150
-        });
-
-        // Interactive Cursor scaling
-        const interactiveElements = document.querySelectorAll('button, a, .group');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                gsap.to(cursor, { scale: 3, opacity: 0.15, duration: 0.3 });
-            });
-            el.addEventListener('mouseleave', () => {
-                gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.3 });
+                trigger: box,
+                start: "top 90%",
+                onEnter: () => box.classList.add('active')
             });
         });
     </script>
