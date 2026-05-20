@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇幻單字朗讀樂園 - 兒童中英文隨機單字學習機</title>
+    <!-- 引入 Tailwind CSS 進行現代化與響應式排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts Playful 字型 Quicksand 與中文字型 -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti 炫彩特效 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #fef08a 0%, #dbeafe 100%);
+            min-height: 100vh;
+        }
+        /* 卡片翻轉效果 */
+        .card-container {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        /* 可愛呼吸動畫 */
+        @keyframes hover-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .mascot-bounce {
+            animation: hover-bounce 3s ease-in-out infinite;
+        }
+        /* 自訂滾動條 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden text-slate-800">
+
+    <div class="container mx-auto px-4 py-6 max-w-5xl">
+        <!-- 頂部繽紛標題 -->
+        <header class="text-center mb-6">
+            <div class="inline-flex items-center justify-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border-4 border-amber-300 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <span class="text-4xl">🦖</span>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-indigo-600 tracking-wide">奇幻單字朗讀樂園</h1>
+                <span class="text-4xl">🎈</span>
+            </div>
+            <p class="text-sm md:text-base text-slate-600 mt-2 font-medium">聽聽看、大聲讀，跟著恐龍奇奇一起隨機探索好玩的英語單字吧！</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+            <!-- 左側：吉祥物奇奇與即時對話框 -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 shadow-md border-4 border-indigo-100 flex flex-col md:flex-row lg:flex-col items-center justify-center gap-6 relative overflow-hidden">
+                <!-- 裝飾小背景 -->
+                <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full -mr-10 -mt-10 opacity-60"></div>
+                
+                <!-- 恐龍吉祥物 -->
+                <div class="mascot-bounce flex flex-col items-center justify-center">
+                    <div class="text-7xl md:text-8xl select-none filter drop-shadow-md">🦖</div>
+                    <span class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full font-bold mt-2 shadow-sm">指導老師：奇奇</span>
+                </div>
+
+                <!-- 奇奇的對話泡泡 -->
+                <div class="flex-1 w-full">
+                    <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 relative">
+                        <!-- 對話框箭頭 -->
+                        <div class="absolute left-1/2 md:left-0 lg:left-1/2 -top-3 md:top-10 lg:-top-3 md:-left-3 transform -translate-x-1/2 md:translate-x-0 lg:-translate-x-1/2 rotate-45 md:-rotate-45 lg:rotate-45 w-6 h-6 bg-indigo-50 border-l-2 border-t-2 border-indigo-200"></div>
+                        <p id="mascot-text" class="text-slate-700 font-bold text-center md:text-left text-base leading-relaxed">
+                            哈囉！小朋友，我是奇奇老師！今天我們來隨機挑戰好玩的英文單字！點擊字卡，跟我大聲開口讀英文喔！🌟
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側：語音引擎與設定 -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 shadow-md border-4 border-amber-100 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-extrabold text-amber-600 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> 朗讀助理與設定
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- 語音聲音選擇 -->
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-500 block">📢 朗讀老師聲音</label>
+                            <select id="voice-select" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 focus:outline-none focus:border-indigo-400">
+                                <option value="Zephyr" selected>溫暖陽光 (Zephyr - 推薦)</option>
+                                <option value="Puck">活潑歡樂 (Puck - 適合小朋友)</option>
+                                <option value="Leda">親切溫和 (Leda)</option>
+                                <option value="Fenrir">動感熱情 (Fenrir)</option>
+                                <option value="browser">電腦預設女聲 (離線/快速)</option>
+                            </select>
+                        </div>
+
+                        <!-- 朗讀速度調整 -->
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-500 block">🐢 朗讀速度</label>
+                            <div class="flex items-center gap-2 bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-1">
+                                <span class="text-sm">🐢</span>
+                                <input id="speech-rate" type="range" min="0.5" max="1.5" step="0.1" value="0.9" class="w-full accent-indigo-600">
+                                <span class="text-sm">🐇</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分享防盜用：API Key 設定區 -->
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <details class="group bg-slate-50 rounded-2xl p-3 border border-slate-200">
+                            <summary class="text-xs font-bold text-slate-600 cursor-pointer hover:text-indigo-600 flex items-center gap-2 select-none">
+                                <i class="fa-solid fa-key text-amber-500"></i>
+                                <span>🔒 高級設定：自訂您的 Gemini API 金鑰 (選填)</span>
+                                <i class="fa-solid fa-chevron-down ml-auto transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div class="mt-2 space-y-2">
+                                <input id="api-key-input" type="password" placeholder="請輸入您的 Gemini API 金鑰 (AIzaSy...)" 
+                                       class="w-full bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-400 font-mono">
+                                <p class="text-[10px] text-slate-400 leading-normal">
+                                    💡 <b>安全聲明：</b>當您將此網頁分享給別人時，請保持金鑰空白。使用者可在此輸入自己的金鑰，金鑰會<b>安全地儲存在當前瀏覽器中 (LocalStorage)</b>，絕不會上傳到任何伺服器或外洩給他人！若不填寫，系統將自動無縫切換到<b>完全免費的本機語音引擎</b>發音。
+                                </p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- 學習累計星星 -->
+                <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">⭐</span>
+                        <span class="text-sm font-bold text-slate-600">目前獲得的小星星：</span>
+                        <span id="total-stars" class="bg-amber-100 text-amber-700 font-extrabold text-lg px-3 py-0.5 rounded-full border border-amber-300">0</span>
+                    </div>
+                    <!-- 重置按鈕 -->
+                    <button onclick="resetStats()" class="text-xs text-slate-400 hover:text-red-500 font-bold transition-colors">
+                        <i class="fa-solid fa-arrows-rotate"></i> 重設紀錄
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主分頁導航 -->
+        <div class="flex justify-center gap-2 md:gap-4 mb-6">
+            <button onclick="switchTab('learn')" id="tab-learn" class="tab-btn active px-6 py-3 rounded-full font-bold text-sm md:text-base shadow-sm transition-all duration-300 bg-indigo-600 text-white flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap"></i> 單字學習字卡
+            </button>
+            <button onclick="switchTab('game')" id="tab-game" class="tab-btn px-6 py-3 rounded-full font-bold text-sm md:text-base shadow-sm transition-all duration-300 bg-white text-slate-600 hover:bg-indigo-50 flex items-center gap-2">
+                <i class="fa-solid fa-gamepad"></i> 聽音猜單字
+            </button>
+            <button onclick="switchTab('badges')" id="tab-badges" class="tab-btn px-6 py-3 rounded-full font-bold text-sm md:text-base shadow-sm transition-all duration-300 bg-white text-slate-600 hover:bg-indigo-50 flex items-center gap-2">
+                <i class="fa-solid fa-medal"></i> 我的成就勳章
+            </button>
+        </div>
+
+        <!-- ==================== 學習頁面 ==================== -->
+        <div id="section-learn" class="tab-content block">
+            <!-- 類別過濾與隨機選字列 -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border-4 border-indigo-50 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <!-- 分類篩選按鈕組 -->
+                <div class="flex flex-wrap gap-2 justify-center" id="category-filter-container">
+                    <!-- 藉由 JS 動態渲染類別按鈕 -->
+                </div>
+                <!-- 隨機骰一字 & 換一字控制組 -->
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="getRandomWord()" class="flex-1 md:flex-none bg-amber-400 hover:bg-amber-500 active:scale-95 text-amber-950 font-extrabold px-5 py-2.5 rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2 text-sm">
+                        <span>🎲 隨機骰一字</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 單字大卡片與控制區 -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+                <!-- 左側：巨型互動卡片 (可翻面) -->
+                <div class="md:col-span-7 card-container cursor-pointer" onclick="flipCard()">
+                    <div id="word-card" class="card-inner w-full min-h-[420px] relative bg-white rounded-3xl shadow-xl border-8 border-indigo-400 p-6 flex items-center justify-center text-center">
+                        
+                        <!-- 卡片正面 -->
+                        <div class="card-front absolute inset-0 flex flex-col justify-between p-6">
+                            <div class="flex justify-between items-center">
+                                <span class="bg-indigo-100 text-indigo-700 text-xs font-extrabold px-3 py-1 rounded-full"><i class="fa-solid fa-graduation-cap"></i> 單字卡正面</span>
+                                <span class="text-xs font-bold text-slate-400 hover:text-indigo-500 flex items-center gap-1">
+                                    <i class="fa-solid fa-rotate"></i> 點卡片看中文
+                                </span>
+                            </div>
+                            
+                            <!-- 單字大插圖與發音 -->
+                            <div class="my-auto space-y-3">
+                                <div id="card-emoji" class="text-8xl md:text-9xl filter drop-shadow-sm select-none">🍎</div>
+                                <div id="card-eng-word" class="text-4xl md:text-5xl font-extrabold text-indigo-600 capitalize tracking-wide">apple</div>
+                                <div id="card-phonetic" class="text-lg font-bold text-slate-400">/ˈæp.əl/</div>
+                            </div>
+
+                            <!-- 底部例句預覽 -->
+                            <div class="border-t border-slate-100 pt-3">
+                                <p class="text-xs font-extrabold text-slate-400 tracking-wider mb-1 uppercase">常用情境例句</p>
+                                <p id="card-example-eng" class="text-sm font-bold text-slate-600 italic">"I like to eat a sweet apple."</p>
+                            </div>
+                        </div>
+
+                        <!-- 卡片背面 -->
+                        <div class="card-back absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-br from-indigo-50 to-white rounded-2xl">
+                            <div class="flex justify-between items-center">
+                                <span class="bg-amber-100 text-amber-700 text-xs font-extrabold px-3 py-1 rounded-full"><i class="fa-solid fa-circle-question"></i> 卡片背面 (中文義與例句)</span>
+                                <span class="text-xs font-bold text-slate-400 hover:text-indigo-500 flex items-center gap-1">
+                                    <i class="fa-solid fa-rotate"></i> 點卡片回正面
+                                </span>
+                            </div>
+
+                            <!-- 中文翻譯 -->
+                            <div class="my-auto space-y-4">
+                                <div id="card-chi-word" class="text-6xl font-extrabold text-indigo-600">蘋果</div>
+                                <div class="bg-white/80 p-3 rounded-2xl border border-indigo-100 max-w-sm mx-auto shadow-sm">
+                                    <p class="text-xs font-bold text-indigo-500 mb-1">💡 奇奇知識小補帖</p>
+                                    <p id="card-chi-explanation" class="text-xs font-medium text-slate-500 leading-relaxed">
+                                        蘋果富含維他命C！多吃蘋果身體好，英文說「An apple a day keeps the doctor away.」就是每天吃蘋果，醫生遠離我喔！
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- 例句對照 -->
+                            <div class="border-t border-slate-100 pt-3">
+                                <p class="text-xs font-extrabold text-slate-400 tracking-wider mb-1">例句中文翻譯</p>
+                                <p id="card-example-chi" class="text-sm font-bold text-indigo-700">我喜歡吃甜甜的蘋果。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右側：互動與控制按鈕區 -->
+                <div class="md:col-span-5 flex flex-col gap-4">
+                    <!-- 朗讀功能區 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-4 border-emerald-100 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-md font-extrabold text-emerald-600 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-volume-high"></i> 英文大聲聽
+                            </h4>
+                            <p class="text-xs text-slate-500 mb-4">點選按鈕來聽最標準的英文單字發音。也可以嘗試用「慢速」發音聽得更仔細喔！</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <!-- 播放單字 -->
+                            <button onclick="speakCurrentWord(false)" id="play-sound-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white py-3 px-5 rounded-2xl font-extrabold text-base shadow-md transition-all flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-volume-high text-lg animate-pulse"></i>
+                                <span>朗讀單字 (Normal)</span>
+                            </button>
+                            
+                            <!-- 慢速播放單字 -->
+                            <button onclick="speakCurrentWord(true)" class="w-full bg-emerald-100 hover:bg-emerald-200 active:scale-95 text-emerald-700 py-2.5 px-5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2">
+                                <span class="text-base">🐢</span>
+                                <span>烏龜慢速朗讀 (Slow)</span>
+                            </button>
+
+                            <!-- 播放整句例句 -->
+                            <button onclick="speakCurrentSentence()" class="w-full bg-indigo-50 hover:bg-indigo-100 active:scale-95 text-indigo-700 py-2.5 px-5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-indigo-200">
+                                <i class="fa-solid fa-quote-left"></i>
+                                <span>朗讀整句英文例句</span>
+                            </button>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-50 text-center text-xs text-slate-400 font-bold">
+                            聽音學習次數：<span id="listen-count" class="text-emerald-500">0</span> 次
+                        </div>
+                    </div>
+
+                    <!-- 口說挑戰功能區 -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-4 border-pink-100 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-md font-extrabold text-pink-600 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-microphone"></i> 換小朋友唸唸看
+                            </h4>
+                            <p class="text-xs text-slate-500 mb-3">按住麥克風並大聲唸出卡片上的英文單字。系統會為你的發音打分數喔！</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- 麥克風按鈕 -->
+                            <button id="mic-btn" onclick="toggleSpeechRecognition()" class="w-full bg-pink-500 hover:bg-pink-600 active:scale-95 text-white py-4 px-6 rounded-2xl font-extrabold text-lg shadow-md transition-all flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-microphone text-xl" id="mic-icon"></i>
+                                <span id="mic-text">開啟麥克風練習</span>
+                            </button>
+                            <!-- 錄音狀態顯示 -->
+                            <div id="speech-result-box" class="hidden bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-3 text-center">
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">你唸的是：</p>
+                                <p id="recognized-text" class="text-lg font-extrabold text-pink-600 my-1">...</p>
+                                <p id="recognized-score" class="text-xs font-bold text-emerald-500"></p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center text-xs text-slate-400 font-bold">
+                            口說過關次數：<span id="speak-count" class="text-pink-500">0</span> 次
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片前後導航 -->
+            <div class="mt-6 flex justify-between items-center max-w-md mx-auto bg-white/60 p-2.5 rounded-full border border-indigo-100 shadow-sm">
+                <button onclick="prevWord()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-12 h-12 rounded-full shadow-sm flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <span class="text-xs font-bold text-slate-500">
+                    目前進度：單字 <span id="current-word-index" class="text-indigo-600">1</span> / <span id="total-word-count" class="text-indigo-600">15</span>
+                </span>
+                <button onclick="nextWord()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-12 h-12 rounded-full shadow-sm flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== 趣味遊戲闖關 ==================== -->
+        <div id="section-game" class="tab-content hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-4 border-violet-100">
+                <!-- 遊戲說明 header -->
+                <div class="text-center max-w-md mx-auto mb-6">
+                    <span class="text-5xl">🎮</span>
+                    <h3 class="text-xl font-extrabold text-indigo-700 mt-2">聽音辨詞大考驗</h3>
+                    <p class="text-sm text-slate-500 mt-1">聽奇奇老師播出的英文聲音，點選出正確對應的單字插圖字卡吧！</p>
+                </div>
+
+                <!-- 遊戲控制面版 -->
+                <div class="flex flex-col items-center justify-center bg-violet-50 rounded-2xl p-6 border-2 border-violet-100 mb-6 max-w-xl mx-auto">
+                    <!-- 分數與進度 -->
+                    <div class="flex justify-between w-full mb-4 px-2">
+                        <div class="text-sm font-bold text-slate-600">
+                            得分：<span id="game-score" class="text-indigo-600 text-lg font-black">0</span> / 10
+                        </div>
+                        <div class="text-sm font-bold text-slate-600">
+                            關卡：<span id="game-round" class="text-indigo-600 text-lg font-black">0</span> / 10
+                        </div>
+                    </div>
+
+                    <!-- 遊戲朗讀大按鈕 -->
+                    <button id="game-listen-btn" onclick="playGameQuestionSound()" class="bg-violet-600 hover:bg-violet-700 active:scale-95 text-white w-24 h-24 rounded-full shadow-lg border-4 border-violet-300 flex items-center justify-center text-4xl transform hover:rotate-6 transition-all">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <span class="text-xs font-bold text-violet-500 mt-2 animate-pulse">點我聽音播放 📢</span>
+                </div>
+
+                <!-- 遊戲選單按鈕（4個選項） -->
+                <div class="max-w-2xl mx-auto">
+                    <div class="grid grid-cols-2 gap-4" id="game-options-container">
+                        <!-- 選項會動態渲染於此 -->
+                    </div>
+
+                    <!-- 開始遊戲與下一關控制 -->
+                    <div class="mt-8 text-center">
+                        <button id="game-start-btn" onclick="startNewGame()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-full font-extrabold text-lg shadow-md transition-all">
+                            🎯 開始新挑戰
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 成就勳章榮譽榜 ==================== -->
+        <div id="section-badges" class="tab-content hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-4 border-amber-100">
+                <!-- 榮譽榜頂部 -->
+                <div class="text-center max-w-md mx-auto mb-8">
+                    <span class="text-5xl">🏆</span>
+                    <h3 class="text-2xl font-extrabold text-amber-600 mt-2">小小單字王榮譽榜</h3>
+                    <p class="text-sm text-slate-500 mt-1">在這裡可以看到你所有努力累積的學習成果喔！</p>
+                </div>
+
+                <!-- 徽章解鎖進度 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-10">
+                    <!-- 徽章 1: 初試啼聲 -->
+                    <div id="badge-1" class="bg-slate-50 border-4 border-slate-200 rounded-3xl p-5 text-center flex flex-col items-center justify-center opacity-40 transition-all filter grayscale">
+                        <div class="text-5xl mb-2">🎈</div>
+                        <h4 class="font-extrabold text-slate-700 text-base">初試啼聲</h4>
+                        <p class="text-xs text-slate-400 mt-1 leading-normal">聽過 1 次英文單字</p>
+                    </div>
+
+                    <!-- 徽章 2: 單字大師 -->
+                    <div id="badge-2" class="bg-slate-50 border-4 border-slate-200 rounded-3xl p-5 text-center flex flex-col items-center justify-center opacity-40 transition-all filter grayscale">
+                        <div class="text-5xl mb-2">⭐</div>
+                        <h4 class="font-extrabold text-slate-700 text-base">閃亮新星</h4>
+                        <p class="text-xs text-slate-400 mt-1 leading-normal">累積獲得 5 顆星星</p>
+                    </div>
+
+                    <!-- 徽章 3: 完美配音 -->
+                    <div id="badge-3" class="bg-slate-50 border-4 border-slate-200 rounded-3xl p-5 text-center flex flex-col items-center justify-center opacity-40 transition-all filter grayscale">
+                        <div class="text-5xl mb-2">🗣️</div>
+                        <h4 class="font-extrabold text-slate-700 text-base">口說小大師</h4>
+                        <p class="text-xs text-slate-400 mt-1 leading-normal">口說辨識挑戰成功 3 次</p>
+                    </div>
+
+                    <!-- 徽章 4: 全能知識王 -->
+                    <div id="badge-4" class="bg-slate-50 border-4 border-slate-200 rounded-3xl p-5 text-center flex flex-col items-center justify-center opacity-40 transition-all filter grayscale">
+                        <div class="text-5xl mb-2">👑</div>
+                        <h4 class="font-extrabold text-slate-700 text-base">金牌單字王</h4>
+                        <p class="text-xs text-slate-400 mt-1 leading-normal">聽音辨詞挑戰獲得滿分</p>
+                    </div>
+                </div>
+
+                <!-- 學習小證書 -->
+                <div class="max-w-2xl mx-auto bg-gradient-to-r from-amber-50 to-orange-50 border-8 border-double border-amber-300 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+                    <!-- 水印和徽飾 -->
+                    <div class="absolute -right-10 -bottom-10 text-9xl text-amber-200/20 rotate-12 select-none font-bold">ABC</div>
+                    <div class="absolute right-4 top-4 text-4xl text-amber-400"><i class="fa-solid fa-ribbon animate-bounce"></i></div>
+
+                    <div class="text-center space-y-4">
+                        <p class="text-xs font-bold text-amber-600 uppercase tracking-widest">- 榮譽證書 Certificate -</p>
+                        <h4 class="text-2xl font-black text-slate-800">小小英語探險家</h4>
+                        <p class="text-sm font-medium text-slate-600 max-w-md mx-auto leading-relaxed">
+                            恭喜小寶貝完成了「英文奇幻單字大歷險」！你不但認識了各種類別的趣味英文詞語，還能夠勇敢大聲讀出正確發音！你是最棒的英語探險家！
+                        </p>
+                        <div class="flex justify-center items-center gap-4 pt-4 border-t border-amber-200/60 max-w-xs mx-auto">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400">認證人</p>
+                                <p class="text-sm font-bold text-indigo-600">🦖 恐龍奇奇老師</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 頁尾宣告與版權 -->
+        <footer class="mt-12 text-center text-xs text-slate-400 font-bold pb-10 space-y-1">
+            <p>© 2026 奇幻單字朗讀樂園. Powered by Gemini AI Multi-modal Speech Intelligence.</p>
+            <p>本教材專供兒童進行英語單字趣味口說與聽力練習，快快大聲跟著唸吧！</p>
+        </footer>
+    </div>
+
+    <!-- ==================== JAVASCRIPT SYSTEM ==================== -->
+    <script>
+        // 分類單字資料庫
+        const WORD_DATA = [
+            // --- 可愛動物 ---
+            { id: "lion", category: "animals", emoji: "🦁", word: "lion", chinese: "獅子", phonetic: "/ˈlaɪ.ən/", explanation: "森林之王！有著長長的毛跟非常大聲的吼叫！", sentenceEng: "The brave lion runs in the wild.", sentenceChi: "勇敢的獅子在野外奔跑。" },
+            { id: "cat", category: "animals", emoji: "🐱", word: "cat", chinese: "貓咪", phonetic: "/kæt/", explanation: "喜歡喵喵叫、吃小魚跟呼嚕呼嚕睡懶覺的可愛毛毛動物！", sentenceEng: "The little cat sleeps on the chair.", sentenceChi: "小貓咪在椅子上睡覺。" },
+            { id: "rabbit", category: "animals", emoji: "🐰", word: "rabbit", chinese: "兔子", phonetic: "/ˈræb.ɪt/", explanation: "耳朵長長、最愛吃甜甜胡蘿蔔且蹦蹦跳跳的小精靈！", sentenceEng: "The white rabbit loves eating carrots.", sentenceChi: "小白兔最喜歡吃胡蘿蔔。" },
+            { id: "dog", category: "animals", emoji: "🐶", word: "dog", chinese: "狗狗", phonetic: "/dɒɡ/", explanation: "人類最忠誠、喜歡搖尾巴叫汪汪的好朋友！", sentenceEng: "My happy dog wags his tail.", sentenceChi: "我的快樂狗狗搖著尾巴。" },
+            { id: "elephant", category: "animals", emoji: "🐘", word: "elephant", chinese: "大象", phonetic: "/ˈel.ɪ.fənt/", explanation: "有著超長鼻子和像扇子一樣大耳朵的陸地巨人！", sentenceEng: "The elephant sprays water with its nose.", sentenceChi: "大象用鼻子噴水。" },
+
+            // --- 美味水果 ---
+            { id: "apple", category: "fruits", emoji: "🍎", word: "apple", chinese: "蘋果", phonetic: "/ˈæp.əl/", explanation: "甜美又脆脆的水果，英文俚語常說多吃蘋果可以維持健康喔！", sentenceEng: "I eat a sweet red apple every day.", sentenceChi: "我每天吃一個甜甜的紅蘋果。" },
+            { id: "banana", category: "fruits", emoji: "🍌", word: "banana", chinese: "香蕉", phonetic: "/bəˈnɑː.nə/", explanation: "彎彎像月亮、黃澄澄且口感綿密好吃的甜水果，猴子的最愛！", sentenceEng: "The banana is yellow and very sweet.", sentenceChi: "香蕉是黃色的而且非常甜。" },
+            { id: "strawberry", category: "fruits", emoji: "🍓", word: "strawberry", chinese: "草莓", phonetic: "/ˈstrɔː.bər.i/", explanation: "紅通通、酸酸甜甜、表面有許多小點點的可愛水果！", sentenceEng: "We picked strawberries in the farm.", sentenceChi: "我們在農場裡採草莓。" },
+            { id: "grape", category: "fruits", emoji: "🍇", word: "grape", chinese: "葡萄", phonetic: "/ɡreɪp/", explanation: "一顆顆圓滾滾，一整串有紫色也有綠色的多汁水果！", sentenceEng: "Grandpa grows sweet purple grapes.", sentenceChi: "爺爺種植了甜甜的紫葡萄。" },
+            { id: "watermelon", category: "fruits", emoji: "🍉", word: "watermelon", chinese: "西瓜", phonetic: "/ˈwɔː.təˌmel.ən/", explanation: "夏天最消暑、紅通通果肉且水分超級飽滿的巨無霸水果！", sentenceEng: "Watermelon is my favorite summer fruit.", sentenceChi: "西瓜是我夏天最愛的水果。" },
+
+            // --- 交通工具 ---
+            { id: "car", category: "vehicles", emoji: "🚗", word: "car", chinese: "汽車", phonetic: "/kɑːr/", explanation: "有四個輪子、按喇叭嗶嗶嗶，在馬路上到處跑的交通工具！", sentenceEng: "Dad drives a blue car to work.", sentenceChi: "爸爸開一輛藍色汽車去上班。" },
+            { id: "plane", category: "vehicles", emoji: "✈️", word: "plane", chinese: "飛機", phonetic: "/pleɪn/", explanation: "有大翅膀、在天空中穿梭白雲，帶我們去旅行的鐵鳥！", sentenceEng: "The big plane flies high in the sky.", sentenceChi: "大飛機在高空中飛翔。" },
+            { id: "train", category: "vehicles", emoji: "🚂", word: "train", chinese: "火車", phonetic: "/treɪn/", explanation: "一節一節車廂連在一起，在軌道上「嘟嘟慶鏘」前進的長長列車！", sentenceEng: "The long train is arriving at the station.", sentenceChi: "長長的火車即將抵達車站。" },
+            { id: "bicycle", category: "vehicles", emoji: "🚲", word: "bicycle", chinese: "腳踏車", phonetic: "/ˈbaɪ.sɪ.kəl/", explanation: "要用雙腳踩踏板、控制龍頭來兜風的雙輪平衡車！", sentenceEng: "I ride my bicycle to the beautiful park.", sentenceChi: "我騎著我的腳踏車去美麗的公園。" },
+            { id: "rocket", category: "vehicles", emoji: "🚀", word: "rocket", chinese: "火箭", phonetic: "/ˈrɒk.ɪt/", explanation: "噴著紅色熊熊烈火、載著太空人探索奇妙太空的超級飛行器！", sentenceEng: "The rocket flies to the moon very fast.", sentenceChi: "火箭非常快地飛向月球。" },
+
+            // --- 美味食物 ---
+            { id: "bread", category: "food", emoji: "🍞", word: "bread", chinese: "麵包", phonetic: "/bred/", explanation: "烤得香噴噴、吃起來軟綿綿的黃金吐司或菠蘿麵包！", sentenceEng: "Mum bakes fresh bread in the morning.", sentenceChi: "媽媽在早上烤新鮮的麵包。" },
+            { id: "cake", category: "food", emoji: "🎂", word: "cake", chinese: "蛋糕", phonetic: "/keɪk/", explanation: "鋪滿鮮奶油、草莓、插上蠟燭慶祝生日時最好吃的甜點！", sentenceEng: "We shared a delicious birthday cake.", sentenceChi: "我們一起分享了美味的生日蛋糕。" },
+            { id: "milk", category: "food", emoji: "🥛", word: "milk", chinese: "牛奶", phonetic: "/mɪlk/", explanation: "白白、香醇，富含鈣質能幫助小朋友長得又高又壯的健康飲品！", sentenceEng: "Drinking milk makes your bones strong.", sentenceChi: "喝牛奶能讓你的骨骼強壯。" },
+            { id: "ice-cream", category: "food", emoji: "🍦", word: "ice cream", chinese: "冰淇淋", phonetic: "/ˈaɪs.kriːm/", explanation: "冰冰涼涼、入口即化，有香草巧克力等多種美味口味的冰品！", sentenceEng: "The sweet ice cream melts in my mouth.", sentenceChi: "甜甜的冰淇淋在我的嘴巴裡融化。" },
+
+            // --- 大自然 ---
+            { id: "sun", category: "nature", emoji: "☀️", word: "sun", chinese: "太陽", phonetic: "/sʌn/", explanation: "在白天發光發熱、帶給地球溫暖 and 光明的大火球！", sentenceEng: "The warm sun shines brightly today.", sentenceChi: "溫暖的太陽今天照耀得十分明亮。" },
+            { id: "star", category: "nature", emoji: "⭐", word: "star", chinese: "星星", phonetic: "/stɑːr/", explanation: "一閃一閃亮晶晶，像鑽石一樣掛在夜空中的神祕小發光體！", sentenceEng: "I can see stars twinkling at night.", sentenceChi: "我能看見夜空裡閃爍的星星。" },
+            { id: "flower", category: "nature", emoji: "🌸", word: "flower", chinese: "花朵", phonetic: "/ˈflaʊ.ər/", explanation: "五顏六色、有著好聞香味，吸引小蜜蜂和蝴蝶來跳舞的植物！", sentenceEng: "The colorful flower smells so sweet.", sentenceChi: "五彩斑斕的花朵聞起來十分香甜。" },
+            { id: "cloud", category: "nature", emoji: "☁️", word: "cloud", chinese: "白雲", phonetic: "/klaʊd/", explanation: "像棉花糖一樣在蔚藍天空中飄來飄去的多變小水氣團！", sentenceEng: "Look at that fluffy white cloud.", sentenceChi: "看那朵蓬鬆的白雲。" }
+        ];
+
+        // 類別中英對照
+        const CATEGORIES = {
+            all: { label: "🌟 全部單字", emoji: "✨" },
+            animals: { label: "🦁 可愛動物", emoji: "🐶" },
+            fruits: { label: "🍎 美味水果", emoji: "🍓" },
+            vehicles: { label: "🚗 交通工具", emoji: "🚀" },
+            food: { label: "🎂 美味食物", emoji: "🍦" },
+            nature: { label: "☀️ 大自然", emoji: "⭐" }
+        };
+
+        // 系統全局變數狀態
+        let currentFilteredWords = [...WORD_DATA]; // 當前篩選出的單字清單
+        let currentWord = WORD_DATA[0]; // 當前選中單字
+        let currentCategory = "all"; // 當前篩選類別
+
+        let stats = {
+            stars: 0,
+            listenCount: 0,
+            speakCount: 0,
+            learnedWords: [], // 已學過的不重複單字ID
+            badges: []
+        };
+        
+        // 遊戲運行狀態
+        let gameState = {
+            isPlaying: false,
+            round: 0,
+            score: 0,
+            correctAnswer: null,
+            options: []
+        };
+
+        // Speech Recognition 狀態
+        let recognition = null;
+        let isRecognizing = false;
+
+        // 音訊播放狀態
+        let audioContext = null;
+
+        // 初始化載入
+        window.onload = function() {
+            loadSavedStats();
+            renderCategoryFilters();
+            filterCategory('all'); // 預設載入全部
+            setupSpeechRecognition();
+            initAudioContext();
+            updateBadgeUI();
+
+            // 讀取安全自訂金鑰並監聽輸入
+            const apiKeyInput = document.getElementById('api-key-input');
+            const savedApiKey = localStorage.getItem('user_gemini_api_key') || "";
+            apiKeyInput.value = savedApiKey;
+            apiKeyInput.addEventListener('input', function(e) {
+                localStorage.setItem('user_gemini_api_key', e.target.value.trim());
+            });
+        };
+
+        // 初始化音訊元件 (供 Gemini TTS 播放或網頁自建音效使用)
+        function initAudioContext() {
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContext();
+            } catch(e) {
+                console.error("無法初始化 AudioContext: ", e);
+            }
+        }
+
+        // 儲存進度至 LocalStorage
+        function saveStats() {
+            localStorage.setItem('magic_words_stats_2026', JSON.stringify(stats));
+            document.getElementById('total-stars').innerText = stats.stars;
+            updateBadgeUI();
+        }
+
+        // 讀取 LocalStorage 紀錄
+        function loadSavedStats() {
+            const saved = localStorage.getItem('magic_words_stats_2026');
+            if (saved) {
+                try {
+                    stats = JSON.parse(saved);
+                    document.getElementById('total-stars').innerText = stats.stars || 0;
+                    document.getElementById('listen-count').innerText = stats.listenCount || 0;
+                    document.getElementById('speak-count').innerText = stats.speakCount || 0;
+                    if (!stats.learnedWords) stats.learnedWords = [];
+                    if (!stats.badges) stats.badges = [];
+                } catch(e) {
+                    console.error("讀取歷史紀錄失敗", e);
+                }
+            }
+        }
+
+        // 重設歷史紀錄
+        function resetStats() {
+            if (confirm("親愛的小朋友/家長，確定要重新開始並重設所有星星跟勳章嗎？")) {
+                stats = {
+                    stars: 0,
+                    listenCount: 0,
+                    speakCount: 0,
+                    learnedWords: [],
+                    badges: []
+                };
+                saveStats();
+                document.getElementById('listen-count').innerText = 0;
+                document.getElementById('speak-count').innerText = 0;
+                updateMascotText("新旅程開始囉！我們來重新收集亮晶晶的小星星與勳章吧！🦕✨");
+            }
+        }
+
+        // 渲染分類篩選按鈕
+        function renderCategoryFilters() {
+            const container = document.getElementById('category-filter-container');
+            container.innerHTML = '';
+            
+            Object.keys(CATEGORIES).forEach(key => {
+                const cat = CATEGORIES[key];
+                const btn = document.createElement('button');
+                btn.id = `cat-btn-${key}`;
+                btn.className = "px-4 py-2 rounded-full font-bold text-xs md:text-sm shadow-sm transition-all duration-200 border-2 " + 
+                                (key === 'all' ? "bg-indigo-600 border-indigo-600 text-white" : "bg-white border-transparent text-slate-600 hover:bg-slate-50");
+                btn.onclick = () => filterCategory(key);
+                btn.innerHTML = `${cat.label}`;
+                container.appendChild(btn);
+            });
+        }
+
+        // 過濾類別單字
+        function filterCategory(catKey) {
+            currentCategory = catKey;
+            
+            // 更新篩選按鈕狀態
+            document.querySelectorAll('#category-filter-container button').forEach(btn => {
+                btn.className = "px-4 py-2 rounded-full font-bold text-xs md:text-sm shadow-sm transition-all duration-200 border-2 bg-white border-transparent text-slate-600 hover:bg-slate-50";
+            });
+            const activeBtn = document.getElementById(`cat-btn-${catKey}`);
+            if (activeBtn) {
+                activeBtn.className = "px-4 py-2 rounded-full font-bold text-xs md:text-sm shadow-sm transition-all duration-200 border-2 bg-indigo-600 border-indigo-600 text-white";
+            }
+
+            // 過濾資料
+            if (catKey === 'all') {
+                currentFilteredWords = [...WORD_DATA];
+            } else {
+                currentFilteredWords = WORD_DATA.filter(w => w.category === catKey);
+            }
+
+            // 更新總數進度
+            document.getElementById('total-word-count').innerText = currentFilteredWords.length;
+
+            // 預設跳到篩選後的第一個字
+            if (currentFilteredWords.length > 0) {
+                selectWord(currentFilteredWords[0]);
+            }
+        }
+
+        // 頁籤切換
+        function switchTab(tabName) {
+            // 隱藏所有內容
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // 移除所有按鈕的 active 狀態
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-600');
+            });
+
+            // 顯示當前頁面
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            // 高亮當前按鈕
+            document.getElementById(`tab-${tabName}`).classList.remove('bg-white', 'text-slate-600');
+            document.getElementById(`tab-${tabName}`).classList.add('bg-indigo-600', 'text-white');
+
+            // Mascot 客製化回應
+            if (tabName === 'learn') {
+                updateMascotText("快看！這裡有很多奇妙的字卡。點擊卡片看中文，點擊「朗讀單字」聽奇奇發音喔！🦖");
+            } else if (tabName === 'game') {
+                updateMascotText("歡迎來到單字大問答！點擊中間的播音鍵聽聽是什麼字，再選出正確的卡片吧！加油！🎯");
+                startNewGame();
+            } else if (tabName === 'badges') {
+                updateMascotText("哇！這是你的專屬榮譽牆！你所獲得的小星星跟閃亮徽章通通在這裡展出喔，超棒的！🏆");
+                updateBadgeUI();
+            }
+        }
+
+        // 點擊吉祥物更新對話框
+        function updateMascotText(text) {
+            document.getElementById('mascot-text').innerText = text;
+        }
+
+        // 選擇/切換單字渲染
+        function selectWord(wordObj) {
+            currentWord = wordObj;
+
+            // 找出在篩選清單中的索引 index
+            const index = currentFilteredWords.findIndex(w => w.id === wordObj.id);
+            document.getElementById('current-word-index').innerText = index + 1;
+
+            // 更新字卡正面
+            document.getElementById('card-emoji').innerText = wordObj.emoji;
+            document.getElementById('card-eng-word').innerText = wordObj.word;
+            document.getElementById('card-phonetic').innerText = wordObj.phonetic;
+            document.getElementById('card-example-eng').innerText = `"${wordObj.sentenceEng}"`;
+
+            // 更新字卡背面
+            document.getElementById('card-chi-word').innerText = wordObj.chinese;
+            document.getElementById('card-chi-explanation').innerText = wordObj.explanation;
+            document.getElementById('card-example-chi').innerText = wordObj.sentenceChi;
+
+            // 還原字卡不翻轉
+            document.getElementById('word-card').classList.remove('is-flipped');
+
+            // 清理上一次的語音辨識結果
+            document.getElementById('speech-result-box').classList.add('hidden');
+
+            // 記錄已學習單字
+            if (!stats.learnedWords.includes(wordObj.id)) {
+                stats.learnedWords.push(wordObj.id);
+                // 學習 10 個不重複單字即可解鎖「單字大師(閃亮新星)」勳章
+                if (stats.learnedWords.length >= 10) {
+                    checkAndAwardBadge('badge-2');
+                }
+                saveStats();
+            }
+
+            updateMascotText(`今天來認識 「${wordObj.chinese}」 吧，英文單字是 「${wordObj.word}」！跟著我發音一次！🍎`);
+        }
+
+        // 隨機選一個單字
+        function getRandomWord() {
+            if (currentFilteredWords.length === 0) return;
+            const randomIndex = Math.floor(Math.random() * currentFilteredWords.length);
+            selectWord(currentFilteredWords[randomIndex]);
+        }
+
+        // 上一個單字
+        function prevWord() {
+            if (currentFilteredWords.length === 0) return;
+            let index = currentFilteredWords.findIndex(w => w.id === currentWord.id);
+            index = (index - 1 + currentFilteredWords.length) % currentFilteredWords.length;
+            selectWord(currentFilteredWords[index]);
+        }
+
+        // 下一個單字
+        function nextWord() {
+            if (currentFilteredWords.length === 0) return;
+            let index = currentFilteredWords.findIndex(w => w.id === currentWord.id);
+            index = (index + 1) % currentFilteredWords.length;
+            selectWord(currentFilteredWords[index]);
+        }
+
+        // 點擊字卡翻面
+        function flipCard() {
+            document.getElementById('word-card').classList.toggle('is-flipped');
+        }
+
+        // ==================== TTS 語音朗讀核心 (Gemini / 瀏覽器 Native) ====================
+
+        // 輔助函式：Base64字串轉為 ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // 輔助函式：將 PCM16 raw data 封裝成 WAV 格式
+        function pcmToWav(pcm16, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcm16.length * 2);
+            const view = new DataView(buffer);
+
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            /* RIFF 檔頭 */
+            writeString(view, 0, 'RIFF');
+            /* 檔案長度 */
+            view.setUint32(4, 36 + pcm16.length * 2, true);
+            /* RIFF 格式類型 */
+            writeString(view, 8, 'WAVE');
+            /* 格式區塊標識 */
+            writeString(view, 12, 'fmt ');
+            /* 格式區塊長度 */
+            view.setUint32(16, 16, true);
+            /* 編碼格式 (1 表示 PCM) */
+            view.setUint16(20, 1, true);
+            /* 聲道數 (1 表示單聲道) */
+            view.setUint16(22, 1, true);
+            /* 採樣率 */
+            view.setUint32(24, sampleRate, true);
+            /* 每秒位元組率 */
+            view.setUint32(28, sampleRate * 2, true);
+            /* 區塊對齊 */
+            view.setUint16(32, 2, true);
+            /* 採樣位元數 */
+            view.setUint16(34, 16, true);
+            /* 資料區塊標識 */
+            writeString(view, 36, 'data');
+            /* 資料區塊長度 */
+            view.setUint32(40, pcm16.length * 2, true);
+
+            // 寫入音訊數據
+            let offset = 44;
+            for (let i = 0; i < pcm16.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        // 呼叫 Gemini TTS 生成語音
+        async function fetchGeminiTTS(text, voiceName, isSlow = false) {
+            // 1. 優先取得使用者存在自己瀏覽器裡的本地 Key
+            let apiKey = localStorage.getItem('user_gemini_api_key') || "";
+            
+            // 2. 如果使用者沒填，則試圖使用系統注入的預設值 (若在平台預覽中執行)
+            if (!apiKey) {
+                apiKey = ""; // 預設留空，供 Canvas 平台動態金鑰自動填入
+            }
+
+            // 3. 如果兩邊都沒有任何 Key，則秒退、無縫使用瀏覽器本地發音
+            if (!apiKey) {
+                console.warn("未配置 Gemini API Key，自動切換為本地瀏覽器語音。");
+                return null;
+            }
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+            const guidance = isSlow ? "Say very slowly, clear and friendly: " : "Say clearly and happily: ";
+            
+            const payload = {
+                contents: [{
+                    parts: [{ text: `${guidance} "${text}"` }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: voiceName }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error("Gemini TTS 伺服器反應異常或金鑰無效");
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                    
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    return URL.createObjectURL(wavBlob);
+                } else {
+                    throw new Error("語音資料解析失敗");
+                }
+            } catch (error) {
+                console.warn("Gemini TTS 無法運行，採用本地瀏覽器語音引擎備援:", error);
+                return null;
+            }
+        }
+
+        // 瀏覽器本地 Speech Synthesis 播放 (免金鑰、免網路的保底備援機制)
+        function speakWithBrowserNative(text, lang = 'en-US', slow = false) {
+            if (!('speechSynthesis' in window)) {
+                console.error("目前瀏覽器不支援語音合成");
+                return;
+            }
+            
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            
+            const rateInput = parseFloat(document.getElementById('speech-rate').value);
+            utterance.rate = slow ? 0.55 : rateInput;
+
+            if (lang === 'en-US') {
+                const voices = window.speechSynthesis.getVoices();
+                const enVoice = voices.find(v => v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha')));
+                if (enVoice) utterance.voice = enVoice;
+            } else {
+                const voices = window.speechSynthesis.getVoices();
+                const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('Hant'));
+                if (zhVoice) utterance.voice = zhVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 播放當前選中單字
+        async function speakCurrentWord(isSlow = false) {
+            const playBtn = document.getElementById('play-sound-btn');
+            playBtn.disabled = true;
+            playBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>正在發音中...</span>`;
+
+            const voiceSelect = document.getElementById('voice-select').value;
+            const rateInput = parseFloat(document.getElementById('speech-rate').value);
+
+            let playedCloud = false;
+
+            if (voiceSelect !== 'browser') {
+                const audioUrl = await fetchGeminiTTS(currentWord.word, voiceSelect, isSlow);
+                if (audioUrl) {
+                    const audio = new Audio(audioUrl);
+                    audio.playbackRate = isSlow ? 0.75 : rateInput;
+                    audio.play();
+                    playedCloud = true;
+                }
+            }
+
+            if (!playedCloud) {
+                speakWithBrowserNative(currentWord.word, 'en-US', isSlow);
+            }
+
+            // 更新播放次數與紀錄
+            stats.listenCount++;
+            document.getElementById('listen-count').innerText = stats.listenCount;
+            
+            // 解鎖「初試啼聲」勳章
+            checkAndAwardBadge('badge-1');
+            
+            // 隨機發送星星獎勵
+            if (stats.listenCount % 5 === 0) {
+                stats.stars += 1;
+                triggerSuccessCelebration("聽得真仔細！送你一顆幸運星星！⭐");
+            }
+            saveStats();
+
+            setTimeout(() => {
+                playBtn.disabled = false;
+                playBtn.innerHTML = `<i class="fa-solid fa-volume-high text-lg"></i> <span>朗讀單字 (Normal)</span>`;
+            }, 800);
+        }
+
+        // 朗讀整句英文例句
+        async function speakCurrentSentence() {
+            const voiceSelect = document.getElementById('voice-select').value;
+            const rateInput = parseFloat(document.getElementById('speech-rate').value);
+            let playedCloud = false;
+
+            if (voiceSelect !== 'browser') {
+                const audioUrl = await fetchGeminiTTS(currentWord.sentenceEng, voiceSelect, false);
+                if (audioUrl) {
+                    const audio = new Audio(audioUrl);
+                    audio.playbackRate = rateInput;
+                    audio.play();
+                    playedCloud = true;
+                }
+            }
+
+            if (!playedCloud) {
+                speakWithBrowserNative(currentWord.sentenceEng, 'en-US', false);
+            }
+        }
+
+        // ==================== Web Speech API 語音辨識 (口說練習) ====================
+
+        function setupSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                console.warn("此瀏覽器不支援 SpeechRecognition 語音辨識");
+                const micBtn = document.getElementById('mic-btn');
+                micBtn.disabled = true;
+                micBtn.innerHTML = `<i class="fa-solid fa-microphone-slash"></i> <span>瀏覽器不支援麥克風練習</span>`;
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US'; // 偵測英文
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function() {
+                isRecognizing = true;
+                const micBtn = document.getElementById('mic-btn');
+                micBtn.classList.remove('bg-pink-500', 'hover:bg-pink-600');
+                micBtn.classList.add('bg-red-500', 'hover:bg-red-600', 'animate-pulse');
+                document.getElementById('mic-icon').className = "fa-solid fa-wave-square text-xl animate-bounce";
+                document.getElementById('mic-text').innerText = "大聲唸！奇奇正在聽...";
+                
+                // 顯示結果狀態框
+                const resultBox = document.getElementById('speech-result-box');
+                resultBox.classList.remove('hidden');
+                document.getElementById('recognized-text').innerText = "聆聽中...";
+                document.getElementById('recognized-score').innerText = "";
+            };
+
+            recognition.onerror = function(event) {
+                console.error("語音辨識錯誤", event.error);
+                stopRecognitionUI();
+                if (event.error === 'no-speech') {
+                    updateMascotText("哎呀，剛剛好像沒有聽到聲音，再按一次大聲唸唸看嘛！🦖");
+                }
+            };
+
+            recognition.onend = function() {
+                stopRecognitionUI();
+            };
+
+            recognition.onresult = function(event) {
+                const speechToText = event.results[0][0].transcript.toLowerCase().trim();
+                const targetWord = currentWord.word.toLowerCase();
+                
+                document.getElementById('recognized-text').innerText = speechToText;
+                
+                const isCorrect = (speechToText === targetWord) || 
+                                  (speechToText.includes(targetWord));
+
+                if (isCorrect) {
+                    stats.speakCount++;
+                    document.getElementById('speak-count').innerText = stats.speakCount;
+                    stats.stars += 2; // 口說加兩顆星
+                    
+                    triggerSuccessCelebration("太棒了！你的發音非常標準喔！💯🌟");
+                    document.getElementById('recognized-score').innerHTML = `<span class="text-emerald-500 font-bold"><i class="fa-solid fa-circle-check"></i> 發音很棒！+2 ⭐</span>`;
+                    
+                    checkAndAwardBadge('badge-3');
+                    if (stats.stars >= 5) checkAndAwardBadge('badge-2');
+                    
+                    saveStats();
+                } else {
+                    document.getElementById('recognized-score').innerHTML = `<span class="text-red-500 font-bold"><i class="fa-solid fa-circle-xmark"></i> 唸得好接近，我們再試一次！</span>`;
+                    updateMascotText(`你唸的是「${speechToText}」，我們正在練習「${targetWord}」，再挑戰一次，你可以的！💪`);
+                    playBuiltInBeep(false);
+                }
+            };
+        }
+
+        // 切換錄音狀態
+        function toggleSpeechRecognition() {
+            if (!recognition) return;
+            if (isRecognizing) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch(e) {
+                    console.error("啟動辨識失敗", e);
+                }
+            }
+        }
+
+        // 還原麥克風按鈕狀態
+        function stopRecognitionUI() {
+            isRecognizing = false;
+            const micBtn = document.getElementById('mic-btn');
+            micBtn.classList.add('bg-pink-500', 'hover:bg-pink-600');
+            micBtn.classList.remove('bg-red-500', 'hover:bg-red-600', 'animate-pulse');
+            document.getElementById('mic-icon').className = "fa-solid fa-microphone text-xl";
+            document.getElementById('mic-text').innerText = "開啟麥克風練習";
+        }
+
+        // ==================== 趣味遊戲闖關邏輯 ====================
+
+        // 開始一個全新的一輪十關卡遊戲
+        function startNewGame() {
+            gameState.isPlaying = true;
+            gameState.round = 1;
+            gameState.score = 0;
+            
+            document.getElementById('game-score').innerText = 0;
+            document.getElementById('game-round').innerText = 1;
+            document.getElementById('game-start-btn').innerText = "🔄 重新玩一局";
+
+            generateGameQuestion();
+        }
+
+        // 生成一個遊戲題目
+        function generateGameQuestion() {
+            if (!gameState.isPlaying) return;
+
+            const correctIndex = Math.floor(Math.random() * WORD_DATA.length);
+            gameState.correctAnswer = WORD_DATA[correctIndex];
+
+            let optionsSet = new Set([gameState.correctAnswer.id]);
+            while (optionsSet.size < 4) {
+                const randomItem = WORD_DATA[Math.floor(Math.random() * WORD_DATA.length)];
+                optionsSet.add(randomItem.id);
+            }
+            
+            const shuffledIds = Array.from(optionsSet).sort(() => Math.random() - 0.5);
+            gameState.options = shuffledIds.map(id => WORD_DATA.find(w => w.id === id));
+
+            const container = document.getElementById('game-options-container');
+            container.innerHTML = '';
+
+            gameState.options.forEach(wordObj => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn bg-white hover:bg-amber-50 active:scale-95 border-4 border-slate-200 rounded-3xl p-6 text-center shadow-sm transition-all transform hover:-translate-y-1 duration-200 flex flex-col items-center justify-center";
+                btn.onclick = () => checkGameAnswer(wordObj.id, btn);
+                btn.innerHTML = `
+                    <span class="text-5xl select-none mb-1">${wordObj.emoji}</span>
+                    <span class="block text-xl font-extrabold text-slate-800 capitalize">${wordObj.word}</span>
+                    <span class="block text-xs text-slate-400 font-bold">${wordObj.chinese}</span>
+                `;
+                container.appendChild(btn);
+            });
+
+            updateMascotText(`第 ${gameState.round} 關！點擊大喇叭聽音辨別，猜猜看是哪一個呢？🦖📢`);
+            
+            setTimeout(() => {
+                playGameQuestionSound();
+            }, 600);
+        }
+
+        // 播放目前關卡的題目聲音
+        async function playGameQuestionSound() {
+            if (!gameState.correctAnswer) return;
+            const targetWord = gameState.correctAnswer.word;
+            const voiceSelect = document.getElementById('voice-select').value;
+            const rateInput = parseFloat(document.getElementById('speech-rate').value);
+
+            let playedCloud = false;
+
+            if (voiceSelect !== 'browser') {
+                const audioUrl = await fetchGeminiTTS(targetWord, voiceSelect, false);
+                if (audioUrl) {
+                    const audio = new Audio(audioUrl);
+                    audio.playbackRate = rateInput;
+                    audio.play();
+                    playedCloud = true;
+                }
+            }
+
+            if (!playedCloud) {
+                speakWithBrowserNative(targetWord, 'en-US');
+            }
+        }
+
+        // 確認答案是否正確
+        function checkGameAnswer(selectedId, element) {
+            if (!gameState.isPlaying) return;
+
+            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+
+            if (selectedId === gameState.correctAnswer.id) {
+                gameState.score++;
+                document.getElementById('game-score').innerText = gameState.score;
+                
+                element.classList.remove('border-slate-200', 'hover:bg-amber-50');
+                element.classList.add('border-emerald-500', 'bg-emerald-50');
+                
+                triggerSuccessCelebration("太棒了！你答對了！🎉");
+                
+                stats.stars += 1;
+                saveStats();
+            } else {
+                element.classList.remove('border-slate-200', 'hover:bg-amber-50');
+                element.classList.add('border-red-400', 'bg-red-50');
+
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    const wordText = btn.querySelector('.capitalize').innerText.toLowerCase();
+                    if (wordText === gameState.correctAnswer.word.toLowerCase()) {
+                        btn.classList.add('border-emerald-500', 'bg-emerald-50');
+                    }
+                });
+
+                playBuiltInBeep(false);
+                updateMascotText(`哎呀，答錯了。正確答案應該是「${gameState.correctAnswer.chinese} (${gameState.correctAnswer.word})」喔！下一關我們再加把勁！💪`);
+            }
+
+            setTimeout(() => {
+                if (gameState.round < 10) {
+                    gameState.round++;
+                    document.getElementById('game-round').innerText = gameState.round;
+                    generateGameQuestion();
+                } else {
+                    endGameSession();
+                }
+            }, 2500);
+        }
+
+        // 完賽結算
+        function endGameSession() {
+            gameState.isPlaying = false;
+            updateMascotText(`恭喜你完成所有的聽力闖關大考驗！你在 10 題內一共答對了 ${gameState.score} 題！你是個了不起的單字小達人！🌟🦖`);
+            
+            const bonusStars = gameState.score * 2;
+            stats.stars += bonusStars;
+
+            if (gameState.score === 10) {
+                checkAndAwardBadge('badge-4');
+            }
+            if (stats.stars >= 5) checkAndAwardBadge('badge-2');
+
+            saveStats();
+
+            // 紙花特效連發
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            const container = document.getElementById('game-options-container');
+            container.innerHTML = `
+                <div class="col-span-2 bg-gradient-to-r from-amber-100 to-indigo-100 rounded-3xl p-8 text-center border-4 border-indigo-200">
+                    <p class="text-4xl">👑 挑戰結束 👑</p>
+                    <p class="text-2xl font-extrabold text-slate-700 mt-2">一共答對 ${gameState.score} 題 / 共 10 題</p>
+                    <p class="text-sm font-bold text-indigo-700 mt-1">恭喜額外獲得大獎：+${bonusStars} 顆學習星星！⭐</p>
+                    <button onclick="startNewGame()" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2 px-6 rounded-full text-sm">
+                        再挑戰一次
+                    </button>
+                </div>
+            `;
+            document.getElementById('game-start-btn').innerText = "🎯 重新開始挑戰";
+        }
+
+        // ==================== 音效、紙花與徽章系統 ====================
+
+        // 紙花慶祝特效與語音回饋
+        function triggerSuccessCelebration(msg) {
+            confetti({
+                particleCount: 80,
+                spread: 60,
+                origin: { y: 0.6 }
+            });
+            updateMascotText(msg);
+            playBuiltInBeep(true);
+        }
+
+        // 網頁自建合成器音效：避免載入外部 mp3 檔案失效
+        function playBuiltInBeep(isSuccess) {
+            if (!audioContext) return;
+            
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            if (isSuccess) {
+                // 叮咚聲 (高音)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.12); // E5
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.35);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.4);
+            } else {
+                // 嘟嘟聲 (低沉)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(170, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.35);
+            }
+        }
+
+        // 檢查並解鎖新徽章
+        function checkAndAwardBadge(badgeId) {
+            if (!stats.badges) stats.badges = [];
+            
+            if (!stats.badges.includes(badgeId)) {
+                let shouldAward = false;
+                if (badgeId === 'badge-1' && stats.listenCount >= 1) shouldAward = true;
+                if (badgeId === 'badge-2' && stats.learnedWords.length >= 10) shouldAward = true;
+                if (badgeId === 'badge-3' && stats.speakCount >= 3) shouldAward = true;
+                if (badgeId === 'badge-4' && gameState.score === 10) shouldAward = true;
+
+                if (shouldAward) {
+                    stats.badges.push(badgeId);
+                    saveStats();
+                    
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { y: 0.4 }
+                    });
+                    
+                    updateMascotText(`🎉 哇！太厲害了！你剛剛成功解鎖了全新成就勳章！快到「我的成就」分頁看看吧！🦖🏆`);
+                }
+            }
+        }
+
+        // 更新徽章頁面 UI 狀態
+        function updateBadgeUI() {
+            if (!stats.badges) stats.badges = [];
+            
+            for (let i = 1; i <= 4; i++) {
+                const badgeEl = document.getElementById(`badge-${i}`);
+                if (badgeEl) {
+                    if (stats.badges.includes(`badge-${i}`)) {
+                        badgeEl.classList.remove('opacity-40', 'grayscale', 'bg-slate-50', 'border-slate-200');
+                        badgeEl.classList.add('opacity-100', 'bg-gradient-to-br', 'from-amber-50', 'to-orange-50', 'border-amber-400', 'scale-105', 'shadow-md');
+                        badgeEl.querySelector('h4').className = "font-extrabold text-amber-700 text-base";
+                    } else {
+                        badgeEl.classList.add('opacity-40', 'grayscale', 'bg-slate-50', 'border-slate-200');
+                        badgeEl.classList.remove('opacity-100', 'bg-gradient-to-br', 'from-amber-50', 'to-orange-50', 'border-amber-400', 'scale-105', 'shadow-md');
+                        badgeEl.querySelector('h4').className = "font-extrabold text-slate-700 text-base";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
