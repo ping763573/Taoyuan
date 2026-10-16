@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣精準退休財務規劃系統 Pro</title>
+    <!-- React Core -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif; background-color: #f1f5f9; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            transition: transform .15s ease-in-out, background .15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { background: #1d4ed8; transform: scale(1.15); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+        }
+        .inflation-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .cashflow-table th { background-color: #f8fafc; color: #475569; font-weight: 700; font-size: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; }
+        .cashflow-table td { padding: 0.7rem 1rem; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .cashflow-table tr:hover td { background-color: #f8fafc; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        // --- 台灣現況預設參數 ---
+        const DEFAULT_PARAMS = {
+            currentAge: 40,
+            retireAge: 65,
+            lifeExpectancy: 88,          // 台灣平均壽命延長，安全邊際建議設為 88 歲
+            inflationRate: 2.3,          // 台灣近年結構性通膨率約 2.0%~2.5%
+            preRetireRoiRate: 7.0,       // 台美股指數化投資長期年化報酬參考
+            postRetireRoiRate: 4.5,      // 退休後股債配置或高股息穩健配置報酬率
+            currentSavings: 1500000,     // 目前已累積可投資退休本金 (新增)
+            currentMonthlyInvestment: 15000, // 目前每月定期定額
+            laborPensionLumpSum: 2500000,// 勞退新制預估累積總額 (雇主6%+自提)
+            laborInsuranceMonthly: 22000,// 勞保老年年金預估月領
+            adjustLaborInsForInflation: true, // 勞保年金隨CPI調升機制 (新增)
+            medicalInsuranceCoverage: 0, // 0: 無, 50: 部分覆蓋(50%), 100: 足額覆蓋
+            ltcInsuranceCoverage: 0,     // 0: 無, 50: 部分覆蓋(50%), 100: 足額覆蓋
+        };
+
+        const DEFAULT_ITEMS = [
+            { id: 1, name: '基本生活費 (含水電伙食)', type: 'flow', currentAmount: 32000, annualMonths: 12 },
+            { id: 2, name: '休閒旅遊與娛樂費', type: 'flow', currentAmount: 10000, annualMonths: 12 },
+            { id: 3, name: '健保與日常保健品', type: 'flow', currentAmount: 4000, annualMonths: 12 },
+            { id: 4, name: '老年自費醫療預備金', type: 'stock', currentAmount: 2500000, isInsuranceItem: 'medical' },
+            { id: 5, name: '長照機構/看護預備金 (約7.3年)', type: 'stock', currentAmount: 4200000, isInsuranceItem: 'ltc' },
+        ];
+
+        const STORAGE_KEY = 'tw_retire_planner_v2';
+
+        // --- Formatters ---
+        const formatCurrency = (num) => {
+            if (num === undefined || num === null || isNaN(num)) return "$0";
+            return new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'TWD', maximumFractionDigits: 0 }).format(num);
+        };
+
+        const formatNumber = (num) => {
+            if (num === undefined || num === null || isNaN(num)) return "0";
+            return new Intl.NumberFormat('zh-TW').format(Math.round(num));
+        };
+
+        const formatWan = (num) => {
+            if (!num || isNaN(num)) return "0 萬";
+            return (num / 10000).toFixed(1) + " 萬";
+        };
+
+        // --- 勞退新制快速估算小工具 Modal ---
+        const LaborPensionModal = ({ isOpen, onClose, yearsToRetire, onApply }) => {
+            const [salary, setSalary] = useState(55000);
+            const [currentAcc, setCurrentAcc] = useState(600000);
+            const [selfRate, setSelfRate] = useState(6);
+            const [roi, setRoi] = useState(4.0);
+            const [salaryGrowth, setSalaryGrowth] = useState(2.0);
+
+            if (!isOpen) return null;
+
+            // 計算至退休時的勞退專戶累積總額
+            let balance = currentAcc;
+            let curSalary = salary;
+            const totalRate = (6 + selfRate) / 100;
+            for (let y = 0; y < yearsToRetire; y++) {
+                const yearlyContrib = curSalary * totalRate * 12;
+                balance = balance * (1 + roi / 100) + yearlyContrib * (1 + (roi / 100) / 2);
+                curSalary *= (1 + salaryGrowth / 100);
+            }
+
+            return (
+                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+                        <div className="flex justify-between items-center mb-4 pb-3 border-b">
+                            <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                                <i className="fas fa-calculator text-purple-600"></i> 勞退新制專戶試算器
+                            </h3>
+                            <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><i className="fas fa-times"></i></button>
+                        </div>
+                        <div className="space-y-4 text-sm">
+                            <div>
+                                <label className="block text-slate-600 mb-1">目前勞退專戶已累積金額 (元)</label>
+                                <input type="number" value={currentAcc} onChange={e => setCurrentAcc(Number(e.target.value))} className="w-full p-2 border rounded font-bold text-slate-700" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-slate-600 mb-1">目前月提繳工資</label>
+                                    <input type="number" value={salary} onChange={e => setSalary(Number(e.target.value))} className="w-full p-2 border rounded font-bold text-slate-700" />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 mb-1">個人自提比例 (0~6%)</label>
+                                    <select value={selfRate} onChange={e => setSelfRate(Number(e.target.value))} className="w-full p-2 border rounded font-bold text-blue-600 bg-blue-50">
+                                        <option value={0}>0% (僅雇主6%)</option>
+                                        <option value={3}>3% (共9%，享節稅)</option>
+                                        <option value={6}>6% (共12%，享節稅)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-slate-600 mb-1">預估勞動基金年化報酬</label>
+                                    <input type="number" step="0.5" value={roi} onChange={e => setRoi(Number(e.target.value))} className="w-full p-2 border rounded text-slate-700" />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 mb-1">預估每年調薪幅度 (%)</label>
+                                    <input type="number" step="0.5" value={salaryGrowth} onChange={e => setSalaryGrowth(Number(e.target.value))} className="w-full p-2 border rounded text-slate-700" />
+                                </div>
+                            </div>
+                            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mt-4">
+                                <div className="text-xs text-purple-600">距離退休還有 {yearsToRetire} 年，預估退休時專戶累積：</div>
+                                <div className="text-2xl font-extrabold text-purple-800 mt-1">{formatCurrency(Math.round(balance))}</div>
+                                <div className="text-[11px] text-purple-500 mt-1">* 自提部分可自當年度個人綜合所得總額中全數扣除</div>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button onClick={onClose} className="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-bold hover:bg-slate-200">取消</button>
+                            <button onClick={() => { onApply(Math.round(balance)); onClose(); }} className="flex-1 py-2.5 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700">套用此金額</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Chart Component ---
+        const CashFlowChart = ({ chartData, retireAge, lifeExpectancy }) => {
+            const canvasRef = useRef(null);
+            const chartInstanceRef = useRef(null);
+
+            const downloadChart = () => {
+                if (chartInstanceRef.current) {
+                    const link = document.createElement('a');
+                    link.download = `全生涯退休資產軌跡_${retireAge}至${lifeExpectancy}歲.png`;
+                    link.href = chartInstanceRef.current.toBase64Image();
+                    link.click();
+                }
+            };
+
+            useEffect(() => {
+                if (!canvasRef.current || !chartData) return;
+                const ctx = canvasRef.current.getContext('2d');
+                if (chartInstanceRef.current) chartInstanceRef.current.destroy();
+
+                chartInstanceRef.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: '理想無缺口資產軌跡',
+                                data: chartData.ideal,
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                                borderWidth: 2.5,
+                                borderDash: [4, 4],
+                                pointRadius: 0,
+                                fill: false,
+                                tension: 0.35
+                            },
+                            {
+                                label: '目前預估資產軌跡 (含現有本金/定期定額/勞保勞退)',
+                                data: chartData.actual,
+                                borderColor: '#f59e0b',
+                                backgroundColor: 'rgba(245, 158, 11, 0.12)',
+                                borderWidth: 3,
+                                pointRadius: 2,
+                                fill: true,
+                                tension: 0.35
+                            },
+                            {
+                                label: '資產歸零警戒線',
+                                data: Array(chartData.labels.length).fill(0),
+                                borderColor: '#ef4444',
+                                borderWidth: 1.5,
+                                pointRadius: 0,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`
+                                }
+                            },
+                            legend: { position: 'bottom' },
+                        },
+                        scales: {
+                            y: {
+                                ticks: { callback: (value) => (value / 10000).toFixed(0) + '萬' },
+                                grid: { color: '#f1f5f9' }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+
+                return () => { if (chartInstanceRef.current) chartInstanceRef.current.destroy(); };
+            }, [chartData]);
+
+            return (
+                <div className="relative w-full h-80 md:h-96 bg-white p-2 rounded-xl">
+                    <button onClick={downloadChart} className="absolute top-0 right-0 m-2 z-10 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 transition">
+                        <i className="fas fa-download"></i> 下載圖表
+                    </button>
+                    <canvas ref={canvasRef}></canvas>
+                </div>
+            );
+        };
+
+        const App = () => {
+            // 載入 LocalStorage 或預設值
+            const [params, setParams] = useState(() => {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try { return { ...DEFAULT_PARAMS, ...JSON.parse(saved).params }; } catch (e) {}
+                }
+                return DEFAULT_PARAMS;
+            });
+
+            const [items, setItems] = useState(() => {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try { return JSON.parse(saved).items || DEFAULT_ITEMS; } catch (e) {}
+                }
+                return DEFAULT_ITEMS;
+            });
+
+            const [isPensionModalOpen, setIsPensionModalOpen] = useState(false);
+
+            // 自動儲存至 LocalStorage
+            useEffect(() => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ params, items }));
+            }, [params, items]);
+
+            // --- 核心財務試算模型 (即時響應 useMemo) ---
+            const result = useMemo(() => {
+                const yearsToRetire = Math.max(0, params.retireAge - params.currentAge);
+                const monthsToRetire = yearsToRetire * 12;
+                const yearsInRetirement = Math.max(1, params.lifeExpectancy - params.retireAge);
+
+                const inflationRate = params.inflationRate / 100;
+                const roiRate = params.postRetireRoiRate / 100;
+                const preRoiRate = params.preRetireRoiRate / 100;
+
+                const inflationMultiplier = Math.pow(1 + inflationRate, yearsToRetire);
+
+                // 1. 退休前資產累積 (現有本金複利 + 每月定期定額終值)
+                const currentSavingsFV = (params.currentSavings || 0) * Math.pow(1 + preRoiRate, yearsToRetire);
+                let monthlyInvestFV = 0;
+                if (params.currentMonthlyInvestment > 0 && yearsToRetire > 0) {
+                    const monthlyRate = preRoiRate / 12;
+                    monthlyInvestFV = monthlyRate > 0
+                        ? params.currentMonthlyInvestment * ((Math.pow(1 + monthlyRate, monthsToRetire) - 1) / monthlyRate)
+                        : params.currentMonthlyInvestment * monthsToRetire;
+                }
+                const totalSelfInvestmentFV = currentSavingsFV + monthlyInvestFV;
+                const startAssets = (params.laborPensionLumpSum || 0) + totalSelfInvestmentFV;
+
+                // 2. 退休各項支出折現與首年需求計算
+                let stockExpensesAtRetire = 0;
+                let baseFlowExpenseAtRetire = 0;
+
+                const detailedItems = items.map(item => {
+                    let coverageRatio = 0;
+                    if (item.isInsuranceItem === 'medical') coverageRatio = (params.medicalInsuranceCoverage || 0) / 100;
+                    if (item.isInsuranceItem === 'ltc') coverageRatio = (params.ltcInsuranceCoverage || 0) / 100;
+
+                    const effectiveCurrentAmount = item.currentAmount * (1 - coverageRatio);
+
+                    let annualFutureAtRetire = 0;
+                    let monthlyFutureAtRetire = 0;
+
+                    if (item.type === 'stock') {
+                        annualFutureAtRetire = effectiveCurrentAmount * inflationMultiplier;
+                        stockExpensesAtRetire += annualFutureAtRetire;
+                    } else {
+                        monthlyFutureAtRetire = effectiveCurrentAmount * inflationMultiplier;
+                        annualFutureAtRetire = monthlyFutureAtRetire * (item.annualMonths || 12);
+                        baseFlowExpenseAtRetire += annualFutureAtRetire;
+                    }
+
+                    return {
+                        ...item,
+                        coverageRatio,
+                        monthlyFuture: monthlyFutureAtRetire, // 修正原版未定義之欄位
+                        futureValue: annualFutureAtRetire,
+                        requiredCapital: 0
+                    };
+                });
+
+                // 3. 退休期間現金流折現 (NPV at Retire Age)
+                let npvExpenses = 0;
+                let npvIncome = 0;
+                const baseLaborInsAnnual = (params.laborInsuranceMonthly || 0) * 12;
+
+                for (let i = 1; i <= yearsInRetirement; i++) {
+                    const discountFactor = Math.pow(1 + roiRate, i);
+                    const expenseThisYear = baseFlowExpenseAtRetire * Math.pow(1 + inflationRate, i - 1);
+                    // 若開啟勞保抗通膨調升，勞保年金隨通膨率成長
+                    const laborInsThisYear = params.adjustLaborInsForInflation
+                        ? baseLaborInsAnnual * Math.pow(1 + inflationRate, i - 1)
+                        : baseLaborInsAnnual;
+
+                    npvExpenses += expenseThisYear / discountFactor;
+                    npvIncome += laborInsThisYear / discountFactor;
+                }
+                npvExpenses += stockExpensesAtRetire;
+
+                const totalPVNeeded = npvExpenses;
+                const totalPVHave = npvIncome + startAssets;
+                const finalShortfall = totalPVNeeded - totalPVHave;
+
+                // 分配各項目的應備本金權重
+                const totalFlowPV = npvExpenses - stockExpensesAtRetire;
+                detailedItems.forEach(item => {
+                    if (item.type === 'stock') {
+                        item.requiredCapital = item.futureValue;
+                    } else if (baseFlowExpenseAtRetire > 0) {
+                        const ratio = item.futureValue / baseFlowExpenseAtRetire;
+                        item.requiredCapital = totalFlowPV * ratio;
+                    }
+                });
+
+                const govDeductions = (params.laborPensionLumpSum || 0) + npvIncome;
+                const grossNeed = npvExpenses;
+
+                // 4. 全生涯時間軸與圖表模擬
+                const timelineData = [];
+                const labels = [];
+                const dataIdeal = [];
+                const dataActual = [];
+
+                let accumBalance = params.currentSavings || 0;
+                for (let age = params.currentAge; age < params.retireAge; age++) {
+                    const monthlyRate = preRoiRate / 12;
+                    const yearlyContribFV = monthlyRate > 0
+                        ? params.currentMonthlyInvestment * ((Math.pow(1 + monthlyRate, 12) - 1) / monthlyRate)
+                        : params.currentMonthlyInvestment * 12;
+                    accumBalance = accumBalance * (1 + preRoiRate) + yearlyContribFV;
+                    timelineData.push({ age, type: '累積期', assets: accumBalance, income: 0, needs: 0, gap: accumBalance });
+                }
+
+                let simBalanceIdeal = startAssets + (finalShortfall > 0 ? finalShortfall : 0) - stockExpensesAtRetire;
+                let simBalanceActual = startAssets - stockExpensesAtRetire;
+                let currentFlowExpense = baseFlowExpenseAtRetire;
+                let bankruptAge = null;
+
+                for (let i = 0; i <= yearsInRetirement; i++) {
+                    const age = params.retireAge + i;
+                    labels.push(`${age}歲`);
+                    dataIdeal.push(Math.round(simBalanceIdeal));
+                    dataActual.push(Math.round(simBalanceActual));
+
+                    if (simBalanceActual < 0 && bankruptAge === null) {
+                        bankruptAge = age;
+                    }
+
+                    if (i < yearsInRetirement) {
+                        const growthIdeal = simBalanceIdeal * roiRate;
+                        const growthActual = simBalanceActual * roiRate;
+                        const laborInsThisYear = params.adjustLaborInsForInflation
+                            ? baseLaborInsAnnual * Math.pow(1 + inflationRate, i)
+                            : baseLaborInsAnnual;
+                        const netFlow = laborInsThisYear - currentFlowExpense;
+
+                        simBalanceIdeal = simBalanceIdeal + growthIdeal + netFlow;
+                        simBalanceActual = simBalanceActual + growthActual + netFlow;
+
+                        timelineData.push({
+                            age,
+                            type: '退休期',
+                            assets: simBalanceActual,
+                            income: laborInsThisYear,
+                            needs: currentFlowExpense + (i === 0 ? stockExpensesAtRetire : 0),
+                            gap: simBalanceActual
+                        });
+                        currentFlowExpense *= (1 + inflationRate);
+                    } else {
+                        timelineData.push({ age, type: '規畫終點', assets: simBalanceActual, income: 0, needs: 0, gap: simBalanceActual });
+                    }
+                }
+
+                // 5. 缺口回推每月應再增加定期定額 (PMT)
+                let suggestedMonthlySave = 0;
+                if (finalShortfall > 0 && yearsToRetire > 0) {
+                    const monthlyRate = preRoiRate / 12;
+                    suggestedMonthlySave = monthlyRate > 0
+                        ? finalShortfall * monthlyRate / (Math.pow(1 + monthlyRate, monthsToRetire) - 1)
+                        : finalShortfall / monthsToRetire;
+                }
+                const totalMonthlySave = (params.currentMonthlyInvestment || 0) + suggestedMonthlySave;
+
+                // 退休首年每月被動現金流覆蓋率
+                const firstYearMonthlyNeed = baseFlowExpenseAtRetire / 12;
+
+                return {
+                    yearsToRetire,
+                    yearsInRetirement,
+                    inflationMultiplier,
+                    detailedItems,
+                    grossNeed,
+                    govDeductions,
+                    currentSavingsFV,
+                    monthlyInvestFV,
+                    totalSelfInvestmentFV,
+                    finalShortfall,
+                    suggestedMonthlySave,
+                    totalMonthlySave,
+                    firstYearMonthlyNeed,
+                    bankruptAge,
+                    timelineData,
+                    chartData: { labels, ideal: dataIdeal, actual: dataActual }
+                };
+            }, [params, items]);
+
+            // --- Handlers ---
+            const handleParamChange = (e) => {
+                const { name, value } = e.target;
+                setParams(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
+            };
+
+            const applyScenario = (type) => {
+                if (type === 'conservative') {
+                    setParams(p => ({ ...p, inflationRate: 2.8, preRetireRoiRate: 5.0, postRetireRoiRate: 3.5, lifeExpectancy: 90 }));
+                } else if (type === 'balanced') {
+                    setParams(p => ({ ...p, inflationRate: 2.3, preRetireRoiRate: 7.0, postRetireRoiRate: 4.5, lifeExpectancy: 88 }));
+                } else if (type === 'growth') {
+                    setParams(p => ({ ...p, inflationRate: 2.0, preRetireRoiRate: 9.0, postRetireRoiRate: 5.5, lifeExpectancy: 85 }));
+                }
+            };
+
+            const handleReset = () => {
+                if (confirm('確定要清除所有自訂參數並回復台灣現況預設值嗎？')) {
+                    setParams(DEFAULT_PARAMS);
+                    setItems(DEFAULT_ITEMS);
+                    localStorage.removeItem(STORAGE_KEY);
+                }
+            };
+
+            const downloadCSV = () => {
+                const bom = "\uFEFF";
+                let csvContent = "data:text/csv;charset=utf-8," + bom;
+                csvContent += "年齡,階段,當年度勞保年金收入,當年度退休總支出(含通膨),期末資產結餘,狀態\n";
+                result.timelineData.forEach(row => {
+                    const status = row.gap < 0 ? '資產透支' : '正常';
+                    csvContent += `${row.age},${row.type},${Math.round(row.income)},${Math.round(row.needs)},${Math.round(row.assets)},${status}\n`;
+                });
+                const link = document.createElement("a");
+                link.setAttribute("href", encodeURI(csvContent));
+                link.setAttribute("download", `台灣全生涯退休現金流試算_${params.currentAge}至${params.lifeExpectancy}歲.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const updateItem = (id, field, value) => setItems(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+            const addItem = (type = 'flow') => {
+                const newId = Math.max(...items.map(i => i.id), 0) + 1;
+                setItems([...items, {
+                    id: newId,
+                    name: type === 'flow' ? '自訂每月支出' : '自訂一次性目標',
+                    type,
+                    currentAmount: type === 'flow' ? 5000 : 500000,
+                    annualMonths: 12
+                }]);
+            };
+            const deleteItem = (id) => setItems(prev => prev.filter(item => item.id !== id));
+
+            return (
+                <div className="min-h-screen p-4 md:p-6 lg:p-8 pb-20">
+                    <LaborPensionModal
+                        isOpen={isPensionModalOpen}
+                        onClose={() => setIsPensionModalOpen(false)}
+                        yearsToRetire={result.yearsToRetire}
+                        onApply={(val) => setParams(p => ({ ...p, laborPensionLumpSum: val }))}
+                    />
+
+                    <div className="max-w-7xl mx-auto">
+                        {/* Header */}
+                        <header className="mb-6 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold mb-2">
+                                    <i className="fas fa-flag"></i> 台灣最新勞保・勞退・通膨・長照參數對齊版
+                                </div>
+                                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 flex items-center gap-3">
+                                    <i className="fas fa-coins text-amber-500"></i> 台灣精準退休財務規劃系統 Pro
+                                </h1>
+                                <p className="text-slate-500 text-sm mt-1">即時動態複利模擬・資料自動儲存於瀏覽器</p>
+                            </div>
+
+                            {/* 快速情境切換與重置 */}
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-xs text-slate-400 mr-1">快速情境：</span>
+                                <button onClick={() => applyScenario('conservative')} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">
+                                    🛡️ 保守防禦 (通膨2.8%/報酬5%)
+                                </button>
+                                <button onClick={() => applyScenario('balanced')} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100">
+                                    ⚖️ 台美股穩健 (通膨2.3%/報酬7%)
+                                </button>
+                                <button onClick={() => applyScenario('growth')} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">
+                                    🚀 積極成長 (通膨2.0%/報酬9%)
+                                </button>
+                                <button onClick={handleReset} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 ml-2">
+                                    <i className="fas fa-undo-alt mr-1"></i> 重置預設
+                                </button>
+                            </div>
+                        </header>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            {/* 左側參數設定區 */}
+                            <div className="lg:col-span-4 space-y-5">
+                                {/* 1. 生涯與總經參數 */}
+                                <div className="glass-card rounded-2xl p-5">
+                                    <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                        <i className="fas fa-user-clock text-indigo-500"></i> 1. 生涯與台灣總經環境設定
+                                    </h3>
+                                    <div className="flex gap-2 mb-4">
+                                        <div className="flex-1">
+                                            <label className="block text-xs text-slate-500 mb-1">現在年齡</label>
+                                            <input type="number" name="currentAge" value={params.currentAge} onChange={handleParamChange} className="w-full p-2 border rounded-lg text-center font-bold text-slate-700"/>
+                                        </div>
+                                        <div className="flex items-center text-slate-300 pt-4">➜</div>
+                                        <div className="flex-1">
+                                            <label className="block text-xs text-slate-500 mb-1">預計退休</label>
+                                            <input type="number" name="retireAge" value={params.retireAge} onChange={handleParamChange} className="w-full p-2 border rounded-lg text-center font-bold text-blue-700 bg-blue-50/50"/>
+                                        </div>
+                                        <div className="flex items-center text-slate-300 pt-4">➜</div>
+                                        <div className="flex-1">
+                                            <label className="block text-xs text-rose-600 font-bold mb-1">預期壽命</label>
+                                            <input type="number" name="lifeExpectancy" value={params.lifeExpectancy} onChange={handleParamChange} className="w-full p-2 border border-rose-200 bg-rose-50 rounded-lg text-center font-bold text-rose-700"/>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4 pt-3 border-t border-slate-100">
+                                        <div>
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span className="text-slate-600">預估長期年通膨率 (台灣均值約 2.3%)</span>
+                                                <span className="text-rose-600 font-bold">{params.inflationRate}%</span>
+                                            </div>
+                                            <input type="range" name="inflationRate" min="0" max="6" step="0.1" value={params.inflationRate} onChange={handleParamChange} />
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span className="text-slate-600">退休後穩健報酬率 (股債/配息配置)</span>
+                                                <span className="text-emerald-600 font-bold">{params.postRetireRoiRate}%</span>
+                                            </div>
+                                            <input type="range" name="postRetireRoiRate" min="1" max="10" step="0.5" value={params.postRetireRoiRate} onChange={handleParamChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 2. 現有資產與定期定額 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-blue-500">
+                                    <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                        <i className="fas fa-chart-line text-blue-500"></i> 2. 個人已備資產與現在投資
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <label className="text-sm text-slate-700 font-medium">目前已累積退休本金 (台美股/儲蓄)</label>
+                                                <span className="text-xs text-blue-600 font-bold">{formatWan(params.currentSavings)}</span>
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-2 text-slate-400">$</span>
+                                                <input type="number" step="100000" name="currentSavings" value={params.currentSavings} onChange={handleParamChange}
+                                                    className="w-full pl-7 p-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none font-bold text-slate-800"/>
+                                            </div>
+                                            <div className="text-[11px] text-slate-400 mt-1">
+                                                退休時複利終值約：<span className="font-bold text-slate-600">{formatCurrency(result.currentSavingsFV)}</span>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <label className="text-sm text-slate-700 font-medium">目前每月定期定額投入</label>
+                                                <span className="text-xs text-blue-600 font-bold">{formatCurrency(params.currentMonthlyInvestment)}/月</span>
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-2 text-slate-400">$</span>
+                                                <input type="number" step="1000" name="currentMonthlyInvestment" value={params.currentMonthlyInvestment} onChange={handleParamChange}
+                                                    className="w-full pl-7 p-2 border border-blue-200 bg-blue-50/30 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none font-bold text-blue-700"/>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className="flex justify-between mb-1">
+                                                <label className="text-xs text-slate-600">退休前預期年化報酬率 (累積期)</label>
+                                                <span className="text-xs font-bold text-blue-600">{params.preRetireRoiRate}%</span>
+                                            </div>
+                                            <input type="range" name="preRetireRoiRate" min="1" max="15" step="0.5" value={params.preRetireRoiRate} onChange={handleParamChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 3. 政府退休金 (勞保 + 勞退新制) */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-purple-500">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                            <i className="fas fa-landmark text-purple-500"></i> 3. 台灣政府雙層退休金
+                                        </h3>
+                                        <button
+                                            onClick={() => setIsPensionModalOpen(true)}
+                                            className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-2.5 py-1 rounded-full transition"
+                                        >
+                                            <i className="fas fa-magic mr-1"></i>勞退試算器
+                                        </button>
+                                    </div>
+                                    <div className="space-y-4 text-sm">
+                                        <div>
+                                            <div className="flex justify-between mb-1">
+                                                <label className="text-slate-600 font-medium">勞退新制預估累積總額 (60歲後可領)</label>
+                                                <span className="text-xs text-purple-600 font-bold">{formatWan(params.laborPensionLumpSum)}</span>
+                                            </div>
+                                            <input type="number" step="100000" name="laborPensionLumpSum" value={params.laborPensionLumpSum} onChange={handleParamChange} className="w-full p-2 border rounded-lg outline-none font-bold text-slate-700"/>
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-between mb-1">
+                                                <label className="text-slate-600 font-medium">勞保老年年金 (預估月領)</label>
+                                                <span className="text-xs text-purple-600 font-bold">{formatCurrency(params.laborInsuranceMonthly)}/月</span>
+                                            </div>
+                                            <input type="number" step="1000" name="laborInsuranceMonthly" value={params.laborInsuranceMonthly} onChange={handleParamChange} className="w-full p-2 border rounded-lg outline-none font-bold text-slate-700"/>
+                                            <label className="flex items-center gap-2 mt-2 text-xs text-slate-600 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={params.adjustLaborInsForInflation}
+                                                    onChange={e => setParams(p => ({ ...p, adjustLaborInsForInflation: e.target.checked }))}
+                                                    className="rounded text-purple-600"
+                                                />
+                                                <span>啟用勞保年金隨 CPI 通膨調升機制 (法定累計達5%調升)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 4. 商業保險風險轉嫁 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-emerald-500">
+                                    <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                                        <i className="fas fa-shield-alt text-emerald-500"></i> 4. 商業保險風險轉嫁程度
+                                    </h3>
+                                    <p className="text-xs text-slate-500 mb-4">考慮實支實付與長照險可能僅涵蓋部分自費額，可選擇折抵比例：</p>
+                                    <div className="space-y-3 text-sm">
+                                        <div>
+                                            <label className="block text-xs text-slate-600 mb-1 font-medium">老年醫療險覆蓋程度 (實支實付/重大傷病)</label>
+                                            <select
+                                                value={params.medicalInsuranceCoverage}
+                                                onChange={e => setParams(p => ({ ...p, medicalInsuranceCoverage: Number(e.target.value) }))}
+                                                className="w-full p-2 border rounded-lg text-slate-700 font-medium bg-slate-50"
+                                            >
+                                                <option value={0}>0% - 無商業醫療險 / 完全自留準備金</option>
+                                                <option value={50}>50% - 已有基本醫療險 (自留一半自費額)</option>
+                                                <option value={100}>100% - 已投保足額醫療險 (免計醫療預備金)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-slate-600 mb-1 font-medium">長照險/失能險覆蓋程度</label>
+                                            <select
+                                                value={params.ltcInsuranceCoverage}
+                                                onChange={e => setParams(p => ({ ...p, ltcInsuranceCoverage: Number(e.target.value) }))}
+                                                className="w-full p-2 border rounded-lg text-slate-700 font-medium bg-slate-50"
+                                            >
+                                                <option value={0}>0% - 無長照險 / 完全自留長照預備金</option>
+                                                <option value={50}>50% - 已有部分長照/失能險 (自留一半)</option>
+                                                <option value={100}>100% - 已投保足額長照險 (免計長照預備金)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 右側試算結果與報表區 */}
+                            <div className="lg:col-span-8 space-y-6">
+                                {/* 1. 退休資金缺口核心儀表板 */}
+                                <div className="glass-card rounded-2xl p-6 bg-white border-t-4 border-slate-800">
+                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                                        <div>
+                                            <h2 className="text-xl font-bold text-slate-800">退休資金缺口與準備度分析</h2>
+                                            <span className="text-xs text-slate-500">
+                                                距離退休還有 <strong className="text-blue-600">{result.yearsToRetire} 年</strong> ｜ 退休生活期 <strong className="text-rose-600">{result.yearsInRetirement} 年</strong> ({params.retireAge}歲 ~ {params.lifeExpectancy}歲)
+                                            </span>
+                                        </div>
+                                        <div className="text-left md:text-right">
+                                            <div className="text-xs text-slate-400 mb-0.5">
+                                                {result.finalShortfall <= 0 ? '🎉 退休時資產盈餘 (現值)' : '⚠️ 退休時點資金缺口'}
+                                            </div>
+                                            <div className={`text-3xl font-extrabold ${result.finalShortfall <= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                {result.finalShortfall <= 0 ? `+${formatCurrency(Math.abs(result.finalShortfall))}` : formatCurrency(result.finalShortfall)}
+                                            </div>
+                                            {result.bankruptAge && (
+                                                <div className="text-xs text-rose-600 font-bold mt-1 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200 inline-block">
+                                                    🚨 照目前進度，資產將於 {result.bankruptAge} 歲時耗盡
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* 資金來源結構條 */}
+                                    <div className="space-y-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                        <div className="flex items-center text-sm">
+                                            <div className="w-28 text-slate-600 font-bold">應備總需求</div>
+                                            <div className="flex-1 mx-3 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                                                <div className="bg-slate-700 h-full w-full"></div>
+                                            </div>
+                                            <div className="w-28 text-right font-extrabold text-slate-800">{formatCurrency(result.grossNeed)}</div>
+                                        </div>
+                                        <div className="flex items-center text-sm">
+                                            <div className="w-28 text-purple-600 font-medium">政府勞保+勞退</div>
+                                            <div className="flex-1 mx-3 bg-purple-100 h-2.5 rounded-full overflow-hidden">
+                                                <div className="bg-purple-500 h-full transition-all duration-300" style={{ width: `${Math.min(100, (result.govDeductions / (result.grossNeed || 1)) * 100)}%` }}></div>
+                                            </div>
+                                            <div className="w-28 text-right font-bold text-purple-600">{formatCurrency(result.govDeductions)}</div>
+                                        </div>
+                                        <div className="flex items-center text-sm">
+                                            <div className="w-28 text-blue-600 font-medium">個人累積與投資</div>
+                                            <div className="flex-1 mx-3 bg-blue-100 h-2.5 rounded-full overflow-hidden">
+                                                <div className="bg-blue-500 h-full transition-all duration-300" style={{ width: `${Math.min(100, (result.totalSelfInvestmentFV / (result.grossNeed || 1)) * 100)}%` }}></div>
+                                            </div>
+                                            <div className="w-28 text-right font-bold text-blue-600">{formatCurrency(result.totalSelfInvestmentFV)}</div>
+                                        </div>
+                                    </div>
+
+                                    {/* 具體行動建議卡片 */}
+                                    {result.finalShortfall > 0 ? (
+                                        <div className="mb-6 bg-blue-50/80 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                            <div className="bg-blue-600 text-white p-3 rounded-xl text-lg shrink-0">
+                                                <i className="fas fa-bullseye"></i>
+                                            </div>
+                                            <div className="flex-1">
+                                                <h4 className="font-bold text-blue-900 text-sm">可執行的缺口填補行動方案（以年化報酬 {params.preRetireRoiRate}% 計算）</h4>
+                                                <div className="text-sm text-slate-700 mt-1">
+                                                    除了目前已設定的每月 <span className="font-bold">{formatCurrency(params.currentMonthlyInvestment)}</span> 外，建議每月<span className="font-bold text-rose-600">再增加定期定額 {formatCurrency(result.suggestedMonthlySave)}</span>（合計每月投入 <span className="font-extrabold text-blue-800 underline">{formatCurrency(result.totalMonthlySave)}</span>），即可於 {params.retireAge} 歲準時達成無缺口退休。
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3 text-emerald-800 text-sm">
+                                            <i className="fas fa-check-circle text-emerald-600 text-xl"></i>
+                                            <div>
+                                                <strong>財務軌跡健全！</strong> 您目前的已備本金與每月定期定額，配合政府退休金，足以支應至 {params.lifeExpectancy} 歲的所有通膨後開銷。
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 資產消耗曲線圖 */}
+                                    <div className="border-t border-slate-100 pt-5">
+                                        <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2 text-sm">
+                                            <i className="fas fa-chart-area text-amber-500"></i> 退休後資產消耗與複利模擬圖 ({params.retireAge}歲 ~ {params.lifeExpectancy}歲)
+                                        </h3>
+                                        <CashFlowChart
+                                            chartData={result.chartData}
+                                            retireAge={params.retireAge}
+                                            lifeExpectancy={params.lifeExpectancy}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* 2. 資金需求細項設定表 */}
+                                <div className="glass-card rounded-2xl overflow-hidden">
+                                    <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
+                                        <div>
+                                            <h3 className="font-bold text-slate-800">退休生活與醫療長照需求明細</h3>
+                                            <p className="text-xs text-slate-500">退休首年每月生活費總需求（通膨後）：<strong className="text-rose-600">{formatCurrency(result.firstYearMonthlyNeed)} / 月</strong></p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => addItem('flow')} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                                <i className="fas fa-plus"></i> 新增每月支出
+                                            </button>
+                                            <button onClick={() => addItem('stock')} className="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                                <i className="fas fa-plus"></i> 新增一次性準備金
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm text-left">
+                                            <thead className="text-xs text-slate-500 uppercase bg-slate-100">
+                                                <tr>
+                                                    <th className="px-4 py-3">支出項目</th>
+                                                    <th className="px-4 py-3 text-center">性質</th>
+                                                    <th className="px-4 py-3 text-right">目前物價金額</th>
+                                                    <th className="px-4 py-3 text-center">通膨放大 ({result.yearsToRetire}年)</th>
+                                                    <th className="px-4 py-3 text-right">退休首年需求 (通膨後)</th>
+                                                    <th className="px-4 py-3 text-right font-bold text-slate-800">退休時應備本金</th>
+                                                    <th className="w-10"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-100">
+                                                {result.detailedItems.map((item) => {
+                                                    const isFullyCovered = item.coverageRatio === 1;
+                                                    const isPartiallyCovered = item.coverageRatio > 0 && item.coverageRatio < 1;
+
+                                                    return (
+                                                        <tr key={item.id} className={`hover:bg-slate-50 transition ${isFullyCovered ? 'bg-emerald-50/40 opacity-60' : ''}`}>
+                                                            <td className="px-4 py-3">
+                                                                <input
+                                                                    type="text"
+                                                                    value={item.name}
+                                                                    onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                                                                    className={`w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none font-medium ${isFullyCovered ? 'line-through text-slate-400' : 'text-slate-700'}`}
+                                                                />
+                                                                {isFullyCovered && <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-bold">商業保險 100% 覆蓋</span>}
+                                                                {isPartiallyCovered && <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-bold">保險已折抵 50%</span>}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-center">
+                                                                <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${item.type === 'flow' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-700'}`}>
+                                                                    {item.type === 'flow' ? '每月持續' : '單筆提領'}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-right">
+                                                                <div className="flex items-center justify-end gap-1">
+                                                                    <span className="text-slate-400 text-xs">$</span>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={item.currentAmount}
+                                                                        onChange={(e) => updateItem(item.id, 'currentAmount', parseFloat(e.target.value) || 0)}
+                                                                        className="w-24 text-right bg-transparent border-b border-dashed border-slate-300 focus:border-blue-500 outline-none font-semibold text-slate-700"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-center">
+                                                                <span className="inflation-badge">{result.inflationMultiplier.toFixed(2)}x</span>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-right">
+                                                                {isFullyCovered ? <span className="text-slate-400">-</span> : (
+                                                                    <div>
+                                                                        <span className="font-bold text-slate-700">
+                                                                            {item.type === 'flow' ? formatNumber(item.monthlyFuture) : formatNumber(item.futureValue)}
+                                                                        </span>
+                                                                        <span className="text-[11px] text-slate-400 ml-1">{item.type === 'flow' ? '/月' : '一次'}</span>
+                                                                    </div>
+                                                                )}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-right font-extrabold text-slate-800">
+                                                                {isFullyCovered ? <span className="text-emerald-600">$0</span> : formatCurrency(item.requiredCapital)}
+                                                            </td>
+                                                            <td className="px-3 py-3 text-center">
+                                                                {!item.isInsuranceItem && (
+                                                                    <button onClick={() => deleteItem(item.id)} className="text-slate-300 hover:text-rose-500 transition">
+                                                                        <i className="fas fa-trash-alt"></i>
+                                                                    </button>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {/* 3. 全生涯現金流明細表 */}
+                                <div className="glass-card rounded-2xl overflow-hidden">
+                                    <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                            <i className="fas fa-table text-slate-500"></i> 全生涯年度現金流明細表 ({params.currentAge}歲 ~ {params.lifeExpectancy}歲)
+                                        </h3>
+                                        <button onClick={downloadCSV} className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                            <i className="fas fa-file-csv"></i> 匯出 CSV 報表
+                                        </button>
+                                    </div>
+                                    <div className="overflow-x-auto max-h-96">
+                                        <table className="w-full text-left cashflow-table">
+                                            <thead className="sticky top-0 z-10 shadow-sm">
+                                                <tr>
+                                                    <th>年齡</th>
+                                                    <th>階段</th>
+                                                    <th className="text-right">當年度勞保年金</th>
+                                                    <th className="text-right">當年度總支出 (含通膨)</th>
+                                                    <th className="text-right">期末資產結餘</th>
+                                                    <th className="text-right">財務狀態</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {result.timelineData.map((row) => (
+                                                    <tr key={row.age} className={row.gap < 0 ? 'bg-rose-50/70' : ''}>
+                                                        <td className="font-bold text-slate-700">{row.age} 歲</td>
+                                                        <td>
+                                                            <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${row.type === '累積期' ? 'bg-blue-100 text-blue-700' : row.type === '退休期' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700'}`}>
+                                                                {row.type}
+                                                            </span>
+                                                        </td>
+                                                        <td className="text-right font-mono text-purple-600">{row.income > 0 ? `+${formatNumber(row.income)}` : '-'}</td>
+                                                        <td className="text-right font-mono text-rose-600">{row.needs > 0 ? `-${formatNumber(row.needs)}` : '-'}</td>
+                                                        <td className="text-right font-mono font-bold text-slate-800">{formatNumber(row.assets)}</td>
+                                                        <td className={`text-right font-bold ${row.gap < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                                                            {row.gap < 0 ? '⚠️ 透支缺口' : '✅ 資產穩健'}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
