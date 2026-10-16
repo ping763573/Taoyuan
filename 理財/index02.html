@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣精準退休財務規劃系統 Master Pro (全功能旗艦版)</title>
+    <!-- React Core -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif; background-color: #f1f5f9; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            transition: transform .15s ease-in-out, background .15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { background: #1d4ed8; transform: scale(1.15); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+        }
+        .inflation-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .cashflow-table th { background-color: #f8fafc; color: #475569; font-weight: 700; font-size: 0.73rem; padding: 0.7rem 0.55rem; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+        .cashflow-table td { padding: 0.65rem 0.55rem; font-size: 0.8rem; border-bottom: 1px solid #f1f5f9; color: #334155; white-space: nowrap; }
+        .cashflow-table tr:hover td { background-color: #f8fafc; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        // --- 台灣現況預設參數 (全功能旗艦版) ---
+        const DEFAULT_PARAMS = {
+            currentAge: 40,
+            retireAge: 65,
+            lifeExpectancy: 88,          // 台灣平均壽命延長，安全邊際建議設為 88 歲
+            inflationRate: 2.3,          // 台灣近年結構性通膨率約 2.0%~2.5%
+            preRetireRoiRate: 7.0,       // 台美股指數化投資長期年化報酬參考
+            postRetireRoiRate: 4.5,      // [動態提領模式] 退休後總年化報酬率
+            withdrawalStrategy: 'dividend', // 'total_return' (4%法則動態提領) | 'dividend' (不賣股領息為主)
+            targetDividendYield: 5.0,    // [不賣股領息模式] 退休後目標股息/債息殖利率 (%)
+            postRetireCapGrowth: 1.5,    // [不賣股領息模式] 退休後本金年化資本增值率 (%)
+            // --- 二代健保補充保費與股利所得稅參數 ---
+            enableTaxAndNHI: true,       // 是否啟用配息稅費與二代健保精算
+            taxableDividendRatio: 50,    // 應稅境內股利(54C)佔總配息比例 (%)
+            applyNHISupplement: true,    // 是否達單筆 2 萬元門檻需課徵 2.11% 二代健保補充保費
+            dividendTaxMode: 'combined_5', // 'exempt_0' | 'combined_5' | 'combined_12' | 'separate_28'
+            // --- 新增：報酬順序風險 (Sequence of Returns Risk) 股災壓力測試參數 ---
+            sorrScenario: 'none',        // 'none' | 'mild_crash' | 'severe_crash' | 'stagflation'
+            // --- 新增：房產活化 (以房養老 / 留房收租) 參數 ---
+            realEstateMode: 'none',      // 'none' | 'reverse_mortgage' (以房養老) | 'rental' (留房收租)
+            propertyValueAtRetire: 18000000, // 退休時房屋預估鑑價 (元) - 用於以房養老
+            reverseMortgageLTV: 65,      // 以房養老核貸成數 (%) - 台灣公股行庫約 60%~70%
+            reverseMortgageRate: 2.35,   // 以房養老貸款年利率 (%)
+            monthlyRentalIncome: 25000,  // 目前物價水準之預估月租金 (元) - 用於留房收租
+            rentalNetFactor: 85,         // 扣除空置、修繕、房屋地價稅後之淨收租比例 (%)
+            // --- 資產與退休金參數 ---
+            currentSavings: 1500000,     // 目前已累積可投資退休本金
+            currentMonthlyInvestment: 15000, // 目前每月定期定額
+            laborPensionLumpSum: 2500000,// 勞退新制預估累積總額 (雇主6%+自提)
+            laborInsuranceMonthly: 22000,// 勞保老年年金預估月領
+            adjustLaborInsForInflation: true, // 勞保年金隨CPI調升機制
+            medicalInsuranceCoverage: 0, // 0: 無, 50: 部分覆蓋(50%), 100: 足額覆蓋
+            ltcInsuranceCoverage: 0,     // 0: 無, 50: 部分覆蓋(50%), 100: 足額覆蓋
+        };
+
+        const DEFAULT_ITEMS = [
+            { id: 1, name: '基本生活費 (含水電伙食)', type: 'flow', currentAmount: 32000, annualMonths: 12 },
+            { id: 2, name: '休閒旅遊與娛樂費', type: 'flow', currentAmount: 10000, annualMonths: 12 },
+            { id: 3, name: '健保與日常保健品', type: 'flow', currentAmount: 4000, annualMonths: 12 },
+            { id: 4, name: '老年自費醫療預備金', type: 'stock', currentAmount: 2500000, isInsuranceItem: 'medical' },
+            { id: 5, name: '長照機構/看護預備金 (約7.3年)', type: 'stock', currentAmount: 4200000, isInsuranceItem: 'ltc' },
+        ];
+
+        const STORAGE_KEY = 'tw_retire_planner_v5_master';
+
+        // --- Formatters ---
+        const formatCurrency = (num) => {
+            if (num === undefined || num === null || isNaN(num)) return "$0";
+            return new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'TWD', maximumFractionDigits: 0 }).format(num);
+        };
+
+        const formatNumber = (num) => {
+            if (num === undefined || num === null || isNaN(num)) return "0";
+            return new Intl.NumberFormat('zh-TW').format(Math.round(num));
+        };
+
+        const formatWan = (num) => {
+            if (!num || isNaN(num)) return "0 萬";
+            return (num / 10000).toFixed(1) + " 萬";
+        };
+
+        // --- 台灣二代健保補充保費 (2.11%) 與股利所得稅 (8.5%抵減/上限8萬) 計算輔助函式 ---
+        const calculateDividendTaxAndNHI = (grossAnnualDividend, params) => {
+            if (!params.enableTaxAndNHI || grossAnnualDividend <= 0) {
+                return {
+                    grossDividend: grossAnnualDividend,
+                    taxable54CDividend: 0,
+                    nhiFee: 0,
+                    incomeTaxOrCredit: 0,
+                    netTaxAndFee: 0,
+                    netDividend: grossAnnualDividend
+                };
+            }
+
+            const ratio54C = (params.taxableDividendRatio || 0) / 100;
+            const taxable54CDividend = grossAnnualDividend * ratio54C;
+            const nhiFee = params.applyNHISupplement ? (taxable54CDividend * 0.0211) : 0;
+
+            let incomeTaxOrCredit = 0;
+            const maxCredit = Math.min(taxable54CDividend * 0.085, 80000);
+
+            if (params.dividendTaxMode === 'exempt_0') {
+                incomeTaxOrCredit = -maxCredit;
+            } else if (params.dividendTaxMode === 'combined_5') {
+                incomeTaxOrCredit = (taxable54CDividend * 0.05) - maxCredit;
+            } else if (params.dividendTaxMode === 'combined_12') {
+                incomeTaxOrCredit = (taxable54CDividend * 0.12) - maxCredit;
+            } else if (params.dividendTaxMode === 'separate_28') {
+                incomeTaxOrCredit = taxable54CDividend * 0.28;
+            }
+
+            const netTaxAndFee = nhiFee + incomeTaxOrCredit;
+            const netDividend = grossAnnualDividend - netTaxAndFee;
+
+            return {
+                grossDividend: grossAnnualDividend,
+                taxable54CDividend,
+                nhiFee,
+                incomeTaxOrCredit,
+                netTaxAndFee,
+                netDividend
+            };
+        };
+
+        // --- 台灣「以房養老 (不動產逆向抵押貸款)」與「留房收租」年度現金流計算函式 ---
+        const getRealEstateAnnualCashflow = (yearIndex, yearsInRetirement, inflationMultiplier, inflationRate, params) => {
+            // yearIndex: 0 代表退休第 1 年
+            if (params.realEstateMode === 'reverse_mortgage') {
+                // 台灣公股行庫以房養老邏輯：核貸總額除以期數為每月撥付本金，利息按累積已撥付本金計息並內扣
+                // 銀行實務通常設有「利息內扣上限為每月撥付本金之 1/3」，確保長者晚年仍領得到至少 2/3 的月撥付額（超出之利息掛帳於到期結算）
+                const totalLoan = (params.propertyValueAtRetire || 0) * ((params.reverseMortgageLTV || 65) / 100);
+                const loanYears = Math.max(1, yearsInRetirement);
+                const grossAnnualPayout = totalLoan / loanYears;
+                const accumulatedDisbursed = grossAnnualPayout * (yearIndex + 0.5);
+                const annualInterest = accumulatedDisbursed * ((params.reverseMortgageRate || 2.35) / 100);
+                // 適用台灣行庫「利息內扣不超過撥付本金 1/3」之保護機制
+                const deductedInterest = Math.min(annualInterest, grossAnnualPayout / 3);
+                return Math.max(0, grossAnnualPayout - deductedInterest);
+            } else if (params.realEstateMode === 'rental') {
+                // 留房收租：退休首年租金已反映退休前通膨，退休後每年隨通膨率調升
+                const baseMonthlyAtRetire = (params.monthlyRentalIncome || 0) * ((params.rentalNetFactor || 85) / 100) * inflationMultiplier;
+                const baseAnnualAtRetire = baseMonthlyAtRetire * 12;
+                return baseAnnualAtRetire * Math.pow(1 + inflationRate, yearIndex);
+            }
+            return 0;
+        };
+
+        // --- 報酬順序風險 (SORR) 各年度市場衝擊參數 ---
+        const getSorrAdjustment = (yearIndex, sorrScenario, baseCapGrowth, baseDivYield, baseInflation) => {
+            // yearIndex: 0 = 退休第1年, 1 = 退休第2年, 2 = 退休第3年
+            if (sorrScenario === 'mild_crash') {
+                // 輕度修正：退休第1年跌 -15%，第2年反彈 +8%
+                if (yearIndex === 0) return { capShock: -0.15, divMultiplier: 0.92, infOverride: null };
+                if (yearIndex === 1) return { capShock: 0.08, divMultiplier: 0.96, infOverride: null };
+            } else if (sorrScenario === 'severe_crash') {
+                // 2008金融海嘯級股災：第1年暴跌 -25%，第2年續跌 -10%，第3年反彈 +15% (期間配息縮水15%)
+                if (yearIndex === 0) return { capShock: -0.25, divMultiplier: 0.85, infOverride: null };
+                if (yearIndex === 1) return { capShock: -0.10, divMultiplier: 0.85, infOverride: null };
+                if (yearIndex === 2) return { capShock: 0.15, divMultiplier: 0.95, infOverride: null };
+            } else if (sorrScenario === 'stagflation') {
+                // 停滯性通膨風暴：前3年分別跌 -18%, -12%, -5%，且前3年通膨率飆升至 4.8%
+                if (yearIndex === 0) return { capShock: -0.18, divMultiplier: 0.88, infOverride: 0.048 };
+                if (yearIndex === 1) return { capShock: -0.12, divMultiplier: 0.85, infOverride: 0.048 };
+                if (yearIndex === 2) return { capShock: -0.05, divMultiplier: 0.90, infOverride: 0.045 };
+            }
+            return { capShock: baseCapGrowth, divMultiplier: 1.0, infOverride: null };
+        };
+
+        // --- 勞退新制快速估算小工具 Modal ---
+        const LaborPensionModal = ({ isOpen, onClose, yearsToRetire, onApply }) => {
+            const [salary, setSalary] = useState(55000);
+            const [currentAcc, setCurrentAcc] = useState(600000);
+            const [selfRate, setSelfRate] = useState(6);
+            const [roi, setRoi] = useState(4.0);
+            const [salaryGrowth, setSalaryGrowth] = useState(2.0);
+
+            if (!isOpen) return null;
+
+            let balance = currentAcc;
+            let curSalary = salary;
+            const totalRate = (6 + selfRate) / 100;
+            for (let y = 0; y < yearsToRetire; y++) {
+                const yearlyContrib = curSalary * totalRate * 12;
+                balance = balance * (1 + roi / 100) + yearlyContrib * (1 + (roi / 100) / 2);
+                curSalary *= (1 + salaryGrowth / 100);
+            }
+
+            return (
+                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+                        <div className="flex justify-between items-center mb-4 pb-3 border-b">
+                            <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                                <i className="fas fa-calculator text-purple-600"></i> 勞退新制專戶試算器
+                            </h3>
+                            <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><i className="fas fa-times"></i></button>
+                        </div>
+                        <div className="space-y-4 text-sm">
+                            <div>
+                                <label className="block text-slate-600 mb-1">目前勞退專戶已累積金額 (元)</label>
+                                <input type="number" value={currentAcc} onChange={e => setCurrentAcc(Number(e.target.value))} className="w-full p-2 border rounded font-bold text-slate-700" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-slate-600 mb-1">目前月提繳工資</label>
+                                    <input type="number" value={salary} onChange={e => setSalary(Number(e.target.value))} className="w-full p-2 border rounded font-bold text-slate-700" />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 mb-1">個人自提比例 (0~6%)</label>
+                                    <select value={selfRate} onChange={e => setSelfRate(Number(e.target.value))} className="w-full p-2 border rounded font-bold text-blue-600 bg-blue-50">
+                                        <option value={0}>0% (僅雇主6%)</option>
+                                        <option value={3}>3% (共9%，享節稅)</option>
+                                        <option value={6}>6% (共12%，享節稅)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-slate-600 mb-1">預估勞動基金年化報酬</label>
+                                    <input type="number" step="0.5" value={roi} onChange={e => setRoi(Number(e.target.value))} className="w-full p-2 border rounded text-slate-700" />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 mb-1">預估每年調薪幅度 (%)</label>
+                                    <input type="number" step="0.5" value={salaryGrowth} onChange={e => setSalaryGrowth(Number(e.target.value))} className="w-full p-2 border rounded text-slate-700" />
+                                </div>
+                            </div>
+                            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mt-4">
+                                <div className="text-xs text-purple-600">距離退休還有 {yearsToRetire} 年，預估退休時專戶累積：</div>
+                                <div className="text-2xl font-extrabold text-purple-800 mt-1">{formatCurrency(Math.round(balance))}</div>
+                                <div className="text-[11px] text-purple-500 mt-1">* 自提部分可自當年度個人綜合所得總額中全數扣除</div>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button onClick={onClose} className="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-bold hover:bg-slate-200">取消</button>
+                            <button onClick={() => { onApply(Math.round(balance)); onClose(); }} className="flex-1 py-2.5 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700">套用此金額</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Chart Component ---
+        const CashFlowChart = ({ chartData, retireAge, lifeExpectancy, strategy, sorrScenario }) => {
+            const canvasRef = useRef(null);
+            const chartInstanceRef = useRef(null);
+
+            const downloadChart = () => {
+                if (chartInstanceRef.current) {
+                    const link = document.createElement('a');
+                    link.download = `全生涯退休資產與股災壓力測試_${retireAge}至${lifeExpectancy}歲.png`;
+                    link.href = chartInstanceRef.current.toBase64Image();
+                    link.click();
+                }
+            };
+
+            useEffect(() => {
+                if (!canvasRef.current || !chartData) return;
+                const ctx = canvasRef.current.getContext('2d');
+                if (chartInstanceRef.current) chartInstanceRef.current.destroy();
+
+                const datasets = [
+                    {
+                        label: strategy === 'dividend' ? '理想無缺口基準線 (稅後配息+房產覆蓋)' : '理想無缺口基準線 (壽命終點歸零)',
+                        data: chartData.ideal,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.04)',
+                        borderWidth: 2,
+                        borderDash: [4, 4],
+                        pointRadius: 0,
+                        fill: false,
+                        tension: 0.35
+                    },
+                    {
+                        label: '目前預估資產軌跡 (平順市場)',
+                        data: chartData.actualNormal,
+                        borderColor: '#f59e0b',
+                        backgroundColor: sorrScenario === 'none' ? 'rgba(245, 158, 11, 0.12)' : 'transparent',
+                        borderWidth: 3,
+                        pointRadius: 2,
+                        fill: sorrScenario === 'none',
+                        tension: 0.35
+                    }
+                ];
+
+                if (sorrScenario !== 'none') {
+                    datasets.push({
+                        label: '⚡ 退休初期股災衝擊軌跡 (報酬順序風險)',
+                        data: chartData.actualSorr,
+                        borderColor: '#e11d48',
+                        backgroundColor: 'rgba(225, 29, 72, 0.12)',
+                        borderWidth: 3.5,
+                        pointRadius: 3,
+                        fill: true,
+                        tension: 0.35
+                    });
+                }
+
+                datasets.push({
+                    label: '資產歸零警戒線',
+                    data: Array(chartData.labels.length).fill(0),
+                    borderColor: '#94a3b8',
+                    borderWidth: 1.5,
+                    borderDash: [2, 2],
+                    pointRadius: 0,
+                });
+
+                chartInstanceRef.current = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: chartData.labels, datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`
+                                }
+                            },
+                            legend: { position: 'bottom' },
+                        },
+                        scales: {
+                            y: {
+                                ticks: { callback: (value) => (value / 10000).toFixed(0) + '萬' },
+                                grid: { color: '#f1f5f9' }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+
+                return () => { if (chartInstanceRef.current) chartInstanceRef.current.destroy(); };
+            }, [chartData, strategy, sorrScenario]);
+
+            return (
+                <div className="relative w-full h-80 md:h-96 bg-white p-2 rounded-xl">
+                    <button onClick={downloadChart} className="absolute top-0 right-0 m-2 z-10 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 transition">
+                        <i className="fas fa-download"></i> 下載圖表
+                    </button>
+                    <canvas ref={canvasRef}></canvas>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [params, setParams] = useState(() => {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try { return { ...DEFAULT_PARAMS, ...JSON.parse(saved).params }; } catch (e) {}
+                }
+                return DEFAULT_PARAMS;
+            });
+
+            const [items, setItems] = useState(() => {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try { return JSON.parse(saved).items || DEFAULT_ITEMS; } catch (e) {}
+                }
+                return DEFAULT_ITEMS;
+            });
+
+            const [isPensionModalOpen, setIsPensionModalOpen] = useState(false);
+
+            useEffect(() => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ params, items }));
+            }, [params, items]);
+
+            // --- 核心財務試算模型 (整合「雙軌提領 + 二代健保稅制 + 房產活化 + 報酬順序風險 SORR」) ---
+            const result = useMemo(() => {
+                const yearsToRetire = Math.max(0, params.retireAge - params.currentAge);
+                const monthsToRetire = yearsToRetire * 12;
+                const yearsInRetirement = Math.max(1, params.lifeExpectancy - params.retireAge);
+
+                const inflationRate = params.inflationRate / 100;
+                const preRoiRate = params.preRetireRoiRate / 100;
+
+                const isDividendMode = params.withdrawalStrategy === 'dividend';
+                const divYield = isDividendMode ? (params.targetDividendYield / 100) : 0;
+                const capGrowth = isDividendMode ? (params.postRetireCapGrowth / 100) : (params.postRetireRoiRate / 100);
+
+                // 計算考慮二代健保與股利稅後的「有效稅後現金殖利率」
+                const sampleGrossDiv = 10000000 * divYield;
+                const sampleTaxRes = calculateDividendTaxAndNHI(sampleGrossDiv, params);
+                const effectiveNetDivYield = (isDividendMode && sampleGrossDiv > 0)
+                    ? (sampleTaxRes.netDividend / 10000000)
+                    : divYield;
+
+                const effectivePostRoiRate = isDividendMode
+                    ? (effectiveNetDivYield + capGrowth)
+                    : (params.postRetireRoiRate / 100);
+
+                const inflationMultiplier = Math.pow(1 + inflationRate, yearsToRetire);
+
+                // 1. 退休前資產累積 (現有本金複利 + 每月定期定額終值)
+                const currentSavingsFV = (params.currentSavings || 0) * Math.pow(1 + preRoiRate, yearsToRetire);
+                let monthlyInvestFV = 0;
+                if (params.currentMonthlyInvestment > 0 && yearsToRetire > 0) {
+                    const monthlyRate = preRoiRate / 12;
+                    monthlyInvestFV = monthlyRate > 0
+                        ? params.currentMonthlyInvestment * ((Math.pow(1 + monthlyRate, monthsToRetire) - 1) / monthlyRate)
+                        : params.currentMonthlyInvestment * monthsToRetire;
+                }
+                const totalSelfInvestmentFV = currentSavingsFV + monthlyInvestFV;
+                const startAssets = (params.laborPensionLumpSum || 0) + totalSelfInvestmentFV;
+
+                // 2. 退休各項支出折現與首年需求計算
+                let stockExpensesAtRetire = 0;
+                let baseFlowExpenseAtRetire = 0;
+
+                const detailedItems = items.map(item => {
+                    let coverageRatio = 0;
+                    if (item.isInsuranceItem === 'medical') coverageRatio = (params.medicalInsuranceCoverage || 0) / 100;
+                    if (item.isInsuranceItem === 'ltc') coverageRatio = (params.ltcInsuranceCoverage || 0) / 100;
+
+                    const effectiveCurrentAmount = item.currentAmount * (1 - coverageRatio);
+
+                    let annualFutureAtRetire = 0;
+                    let monthlyFutureAtRetire = 0;
+
+                    if (item.type === 'stock') {
+                        annualFutureAtRetire = effectiveCurrentAmount * inflationMultiplier;
+                        stockExpensesAtRetire += annualFutureAtRetire;
+                    } else {
+                        monthlyFutureAtRetire = effectiveCurrentAmount * inflationMultiplier;
+                        annualFutureAtRetire = monthlyFutureAtRetire * (item.annualMonths || 12);
+                        baseFlowExpenseAtRetire += annualFutureAtRetire;
+                    }
+
+                    return {
+                        ...item,
+                        coverageRatio,
+                        monthlyFuture: monthlyFutureAtRetire,
+                        futureValue: annualFutureAtRetire,
+                        requiredCapital: 0
+                    };
+                });
+
+                // 3. 計算政府退休金、房產活化折現與應備總資本
+                let npvExpenses = 0;
+                let npvLaborIns = 0;
+                let npvRealEstate = 0;
+                const baseLaborInsAnnual = (params.laborInsuranceMonthly || 0) * 12;
+
+                const firstYearRealEstateAnnual = getRealEstateAnnualCashflow(0, yearsInRetirement, inflationMultiplier, inflationRate, params);
+                const firstYearRealEstateMonthly = firstYearRealEstateAnnual / 12;
+
+                for (let i = 1; i <= yearsInRetirement; i++) {
+                    const discountFactor = Math.pow(1 + effectivePostRoiRate, i);
+                    const expenseThisYear = baseFlowExpenseAtRetire * Math.pow(1 + inflationRate, i - 1);
+                    const laborInsThisYear = params.adjustLaborInsForInflation
+                        ? baseLaborInsAnnual * Math.pow(1 + inflationRate, i - 1)
+                        : baseLaborInsAnnual;
+                    const realEstateThisYear = getRealEstateAnnualCashflow(i - 1, yearsInRetirement, inflationMultiplier, inflationRate, params);
+
+                    npvExpenses += expenseThisYear / discountFactor;
+                    npvLaborIns += laborInsThisYear / discountFactor;
+                    npvRealEstate += realEstateThisYear / discountFactor;
+                }
+                npvExpenses += stockExpensesAtRetire;
+
+                // [不賣股領息模式]：首年淨支出已扣除「勞保年金」與「房產活化年收入 (以房養老/收租)」
+                const firstYearNetFlowNeed = Math.max(0, baseFlowExpenseAtRetire - baseLaborInsAnnual - firstYearRealEstateAnnual);
+                const dividendRequiredPortfolio = effectiveNetDivYield > 0
+                    ? (firstYearNetFlowNeed / effectiveNetDivYield)
+                    : Math.max(0, npvExpenses - npvLaborIns - npvRealEstate);
+                const dividendTotalNeededAtRetire = dividendRequiredPortfolio + stockExpensesAtRetire;
+
+                const totalPVNeeded = isDividendMode ? dividendTotalNeededAtRetire : npvExpenses;
+                const totalPVHave = isDividendMode
+                    ? startAssets
+                    : (npvLaborIns + npvRealEstate + startAssets);
+
+                // 為了計算當有 SORR 股災時需要多少「額外安全邊際本金」，先算出平順市場缺口
+                const normalShortfall = totalPVNeeded - totalPVHave;
+
+                // 分配各項目的應備本金權重
+                const totalFlowCapitalNeeded = isDividendMode ? dividendRequiredPortfolio : (npvExpenses - stockExpensesAtRetire);
+                detailedItems.forEach(item => {
+                    if (item.type === 'stock') {
+                        item.requiredCapital = item.futureValue;
+                    } else if (baseFlowExpenseAtRetire > 0) {
+                        const ratio = item.futureValue / baseFlowExpenseAtRetire;
+                        item.requiredCapital = totalFlowCapitalNeeded * ratio;
+                    }
+                });
+
+                const govDeductions = isDividendMode ? (params.laborPensionLumpSum || 0) : ((params.laborPensionLumpSum || 0) + npvLaborIns);
+                const realEstateDeductions = isDividendMode
+                    ? (effectiveNetDivYield > 0 ? (firstYearRealEstateAnnual / effectiveNetDivYield) : npvRealEstate)
+                    : npvRealEstate;
+                const grossNeed = isDividendMode
+                    ? (dividendTotalNeededAtRetire + realEstateDeductions)
+                    : npvExpenses;
+
+                // 4. 退休首年配息、二代健保、房產現金流與覆蓋率計算
+                const investableAssetsAtRetire = Math.max(0, startAssets - stockExpensesAtRetire);
+                const firstYearGrossAnnualDiv = investableAssetsAtRetire * divYield;
+                const firstYearTaxBreakdown = calculateDividendTaxAndNHI(firstYearGrossAnnualDiv, params);
+
+                const firstYearNetMonthlyDividend = firstYearTaxBreakdown.netDividend / 12;
+                const firstYearMonthlyNeed = baseFlowExpenseAtRetire / 12;
+                const firstYearTotalPassiveMonthly = firstYearNetMonthlyDividend + (params.laborInsuranceMonthly || 0) + firstYearRealEstateMonthly;
+                const dividendCoverageRatio = firstYearMonthlyNeed > 0
+                    ? Math.min(999, (firstYearTotalPassiveMonthly / firstYearMonthlyNeed) * 100)
+                    : 100;
+
+                // 5. 全生涯時間軸與「平順市場 vs. 股災壓力測試 (SORR)」雙軌模擬
+                const timelineData = [];
+                const labels = [];
+                const dataIdeal = [];
+                const dataActualNormal = [];
+                const dataActualSorr = [];
+
+                let accumBalance = params.currentSavings || 0;
+                for (let age = params.currentAge; age < params.retireAge; age++) {
+                    const monthlyRate = preRoiRate / 12;
+                    const yearlyContribFV = monthlyRate > 0
+                        ? params.currentMonthlyInvestment * ((Math.pow(1 + monthlyRate, 12) - 1) / monthlyRate)
+                        : params.currentMonthlyInvestment * 12;
+                    accumBalance = accumBalance * (1 + preRoiRate) + yearlyContribFV;
+                    timelineData.push({
+                        age,
+                        type: '累積期',
+                        assetsNormal: accumBalance,
+                        assetsSorr: accumBalance,
+                        grossDividend: 0,
+                        taxAndNHI: 0,
+                        netDividend: 0,
+                        realEstateIncome: 0,
+                        income: 0,
+                        needs: 0,
+                        coverage: null,
+                        gap: accumBalance
+                    });
+                }
+
+                let simBalanceIdeal = startAssets + (normalShortfall > 0 ? normalShortfall : 0) - stockExpensesAtRetire;
+                let simBalanceNormal = startAssets - stockExpensesAtRetire;
+                let simBalanceSorr = startAssets - stockExpensesAtRetire;
+
+                let currentFlowExpenseNormal = baseFlowExpenseAtRetire;
+                let currentFlowExpenseSorr = baseFlowExpenseAtRetire;
+
+                let bankruptAgeNormal = null;
+                let bankruptAgeSorr = null;
+
+                for (let i = 0; i <= yearsInRetirement; i++) {
+                    const age = params.retireAge + i;
+                    labels.push(`${age}歲`);
+                    dataIdeal.push(Math.round(simBalanceIdeal));
+                    dataActualNormal.push(Math.round(simBalanceNormal));
+                    dataActualSorr.push(Math.round(simBalanceSorr));
+
+                    if (simBalanceNormal < 0 && bankruptAgeNormal === null) bankruptAgeNormal = age;
+                    if (simBalanceSorr < 0 && bankruptAgeSorr === null) bankruptAgeSorr = age;
+
+                    if (i < yearsInRetirement) {
+                        const laborInsThisYear = params.adjustLaborInsForInflation
+                            ? baseLaborInsAnnual * Math.pow(1 + inflationRate, i)
+                            : baseLaborInsAnnual;
+                        const realEstateThisYear = getRealEstateAnnualCashflow(i, yearsInRetirement, inflationMultiplier, inflationRate, params);
+
+                        // --- (A) 平順市場軌跡計算 ---
+                        const normalGrossDiv = Math.max(0, simBalanceNormal) * divYield;
+                        const normalTaxObj = calculateDividendTaxAndNHI(normalGrossDiv, params);
+                        const normalNetDiv = normalTaxObj.netDividend;
+                        const normalCapGrowth = simBalanceNormal * capGrowth;
+
+                        const idealGrossDiv = Math.max(0, simBalanceIdeal) * divYield;
+                        const idealTaxObj = calculateDividendTaxAndNHI(idealGrossDiv, params);
+                        const idealNetDiv = idealTaxObj.netDividend;
+                        const idealCapGrowth = simBalanceIdeal * capGrowth;
+
+                        const netFlowNormal = laborInsThisYear + realEstateThisYear - currentFlowExpenseNormal;
+                        simBalanceIdeal = simBalanceIdeal + idealNetDiv + idealCapGrowth + netFlowNormal;
+                        simBalanceNormal = simBalanceNormal + normalNetDiv + normalCapGrowth + netFlowNormal;
+
+                        // --- (B) 股災壓力測試 (SORR) 軌跡計算 ---
+                        const sorrAdj = getSorrAdjustment(i, params.sorrScenario, capGrowth, divYield, inflationRate);
+                        const sorrGrossDiv = Math.max(0, simBalanceSorr) * (divYield * sorrAdj.divMultiplier);
+                        const sorrTaxObj = calculateDividendTaxAndNHI(sorrGrossDiv, params);
+                        const sorrNetDiv = sorrTaxObj.netDividend;
+                        // 若資產為正，承受市場漲跌衝擊；若已透支為負，不因股市下跌而縮小負債
+                        const sorrCapChange = simBalanceSorr > 0
+                            ? (simBalanceSorr * sorrAdj.capShock)
+                            : (simBalanceSorr * capGrowth);
+
+                        const netFlowSorr = laborInsThisYear + realEstateThisYear - currentFlowExpenseSorr;
+                        simBalanceSorr = simBalanceSorr + sorrNetDiv + sorrCapChange + netFlowSorr;
+
+                        // 明細表依目前是否開啟 SORR 顯示對應數據
+                        const activeAssets = params.sorrScenario !== 'none' ? simBalanceSorr : simBalanceNormal;
+                        const activeGrossDiv = params.sorrScenario !== 'none' ? sorrGrossDiv : normalGrossDiv;
+                        const activeTaxAndNHI = params.sorrScenario !== 'none' ? sorrTaxObj.netTaxAndFee : normalTaxObj.netTaxAndFee;
+                        const activeNetDiv = params.sorrScenario !== 'none' ? sorrNetDiv : normalNetDiv;
+                        const activeExpense = params.sorrScenario !== 'none' ? currentFlowExpenseSorr : currentFlowExpenseNormal;
+
+                        const yearCoverage = activeExpense > 0
+                            ? ((activeNetDiv + laborInsThisYear + realEstateThisYear) / activeExpense) * 100
+                            : 100;
+
+                        timelineData.push({
+                            age,
+                            type: i < 3 && params.sorrScenario !== 'none' ? '⚡股災期' : '退休期',
+                            assetsNormal: simBalanceNormal,
+                            assetsSorr: simBalanceSorr,
+                            grossDividend: activeGrossDiv,
+                            taxAndNHI: activeTaxAndNHI,
+                            netDividend: activeNetDiv,
+                            realEstateIncome: realEstateThisYear,
+                            income: laborInsThisYear,
+                            needs: activeExpense + (i === 0 ? stockExpensesAtRetire : 0),
+                            coverage: yearCoverage,
+                            gap: activeAssets
+                        });
+
+                        currentFlowExpenseNormal *= (1 + inflationRate);
+                        const activeInfThisYear = sorrAdj.infOverride !== null ? sorrAdj.infOverride : inflationRate;
+                        currentFlowExpenseSorr *= (1 + activeInfThisYear);
+                    } else {
+                        const activeAssets = params.sorrScenario !== 'none' ? simBalanceSorr : simBalanceNormal;
+                        timelineData.push({
+                            age,
+                            type: '規畫終點',
+                            assetsNormal: simBalanceNormal,
+                            assetsSorr: simBalanceSorr,
+                            grossDividend: 0,
+                            taxAndNHI: 0,
+                            netDividend: 0,
+                            realEstateIncome: 0,
+                            income: 0,
+                            needs: 0,
+                            coverage: null,
+                            gap: activeAssets
+                        });
+                    }
+                }
+
+                // 計算股災造成的期末資產蒸發差額 (折現回 65 歲所需額外安全邊際緩衝金)
+                const endAssetDiff = Math.max(0, simBalanceNormal - simBalanceSorr);
+                const sorrExtraBufferNeeded = params.sorrScenario !== 'none'
+                    ? (endAssetDiff / Math.pow(1 + effectivePostRoiRate, yearsInRetirement))
+                    : 0;
+
+                const finalShortfall = normalShortfall + sorrExtraBufferNeeded;
+
+                // 6. 缺口回推每月應再增加定期定額 (PMT)
+                let suggestedMonthlySave = 0;
+                if (finalShortfall > 0 && yearsToRetire > 0) {
+                    const monthlyRate = preRoiRate / 12;
+                    suggestedMonthlySave = monthlyRate > 0
+                        ? finalShortfall * monthlyRate / (Math.pow(1 + monthlyRate, monthsToRetire) - 1)
+                        : finalShortfall / monthsToRetire;
+                }
+                const totalMonthlySave = (params.currentMonthlyInvestment || 0) + suggestedMonthlySave;
+
+                return {
+                    yearsToRetire,
+                    yearsInRetirement,
+                    inflationMultiplier,
+                    isDividendMode,
+                    effectiveNetDivYield: effectiveNetDivYield * 100,
+                    effectivePostRoiRate: effectivePostRoiRate * 100,
+                    detailedItems,
+                    grossNeed,
+                    govDeductions,
+                    realEstateDeductions,
+                    firstYearRealEstateMonthly,
+                    currentSavingsFV,
+                    monthlyInvestFV,
+                    totalSelfInvestmentFV,
+                    normalShortfall,
+                    sorrExtraBufferNeeded,
+                    finalShortfall,
+                    suggestedMonthlySave,
+                    totalMonthlySave,
+                    firstYearMonthlyNeed,
+                    firstYearTaxBreakdown,
+                    firstYearNetMonthlyDividend,
+                    firstYearTotalPassiveMonthly,
+                    dividendCoverageRatio,
+                    bankruptAgeNormal,
+                    bankruptAgeSorr,
+                    timelineData,
+                    chartData: {
+                        labels,
+                        ideal: dataIdeal,
+                        actualNormal: dataActualNormal,
+                        actualSorr: dataActualSorr
+                    }
+                };
+            }, [params, items]);
+
+            // --- Handlers ---
+            const handleParamChange = (e) => {
+                const { name, value } = e.target;
+                setParams(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
+            };
+
+            const applyScenario = (type) => {
+                if (type === 'conservative') {
+                    setParams(p => ({ ...p, inflationRate: 2.8, preRetireRoiRate: 5.0, postRetireRoiRate: 3.5, targetDividendYield: 4.5, postRetireCapGrowth: 0.5, lifeExpectancy: 90 }));
+                } else if (type === 'balanced') {
+                    setParams(p => ({ ...p, inflationRate: 2.3, preRetireRoiRate: 7.0, postRetireRoiRate: 4.5, targetDividendYield: 5.0, postRetireCapGrowth: 1.5, lifeExpectancy: 88 }));
+                } else if (type === 'growth') {
+                    setParams(p => ({ ...p, inflationRate: 2.0, preRetireRoiRate: 9.0, postRetireRoiRate: 5.5, targetDividendYield: 6.0, postRetireCapGrowth: 2.0, lifeExpectancy: 85 }));
+                }
+            };
+
+            const applyDividendPreset = (preset) => {
+                if (preset === 'tw_high_div') {
+                    setParams(p => ({ ...p, withdrawalStrategy: 'dividend', targetDividendYield: 6.0, postRetireCapGrowth: 1.5, taxableDividendRatio: 60 }));
+                } else if (preset === 'stock_bond_mix') {
+                    setParams(p => ({ ...p, withdrawalStrategy: 'dividend', targetDividendYield: 5.0, postRetireCapGrowth: 2.0, taxableDividendRatio: 35 }));
+                } else if (preset === 'index_bond') {
+                    setParams(p => ({ ...p, withdrawalStrategy: 'dividend', targetDividendYield: 3.5, postRetireCapGrowth: 3.5, taxableDividendRatio: 30 }));
+                }
+            };
+
+            const handleReset = () => {
+                if (confirm('確定要清除所有自訂參數並回復台灣現況預設值嗎？')) {
+                    setParams(DEFAULT_PARAMS);
+                    setItems(DEFAULT_ITEMS);
+                    localStorage.removeItem(STORAGE_KEY);
+                }
+            };
+
+            const downloadCSV = () => {
+                const bom = "\uFEFF";
+                let csvContent = "data:text/csv;charset=utf-8," + bom;
+                csvContent += "年齡,階段,稅前總配息,二代健保與稅結算,稅後淨配息,房產活化收入(以房養老/收租),勞保年金收入,當年度總支出(含通膨),被動收入覆蓋率(%),平順市場期末資產,股災壓力測試期末資產,狀態\n";
+                result.timelineData.forEach(row => {
+                    const status = row.gap < 0 ? '資產透支' : '正常';
+                    const cov = row.coverage !== null ? Math.round(row.coverage) + '%' : '-';
+                    csvContent += `${row.age},${row.type},${Math.round(row.grossDividend)},${Math.round(row.taxAndNHI)},${Math.round(row.netDividend)},${Math.round(row.realEstateIncome)},${Math.round(row.income)},${Math.round(row.needs)},${cov},${Math.round(row.assetsNormal)},${Math.round(row.assetsSorr)},${status}\n`;
+                });
+                const link = document.createElement("a");
+                link.setAttribute("href", encodeURI(csvContent));
+                link.setAttribute("download", `台灣全生涯退休旗艦試算報表_${params.currentAge}至${params.lifeExpectancy}歲.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const updateItem = (id, field, value) => setItems(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+            const addItem = (type = 'flow') => {
+                const newId = Math.max(...items.map(i => i.id), 0) + 1;
+                setItems([...items, {
+                    id: newId,
+                    name: type === 'flow' ? '自訂每月支出' : '自訂一次性目標',
+                    type,
+                    currentAmount: type === 'flow' ? 5000 : 500000,
+                    annualMonths: 12
+                }]);
+            };
+            const deleteItem = (id) => setItems(prev => prev.filter(item => item.id !== id));
+
+            return (
+                <div className="min-h-screen p-4 md:p-6 lg:p-8 pb-20">
+                    <LaborPensionModal
+                        isOpen={isPensionModalOpen}
+                        onClose={() => setIsPensionModalOpen(false)}
+                        yearsToRetire={result.yearsToRetire}
+                        onApply={(val) => setParams(p => ({ ...p, laborPensionLumpSum: val }))}
+                    />
+
+                    <div className="max-w-7xl mx-auto">
+                        {/* Header */}
+                        <header className="mb-6 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-bold mb-2">
+                                    <i className="fas fa-shield-virus"></i> 旗艦版：勞保勞退・ETF配息稅制・報酬順序風險(SORR)・以房養老/收租整合系統
+                                </div>
+                                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 flex items-center gap-3">
+                                    <i className="fas fa-coins text-amber-500"></i> 台灣精準退休財務規劃系統 Master Pro
+                                </h1>
+                                <p className="text-slate-500 text-sm mt-1">全方位模擬「退休初期股災衝擊」與「台灣房產活化現金流」對退休金存活期的影響</p>
+                            </div>
+
+                            {/* 快速情境切換與重置 */}
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-xs text-slate-400 mr-1">總經情境：</span>
+                                <button onClick={() => applyScenario('conservative')} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">
+                                    🛡️ 保守防禦
+                                </button>
+                                <button onClick={() => applyScenario('balanced')} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100">
+                                    ⚖️ 台美股穩健
+                                </button>
+                                <button onClick={() => applyScenario('growth')} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">
+                                    🚀 積極成長
+                                </button>
+                                <button onClick={handleReset} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 ml-1">
+                                    <i className="fas fa-undo-alt mr-1"></i> 重置
+                                </button>
+                            </div>
+                        </header>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            {/* 左側參數設定區 */}
+                            <div className="lg:col-span-4 space-y-5">
+                                {/* 1. 生涯與總經參數 */}
+                                <div className="glass-card rounded-2xl p-5">
+                                    <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                        <i className="fas fa-user-clock text-indigo-500"></i> 1. 生涯與台灣通膨設定
+                                    </h3>
+                                    <div className="flex gap-2 mb-4">
+                                        <div className="flex-1">
+                                            <label className="block text-xs text-slate-500 mb-1">現在年齡</label>
+                                            <input type="number" name="currentAge" value={params.currentAge} onChange={handleParamChange} className="w-full p-2 border rounded-lg text-center font-bold text-slate-700"/>
+                                        </div>
+                                        <div className="flex items-center text-slate-300 pt-4">➜</div>
+                                        <div className="flex-1">
+                                            <label className="block text-xs text-slate-500 mb-1">預計退休</label>
+                                            <input type="number" name="retireAge" value={params.retireAge} onChange={handleParamChange} className="w-full p-2 border rounded-lg text-center font-bold text-blue-700 bg-blue-50/50"/>
+                                        </div>
+                                        <div className="flex items-center text-slate-300 pt-4">➜</div>
+                                        <div className="flex-1">
+                                            <label className="block text-xs text-rose-600 font-bold mb-1">預期壽命</label>
+                                            <input type="number" name="lifeExpectancy" value={params.lifeExpectancy} onChange={handleParamChange} className="w-full p-2 border border-rose-200 bg-rose-50 rounded-lg text-center font-bold text-rose-700"/>
+                                        </div>
+                                    </div>
+                                    <div className="pt-2 border-t border-slate-100">
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span className="text-slate-600">預估長期年通膨率 (台灣均值約 2.3%)</span>
+                                            <span className="text-rose-600 font-bold">{params.inflationRate}%</span>
+                                        </div>
+                                        <input type="range" name="inflationRate" min="0" max="6" step="0.1" value={params.inflationRate} onChange={handleParamChange} />
+                                    </div>
+                                </div>
+
+                                {/* 2. 退休後提領策略、配息與二代健保稅制 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-amber-500">
+                                    <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                                        <i className="fas fa-hand-holding-usd text-amber-500"></i> 2. 退休提領策略與配息稅制
+                                    </h3>
+
+                                    <div className="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-xl mb-4 text-xs font-bold">
+                                        <button
+                                            onClick={() => setParams(p => ({ ...p, withdrawalStrategy: 'dividend' }))}
+                                            className={`py-2 px-2 rounded-lg transition flex items-center justify-center gap-1 ${params.withdrawalStrategy === 'dividend' ? 'bg-amber-500 text-white shadow' : 'text-slate-600 hover:bg-slate-200'}`}
+                                        >
+                                            <i className="fas fa-seedling"></i> 不賣股領息策略
+                                        </button>
+                                        <button
+                                            onClick={() => setParams(p => ({ ...p, withdrawalStrategy: 'total_return' }))}
+                                            className={`py-2 px-2 rounded-lg transition flex items-center justify-center gap-1 ${params.withdrawalStrategy === 'total_return' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-200'}`}
+                                        >
+                                            <i className="fas fa-sync-alt"></i> 4% 動態賣股提領
+                                        </button>
+                                    </div>
+
+                                    {params.withdrawalStrategy === 'dividend' ? (
+                                        <div className="space-y-3">
+                                            <div>
+                                                <span className="block text-[11px] text-slate-400 mb-1.5">快速套用台灣熱門收息組合 (自動帶入54C佔比)：</span>
+                                                <div className="grid grid-cols-3 gap-1.5">
+                                                    <button onClick={() => applyDividendPreset('tw_high_div')} className="p-1.5 text-[11px] border border-amber-200 bg-amber-50/50 hover:bg-amber-100 rounded-lg text-amber-900 font-medium text-center">
+                                                        台股高股息<br/><span className="font-bold text-amber-600">息6% / 54C佔60%</span>
+                                                    </button>
+                                                    <button onClick={() => applyDividendPreset('stock_bond_mix')} className="p-1.5 text-[11px] border border-amber-200 bg-amber-50/50 hover:bg-amber-100 rounded-lg text-amber-900 font-medium text-center">
+                                                        高息+美債ETF<br/><span className="font-bold text-amber-600">息5% / 54C佔35%</span>
+                                                    </button>
+                                                    <button onClick={() => applyDividendPreset('index_bond')} className="p-1.5 text-[11px] border border-amber-200 bg-amber-50/50 hover:bg-amber-100 rounded-lg text-amber-900 font-medium text-center">
+                                                        市值+公債組合<br/><span className="font-bold text-amber-600">息3.5% / 54C佔30%</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="text-slate-700 font-medium">目標稅前配息殖利率</span>
+                                                    <span className="text-amber-600 font-bold">{params.targetDividendYield}%</span>
+                                                </div>
+                                                <input type="range" name="targetDividendYield" min="2" max="10" step="0.2" value={params.targetDividendYield} onChange={handleParamChange} />
+                                            </div>
+
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="text-slate-700 font-medium">除息後本金年化成長率 (抗通膨增值)</span>
+                                                    <span className="text-emerald-600 font-bold">{params.postRetireCapGrowth}%</span>
+                                                </div>
+                                                <input type="range" name="postRetireCapGrowth" min="0" max="6" step="0.5" value={params.postRetireCapGrowth} onChange={handleParamChange} />
+                                            </div>
+
+                                            {/* 二代健保補充保費與股利所得稅抵減設定 */}
+                                            <div className="mt-3 pt-3 border-t border-amber-200/70 bg-amber-50/40 p-3 rounded-xl space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                                        <i className="fas fa-receipt text-teal-600"></i> 二代健保(2.11%)與股利稅精算
+                                                    </span>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={params.enableTaxAndNHI}
+                                                        onChange={e => setParams(p => ({ ...p, enableTaxAndNHI: e.target.checked }))}
+                                                        className="rounded text-teal-600 w-4 h-4 cursor-pointer"
+                                                    />
+                                                </div>
+
+                                                {params.enableTaxAndNHI && (
+                                                    <div className="space-y-3 text-xs">
+                                                        <div>
+                                                            <div className="flex justify-between mb-1">
+                                                                <span className="text-slate-600">境內應稅股利 (54C) 佔總配息比例</span>
+                                                                <span className="font-bold text-teal-700">{params.taxableDividendRatio}%</span>
+                                                            </div>
+                                                            <input
+                                                                type="range"
+                                                                name="taxableDividendRatio"
+                                                                min="0"
+                                                                max="100"
+                                                                step="5"
+                                                                value={params.taxableDividendRatio}
+                                                                onChange={handleParamChange}
+                                                            />
+                                                        </div>
+
+                                                        <label className="flex items-center gap-2 text-slate-700 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={params.applyNHISupplement}
+                                                                onChange={e => setParams(p => ({ ...p, applyNHISupplement: e.target.checked }))}
+                                                                className="rounded text-teal-600"
+                                                            />
+                                                            <span>單筆 54C 股息逾 2 萬元 (扣 2.11% 補充保費)</span>
+                                                        </label>
+
+                                                        <div>
+                                                            <label className="block text-slate-600 mb-1">退休後綜所稅率與股利抵減：</label>
+                                                            <select
+                                                                value={params.dividendTaxMode}
+                                                                onChange={e => setParams(p => ({ ...p, dividendTaxMode: e.target.value }))}
+                                                                className="w-full p-2 border border-slate-200 rounded-lg bg-white text-slate-700 font-semibold"
+                                                            >
+                                                                <option value="exempt_0">免稅級距 (0%) ＋ 享 8.5% 股利退稅 (上限8萬)</option>
+                                                                <option value="combined_5">5% 稅率級距 ＋ 享 8.5% 抵減 (倒退稅 3.5%)</option>
+                                                                <option value="combined_12">12% 稅率級距 ＋ 享 8.5% 抵減 (實質補稅 3.5%)</option>
+                                                                <option value="separate_28">28% 股利分開計稅 (高資產適用)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <div className="text-[11px] text-slate-500 bg-blue-50/70 p-2.5 rounded-lg border border-blue-100">
+                                                💡 <strong>總報酬動態提領（4%法則）：</strong>每年依生活所需賣出部分部位變現（台灣停徵證所稅，賣股免稅免補充保費），允許本金於 {params.lifeExpectancy} 歲時用罄。
+                                            </div>
+                                            <div>
+                                                <div className="flex justify-between text-xs mb-1">
+                                                    <span className="text-slate-700 font-medium">退休後股債配置總年化報酬率</span>
+                                                    <span className="text-blue-600 font-bold">{params.postRetireRoiRate}%</span>
+                                                </div>
+                                                <input type="range" name="postRetireRoiRate" min="1" max="10" step="0.5" value={params.postRetireRoiRate} onChange={handleParamChange} />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 3. 新增：退休初期「報酬順序風險 (SORR)」股災壓力測試 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-rose-500">
+                                    <h3 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                        <i className="fas fa-bolt text-rose-500"></i> 3. 退休初期「報酬順序風險」壓力測試
+                                    </h3>
+                                    <p className="text-xs text-slate-500 mb-3">
+                                        模擬剛退休前 1~3 年立刻遭遇股市崩盤與配息縮水，檢視資產是否會因「低點提領」而提早破產：
+                                    </p>
+                                    <select
+                                        value={params.sorrScenario}
+                                        onChange={e => setParams(p => ({ ...p, sorrScenario: e.target.value }))}
+                                        className={`w-full p-2.5 border rounded-xl font-bold text-xs transition ${params.sorrScenario !== 'none' ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                                    >
+                                        <option value="none">☀️ 平順市場基準 (無退休初期股災)</option>
+                                        <option value="mild_crash">🌧️ 輕度修正：退休首年跌 -15%，次年反彈 +8%</option>
+                                        <option value="severe_crash">⚡ 金融海嘯級：首年跌 -25%、次年續跌 -10% (配息縮水15%)</option>
+                                        <option value="stagflation">🔥 停滯性通膨風暴：前3年累跌 -32% ＋ 通膨飆至 4.8%</option>
+                                    </select>
+                                    {params.sorrScenario !== 'none' && (
+                                        <div className="mt-2.5 text-[11px] text-rose-600 bg-rose-50/70 p-2 rounded-lg border border-rose-100">
+                                            ⚠️ 為抵禦此股災並維持 {params.lifeExpectancy} 歲不破產，您於退休時點需額外多準備 <strong>{formatCurrency(result.sorrExtraBufferNeeded)}</strong> 的安全邊際緩衝金！
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 4. 新增：台灣房產活化（以房養老 / 留房收租）現金流 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-teal-500">
+                                    <h3 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                        <i className="fas fa-home text-teal-600"></i> 4. 房產活化現金流 (以房養老 / 收租)
+                                    </h3>
+                                    <p className="text-xs text-slate-500 mb-3">
+                                        將自有住宅或收租房納入退休現金流，大幅減輕股票提領壓力：
+                                    </p>
+
+                                    <div className="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-xl mb-3 text-xs font-bold">
+                                        <button
+                                            onClick={() => setParams(p => ({ ...p, realEstateMode: 'none' }))}
+                                            className={`py-1.5 rounded-lg transition ${params.realEstateMode === 'none' ? 'bg-white text-slate-800 shadow' : 'text-slate-500 hover:bg-slate-200'}`}
+                                        >
+                                            不啟用
+                                        </button>
+                                        <button
+                                            onClick={() => setParams(p => ({ ...p, realEstateMode: 'reverse_mortgage' }))}
+                                            className={`py-1.5 rounded-lg transition ${params.realEstateMode === 'reverse_mortgage' ? 'bg-teal-600 text-white shadow' : 'text-slate-600 hover:bg-slate-200'}`}
+                                        >
+                                            🏦 以房養老
+                                        </button>
+                                        <button
+                                            onClick={() => setParams(p => ({ ...p, realEstateMode: 'rental' }))}
+                                            className={`py-1.5 rounded-lg transition ${params.realEstateMode === 'rental' ? 'bg-teal-600 text-white shadow' : 'text-slate-600 hover:bg-slate-200'}`}
+                                        >
+                                            🏠 留房收租
+                                        </button>
+                                    </div>
+
+                                    {params.realEstateMode === 'reverse_mortgage' && (
+                                        <div className="space-y-3 text-xs bg-teal-50/50 p-3 rounded-xl border border-teal-100">
+                                            <div>
+                                                <div className="flex justify-between mb-1">
+                                                    <span className="text-slate-600 font-medium">退休時房屋預估鑑價金額</span>
+                                                    <span className="font-bold text-teal-700">{formatWan(params.propertyValueAtRetire)}</span>
+                                                </div>
+                                                <input type="number" step="500000" name="propertyValueAtRetire" value={params.propertyValueAtRetire} onChange={handleParamChange} className="w-full p-2 border rounded-lg font-bold text-slate-700 bg-white" />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label className="block text-slate-600 mb-1">核貸成數 (常見60~70%)</label>
+                                                    <input type="number" name="reverseMortgageLTV" min="40" max="80" value={params.reverseMortgageLTV} onChange={handleParamChange} className="w-full p-1.5 border rounded-lg font-bold text-slate-700 bg-white text-center" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-slate-600 mb-1">貸款年利率 (%)</label>
+                                                    <input type="number" step="0.05" name="reverseMortgageRate" value={params.reverseMortgageRate} onChange={handleParamChange} className="w-full p-1.5 border rounded-lg font-bold text-slate-700 bg-white text-center" />
+                                                </div>
+                                            </div>
+                                            <div className="text-[11px] text-teal-800 pt-1 border-t border-teal-200/60">
+                                                💡 退休首年預估每月可實領約 <strong>{formatCurrency(result.firstYearRealEstateMonthly)}/月</strong>（免稅且免二代健保，隨利息內扣逐年微幅遞減，具 2/3 保底機制）。
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {params.realEstateMode === 'rental' && (
+                                        <div className="space-y-3 text-xs bg-teal-50/50 p-3 rounded-xl border border-teal-100">
+                                            <div>
+                                                <div className="flex justify-between mb-1">
+                                                    <span className="text-slate-600 font-medium">目前物價水準之預估月租金</span>
+                                                    <span className="font-bold text-teal-700">{formatCurrency(params.monthlyRentalIncome)}/月</span>
+                                                </div>
+                                                <input type="number" step="1000" name="monthlyRentalIncome" value={params.monthlyRentalIncome} onChange={handleParamChange} className="w-full p-2 border rounded-lg font-bold text-slate-700 bg-white" />
+                                            </div>
+                                            <div>
+                                                <div className="flex justify-between mb-1">
+                                                    <span className="text-slate-600">扣除空置/修繕/稅負後淨收租率</span>
+                                                    <span className="font-bold text-teal-700">{params.rentalNetFactor}%</span>
+                                                </div>
+                                                <input type="range" name="rentalNetFactor" min="60" max="95" step="5" value={params.rentalNetFactor} onChange={handleParamChange} />
+                                            </div>
+                                            <div className="text-[11px] text-teal-800 pt-1 border-t border-teal-200/60">
+                                                💡 隨通膨調升，退休首年預估每月淨收租約 <strong>{formatCurrency(result.firstYearRealEstateMonthly)}/月</strong>。
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 5. 現有資產與定期定額 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-blue-500">
+                                    <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                        <i className="fas fa-chart-line text-blue-500"></i> 5. 個人已備金融資產與定期定額
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <label className="text-sm text-slate-700 font-medium">目前已累積退休本金 (台美股/儲蓄)</label>
+                                                <span className="text-xs text-blue-600 font-bold">{formatWan(params.currentSavings)}</span>
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-2 text-slate-400">$</span>
+                                                <input type="number" step="100000" name="currentSavings" value={params.currentSavings} onChange={handleParamChange}
+                                                    className="w-full pl-7 p-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none font-bold text-slate-800"/>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <label className="text-sm text-slate-700 font-medium">目前每月定期定額投入</label>
+                                                <span className="text-xs text-blue-600 font-bold">{formatCurrency(params.currentMonthlyInvestment)}/月</span>
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-2 text-slate-400">$</span>
+                                                <input type="number" step="1000" name="currentMonthlyInvestment" value={params.currentMonthlyInvestment} onChange={handleParamChange}
+                                                    className="w-full pl-7 p-2 border border-blue-200 bg-blue-50/30 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none font-bold text-blue-700"/>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className="flex justify-between mb-1">
+                                                <label className="text-xs text-slate-600">退休前預期年化報酬率 (累積期)</label>
+                                                <span className="text-xs font-bold text-blue-600">{params.preRetireRoiRate}%</span>
+                                            </div>
+                                            <input type="range" name="preRetireRoiRate" min="1" max="15" step="0.5" value={params.preRetireRoiRate} onChange={handleParamChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 6. 政府退休金與商業保險 */}
+                                <div className="glass-card rounded-2xl p-5 border-l-4 border-purple-500">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                            <i className="fas fa-landmark text-purple-500"></i> 6. 政府雙層退休金與保險
+                                        </h3>
+                                        <button
+                                            onClick={() => setIsPensionModalOpen(true)}
+                                            className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-2.5 py-1 rounded-full transition"
+                                        >
+                                            <i className="fas fa-magic mr-1"></i>勞退試算器
+                                        </button>
+                                    </div>
+                                    <div className="space-y-3 text-sm">
+                                        <div>
+                                            <div className="flex justify-between mb-1">
+                                                <label className="text-slate-600 font-medium text-xs">勞退新制預估累積總額</label>
+                                                <span className="text-xs text-purple-600 font-bold">{formatWan(params.laborPensionLumpSum)}</span>
+                                            </div>
+                                            <input type="number" step="100000" name="laborPensionLumpSum" value={params.laborPensionLumpSum} onChange={handleParamChange} className="w-full p-2 border rounded-lg outline-none font-bold text-slate-700"/>
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-between mb-1">
+                                                <label className="text-slate-600 font-medium text-xs">勞保老年年金 (預估月領・免稅)</label>
+                                                <span className="text-xs text-purple-600 font-bold">{formatCurrency(params.laborInsuranceMonthly)}/月</span>
+                                            </div>
+                                            <input type="number" step="1000" name="laborInsuranceMonthly" value={params.laborInsuranceMonthly} onChange={handleParamChange} className="w-full p-2 border rounded-lg outline-none font-bold text-slate-700"/>
+                                            <label className="flex items-center gap-2 mt-1.5 text-xs text-slate-600 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={params.adjustLaborInsForInflation}
+                                                    onChange={e => setParams(p => ({ ...p, adjustLaborInsForInflation: e.target.checked }))}
+                                                    className="rounded text-purple-600"
+                                                />
+                                                <span>勞保年金隨 CPI 通膨調升</span>
+                                            </label>
+                                        </div>
+                                        <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+                                            <div>
+                                                <label className="block text-slate-500 mb-1">醫療險折抵比例</label>
+                                                <select value={params.medicalInsuranceCoverage} onChange={e => setParams(p => ({ ...p, medicalInsuranceCoverage: Number(e.target.value) }))} className="w-full p-1.5 border rounded bg-slate-50 font-medium">
+                                                    <option value={0}>0% 自留</option>
+                                                    <option value={50}>50% 折抵</option>
+                                                    <option value={100}>100% 足額</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-slate-500 mb-1">長照險折抵比例</label>
+                                                <select value={params.ltcInsuranceCoverage} onChange={e => setParams(p => ({ ...p, ltcInsuranceCoverage: Number(e.target.value) }))} className="w-full p-1.5 border rounded bg-slate-50 font-medium">
+                                                    <option value={0}>0% 自留</option>
+                                                    <option value={50}>50% 折抵</option>
+                                                    <option value={100}>100% 足額</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 右側試算結果與報表區 */}
+                            <div className="lg:col-span-8 space-y-6">
+                                {/* 1. 退休資金缺口核心儀表板 */}
+                                <div className="glass-card rounded-2xl p-6 bg-white border-t-4 border-slate-800">
+                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-4">
+                                        <div>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <h2 className="text-xl font-bold text-slate-800">退休資金缺口與抗股災壓力分析</h2>
+                                                <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${result.isDividendMode ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}`}>
+                                                    {result.isDividendMode ? `不賣股領息 (稅後淨殖利率 ${result.effectiveNetDivYield.toFixed(2)}%)` : `4% 動態賣股提領`}
+                                                </span>
+                                                {params.sorrScenario !== 'none' && (
+                                                    <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-rose-100 text-rose-700 animate-pulse">
+                                                        ⚡ 已開啟退休初期股災測試
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <span className="text-xs text-slate-500 mt-1 block">
+                                                距離退休還有 <strong className="text-blue-600">{result.yearsToRetire} 年</strong> ｜ 退休生活期 <strong className="text-rose-600">{result.yearsInRetirement} 年</strong> ({params.retireAge}歲 ~ {params.lifeExpectancy}歲)
+                                            </span>
+                                        </div>
+                                        <div className="text-left md:text-right">
+                                            <div className="text-xs text-slate-400 mb-0.5">
+                                                {result.finalShortfall <= 0 ? '🎉 退休時點資金盈餘 (含抗股災緩衝)' : '⚠️ 退休時點總資金缺口'}
+                                            </div>
+                                            <div className={`text-3xl font-extrabold ${result.finalShortfall <= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                {result.finalShortfall <= 0 ? `+${formatCurrency(Math.abs(result.finalShortfall))}` : formatCurrency(result.finalShortfall)}
+                                            </div>
+                                            {/* 平順市場 vs 股災市場 破產年齡對比警示 */}
+                                            <div className="mt-1 space-x-1">
+                                                {result.bankruptAgeNormal && (
+                                                    <span className="text-[11px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-block">
+                                                        平順市場：{result.bankruptAgeNormal} 歲耗盡
+                                                    </span>
+                                                )}
+                                                {params.sorrScenario !== 'none' && result.bankruptAgeSorr && (
+                                                    <span className="text-[11px] text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200 inline-block">
+                                                        🚨 遇股災衝擊：提早於 {result.bankruptAgeSorr} 歲破產！
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* 退休首年每月被動現金流三欄指標卡 (整合房產活化現金流) */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                                        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                            <div className="text-xs text-slate-500">退休首年每月支出需求 (通膨後)</div>
+                                            <div className="text-xl font-extrabold text-slate-800 mt-1">{formatCurrency(result.firstYearMonthlyNeed)} <span className="text-xs font-normal text-slate-400">/月</span></div>
+                                            <div className="text-[11px] text-slate-400 mt-1">相當於現值 {formatCurrency(result.firstYearMonthlyNeed / result.inflationMultiplier)} /月</div>
+                                        </div>
+                                        <div className="bg-amber-50/70 p-3.5 rounded-xl border border-amber-200">
+                                            <div className="text-xs text-amber-800">退休首年每月「稅後總被動收入」</div>
+                                            <div className="text-xl font-extrabold text-amber-700 mt-1">{formatCurrency(result.firstYearTotalPassiveMonthly)} <span className="text-xs font-normal text-amber-600">/月</span></div>
+                                            <div className="text-[11px] text-amber-700 mt-1 leading-tight">
+                                                含稅後配息 <strong>{formatCurrency(result.firstYearNetMonthlyDividend)}</strong> + 勞保 <strong>{formatCurrency(params.laborInsuranceMonthly)}</strong>
+                                                {params.realEstateMode !== 'none' && (
+                                                    <span className="text-teal-700 font-bold"> + 房產 {formatCurrency(result.firstYearRealEstateMonthly)}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className={`p-3.5 rounded-xl border ${result.dividendCoverageRatio >= 100 ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}`}>
+                                            <div className="text-xs text-slate-600">退休首年「不賣股現金流覆蓋率」</div>
+                                            <div className={`text-xl font-extrabold mt-1 ${result.dividendCoverageRatio >= 100 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                                                {result.dividendCoverageRatio.toFixed(0)}%
+                                            </div>
+                                            <div className="text-[11px] text-slate-500 mt-1">
+                                                {result.dividendCoverageRatio >= 100 ? '✅ 配息+勞保+房產完全覆蓋生活費' : '⚠️ 被動現金流不足，需賣出部分資產'}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* 退休首年「二代健保補充保費 vs 股利 8.5% 抵減退稅」拆解橫幅 */}
+                                    {result.isDividendMode && params.enableTaxAndNHI && (
+                                        <div className="mb-5 bg-teal-50/70 border border-teal-200 rounded-xl p-3.5 text-xs">
+                                            <div className="font-bold text-teal-900 mb-2 flex items-center justify-between">
+                                                <span><i className="fas fa-balance-scale mr-1.5"></i>退休首年（{params.retireAge}歲）配息稅費與二代健保年度結算預估</span>
+                                                <span className="text-[11px] text-teal-700 font-normal">
+                                                    境內應稅 54C 股利：{formatCurrency(result.firstYearTaxBreakdown.taxable54CDividend)}/年
+                                                </span>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                                                <div className="bg-white p-2 rounded-lg border border-teal-100">
+                                                    <div className="text-slate-400 text-[11px]">稅前總配息/年</div>
+                                                    <div className="font-bold text-slate-700 text-sm mt-0.5">{formatCurrency(result.firstYearTaxBreakdown.grossDividend)}</div>
+                                                </div>
+                                                <div className="bg-white p-2 rounded-lg border border-teal-100">
+                                                    <div className="text-slate-400 text-[11px]">二代健保補充保費 (2.11%)</div>
+                                                    <div className="font-bold text-rose-600 text-sm mt-0.5">
+                                                        -{formatCurrency(result.firstYearTaxBreakdown.nhiFee)}
+                                                    </div>
+                                                </div>
+                                                <div className="bg-white p-2 rounded-lg border border-teal-100">
+                                                    <div className="text-slate-400 text-[11px]">股利綜所稅 / 8.5%抵減</div>
+                                                    <div className={`font-bold text-sm mt-0.5 ${result.firstYearTaxBreakdown.incomeTaxOrCredit <= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                        {result.firstYearTaxBreakdown.incomeTaxOrCredit <= 0
+                                                            ? `退稅 +${formatCurrency(Math.abs(result.firstYearTaxBreakdown.incomeTaxOrCredit))}`
+                                                            : `應繳 -${formatCurrency(result.firstYearTaxBreakdown.incomeTaxOrCredit)}`}
+                                                    </div>
+                                                </div>
+                                                <div className="bg-white p-2 rounded-lg border border-teal-100">
+                                                    <div className="text-slate-400 text-[11px]">稅費結算後實領淨配息</div>
+                                                    <div className="font-extrabold text-teal-800 text-sm mt-0.5">
+                                                        {formatCurrency(result.firstYearTaxBreakdown.netDividend)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 資金來源結構條 (新增房產活化折抵條) */}
+                                    <div className="space-y-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                        <div className="flex items-center text-sm">
+                                            <div className="w-36 text-slate-600 font-bold">
+                                                {result.isDividendMode ? '不賣股應備總本金' : '4%動態提領應備總額'}
+                                            </div>
+                                            <div className="flex-1 mx-3 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                                                <div className="bg-slate-700 h-full w-full"></div>
+                                            </div>
+                                            <div className="w-28 text-right font-extrabold text-slate-800">{formatCurrency(result.grossNeed)}</div>
+                                        </div>
+                                        <div className="flex items-center text-sm">
+                                            <div className="w-36 text-purple-600 font-medium">
+                                                {result.isDividendMode ? '勞退新制本金折抵' : '政府勞保+勞退折現'}
+                                            </div>
+                                            <div className="flex-1 mx-3 bg-purple-100 h-2.5 rounded-full overflow-hidden">
+                                                <div className="bg-purple-500 h-full transition-all duration-300" style={{ width: `${Math.min(100, (result.govDeductions / (result.grossNeed || 1)) * 100)}%` }}></div>
+                                            </div>
+                                            <div className="w-28 text-right font-bold text-purple-600">{formatCurrency(result.govDeductions)}</div>
+                                        </div>
+                                        {params.realEstateMode !== 'none' && (
+                                            <div className="flex items-center text-sm">
+                                                <div className="w-36 text-teal-600 font-medium">
+                                                    {params.realEstateMode === 'reverse_mortgage' ? '以房養老現金流折抵' : '留房收租現金流折抵'}
+                                                </div>
+                                                <div className="flex-1 mx-3 bg-teal-100 h-2.5 rounded-full overflow-hidden">
+                                                    <div className="bg-teal-500 h-full transition-all duration-300" style={{ width: `${Math.min(100, (result.realEstateDeductions / (result.grossNeed || 1)) * 100)}%` }}></div>
+                                                </div>
+                                                <div className="w-28 text-right font-bold text-teal-600">{formatCurrency(result.realEstateDeductions)}</div>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center text-sm">
+                                            <div className="w-36 text-blue-600 font-medium">個人累積與投資終值</div>
+                                            <div className="flex-1 mx-3 bg-blue-100 h-2.5 rounded-full overflow-hidden">
+                                                <div className="bg-blue-500 h-full transition-all duration-300" style={{ width: `${Math.min(100, (result.totalSelfInvestmentFV / (result.grossNeed || 1)) * 100)}%` }}></div>
+                                            </div>
+                                            <div className="w-28 text-right font-bold text-blue-600">{formatCurrency(result.totalSelfInvestmentFV)}</div>
+                                        </div>
+                                    </div>
+
+                                    {/* 具體行動建議卡片 */}
+                                    {result.finalShortfall > 0 ? (
+                                        <div className="mb-6 bg-blue-50/80 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                            <div className="bg-blue-600 text-white p-3 rounded-xl text-lg shrink-0">
+                                                <i className="fas fa-bullseye"></i>
+                                            </div>
+                                            <div className="flex-1">
+                                                <h4 className="font-bold text-blue-900 text-sm">
+                                                    可執行的缺口填補行動方案（以退休前報酬 {params.preRetireRoiRate}% 計算）
+                                                </h4>
+                                                <div className="text-sm text-slate-700 mt-1">
+                                                    若要在 {params.retireAge} 歲達成設定目標{params.sorrScenario !== 'none' ? '（含抵禦退休初期股災緩衝）' : ''}，除了目前每月定期定額 <span className="font-bold">{formatCurrency(params.currentMonthlyInvestment)}</span> 外，建議每月<span className="font-bold text-rose-600">再增加投入 {formatCurrency(result.suggestedMonthlySave)}</span>（合計每月定期定額 <span className="font-extrabold text-blue-800 underline">{formatCurrency(result.totalMonthlySave)}</span>），或啟用左側「4. 房產活化」釋放房產現金流。
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3 text-emerald-800 text-sm">
+                                            <i className="fas fa-check-circle text-emerald-600 text-xl"></i>
+                                            <div>
+                                                <strong>財務軌跡健全！</strong> 您目前的資產配置與房產/退休金現金流，即使在所選的稅制與市場情境下，仍足以穩健支應至 {params.lifeExpectancy} 歲。
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 資產消耗曲線圖 */}
+                                    <div className="border-t border-slate-100 pt-5">
+                                        <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2 text-sm">
+                                            <i className="fas fa-chart-area text-amber-500"></i> 退休後資產淨值模擬圖：平順市場 (橘線) vs. 股災壓力測試 (紅線)
+                                        </h3>
+                                        <CashFlowChart
+                                            chartData={result.chartData}
+                                            retireAge={params.retireAge}
+                                            lifeExpectancy={params.lifeExpectancy}
+                                            strategy={params.withdrawalStrategy}
+                                            sorrScenario={params.sorrScenario}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* 2. 資金需求細項設定表 */}
+                                <div className="glass-card rounded-2xl overflow-hidden">
+                                    <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
+                                        <div>
+                                            <h3 className="font-bold text-slate-800">退休生活與醫療長照需求明細</h3>
+                                            <p className="text-xs text-slate-500">
+                                                退休首年每月生活費總需求（通膨後）：<strong className="text-rose-600">{formatCurrency(result.firstYearMonthlyNeed)} / 月</strong>
+                                            </p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => addItem('flow')} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                                <i className="fas fa-plus"></i> 新增每月支出
+                                            </button>
+                                            <button onClick={() => addItem('stock')} className="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                                <i className="fas fa-plus"></i> 新增一次性準備金
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm text-left">
+                                            <thead className="text-xs text-slate-500 uppercase bg-slate-100">
+                                                <tr>
+                                                    <th className="px-4 py-3">支出項目</th>
+                                                    <th className="px-4 py-3 text-center">性質</th>
+                                                    <th className="px-4 py-3 text-right">目前物價金額</th>
+                                                    <th className="px-4 py-3 text-center">通膨放大 ({result.yearsToRetire}年)</th>
+                                                    <th className="px-4 py-3 text-right">退休首年需求 (通膨後)</th>
+                                                    <th className="px-4 py-3 text-right font-bold text-slate-800">
+                                                        {result.isDividendMode ? '對應所需生息本金' : '折現應備本金'}
+                                                    </th>
+                                                    <th className="w-10"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-100">
+                                                {result.detailedItems.map((item) => {
+                                                    const isFullyCovered = item.coverageRatio === 1;
+                                                    const isPartiallyCovered = item.coverageRatio > 0 && item.coverageRatio < 1;
+
+                                                    return (
+                                                        <tr key={item.id} className={`hover:bg-slate-50 transition ${isFullyCovered ? 'bg-emerald-50/40 opacity-60' : ''}`}>
+                                                            <td className="px-4 py-3">
+                                                                <input
+                                                                    type="text"
+                                                                    value={item.name}
+                                                                    onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                                                                    className={`w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none font-medium ${isFullyCovered ? 'line-through text-slate-400' : 'text-slate-700'}`}
+                                                                />
+                                                                {isFullyCovered && <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-bold">商業保險 100% 覆蓋</span>}
+                                                                {isPartiallyCovered && <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-bold">保險已折抵 50%</span>}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-center">
+                                                                <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${item.type === 'flow' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-700'}`}>
+                                                                    {item.type === 'flow' ? '每月持續' : '單筆提領'}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-right">
+                                                                <div className="flex items-center justify-end gap-1">
+                                                                    <span className="text-slate-400 text-xs">$</span>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={item.currentAmount}
+                                                                        onChange={(e) => updateItem(item.id, 'currentAmount', parseFloat(e.target.value) || 0)}
+                                                                        className="w-24 text-right bg-transparent border-b border-dashed border-slate-300 focus:border-blue-500 outline-none font-semibold text-slate-700"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-center">
+                                                                <span className="inflation-badge">{result.inflationMultiplier.toFixed(2)}x</span>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-right">
+                                                                {isFullyCovered ? <span className="text-slate-400">-</span> : (
+                                                                    <div>
+                                                                        <span className="font-bold text-slate-700">
+                                                                            {item.type === 'flow' ? formatNumber(item.monthlyFuture) : formatNumber(item.futureValue)}
+                                                                        </span>
+                                                                        <span className="text-[11px] text-slate-400 ml-1">{item.type === 'flow' ? '/月' : '一次'}</span>
+                                                                    </div>
+                                                                )}
+                                                            </td>
+                                                            <td className="px-4 py-3 text-right font-extrabold text-slate-800">
+                                                                {isFullyCovered ? <span className="text-emerald-600">$0</span> : formatCurrency(item.requiredCapital)}
+                                                            </td>
+                                                            <td className="px-3 py-3 text-center">
+                                                                {!item.isInsuranceItem && (
+                                                                    <button onClick={() => deleteItem(item.id)} className="text-slate-300 hover:text-rose-500 transition">
+                                                                        <i className="fas fa-trash-alt"></i>
+                                                                    </button>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {/* 3. 全生涯現金流明細表 (新增房產活化現金流與股災對比) */}
+                                <div className="glass-card rounded-2xl overflow-hidden">
+                                    <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                            <i className="fas fa-table text-slate-500"></i> 全生涯年度配息、稅費、房產活化與股災測試明細表
+                                        </h3>
+                                        <button onClick={downloadCSV} className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                            <i className="fas fa-file-csv"></i> 匯出完整 CSV
+                                        </button>
+                                    </div>
+                                    <div className="overflow-x-auto max-h-96">
+                                        <table className="w-full text-left cashflow-table">
+                                            <thead className="sticky top-0 z-10 shadow-sm">
+                                                <tr>
+                                                    <th>年齡</th>
+                                                    <th>階段</th>
+                                                    <th className="text-right">稅後淨配息</th>
+                                                    <th className="text-right">二代健保/稅結算</th>
+                                                    <th className="text-right">房產活化收入</th>
+                                                    <th className="text-right">當年勞保年金</th>
+                                                    <th className="text-right">當年總支出</th>
+                                                    <th className="text-center">現金流覆蓋率</th>
+                                                    <th className="text-right">期末資產結餘</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {result.timelineData.map((row) => (
+                                                    <tr key={row.age} className={row.gap < 0 ? 'bg-rose-50/70' : row.type === '⚡股災期' ? 'bg-amber-50/60' : ''}>
+                                                        <td className="font-bold text-slate-700">{row.age} 歲</td>
+                                                        <td>
+                                                            <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${row.type === '累積期' ? 'bg-blue-100 text-blue-700' : row.type === '⚡股災期' ? 'bg-rose-100 text-rose-700 font-bold' : row.type === '退休期' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700'}`}>
+                                                                {row.type}
+                                                            </span>
+                                                        </td>
+                                                        <td className="text-right font-mono text-amber-600 font-bold">
+                                                            {row.netDividend > 0 ? `+${formatNumber(row.netDividend)}` : '-'}
+                                                        </td>
+                                                        <td className={`text-right font-mono text-xs font-semibold ${row.taxAndNHI < 0 ? 'text-emerald-600' : row.taxAndNHI > 0 ? 'text-rose-600' : 'text-slate-400'}`}>
+                                                            {row.grossDividend > 0 ? (
+                                                                row.taxAndNHI <= 0
+                                                                    ? `+${formatNumber(Math.abs(row.taxAndNHI))} (退稅)`
+                                                                    : `-${formatNumber(row.taxAndNHI)} (扣繳)`
+                                                            ) : '-'}
+                                                        </td>
+                                                        <td className="text-right font-mono text-teal-600 font-semibold">
+                                                            {row.realEstateIncome > 0 ? `+${formatNumber(row.realEstateIncome)}` : '-'}
+                                                        </td>
+                                                        <td className="text-right font-mono text-purple-600">
+                                                            {row.income > 0 ? `+${formatNumber(row.income)}` : '-'}
+                                                        </td>
+                                                        <td className="text-right font-mono text-rose-600">
+                                                            {row.needs > 0 ? `-${formatNumber(row.needs)}` : '-'}
+                                                        </td>
+                                                        <td className="text-center font-mono text-xs">
+                                                            {row.coverage !== null ? (
+                                                                <span className={`px-2 py-0.5 rounded font-bold ${row.coverage >= 100 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                                                                    {row.coverage.toFixed(0)}%
+                                                                </span>
+                                                            ) : '-'}
+                                                        </td>
+                                                        <td className={`text-right font-mono font-bold ${row.gap < 0 ? 'text-rose-600' : 'text-slate-800'}`}>
+                                                            {formatNumber(row.gap)}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
