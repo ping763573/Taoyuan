@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2D2926">
+<meta name="description" content="台北故宮博物院互動導覽：歷史、建築、館藏、國寶與參觀資訊，支援手機與電腦、中英雙語。">
+<title>台北故宮博物院：東方文明的璀璨寶庫</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { primary:'#9E2A2B', secondary:'#D9AE6C', dark:'#2D2926', light:'#F5F0E8', accent:'#4A5859' },
+    fontFamily: { sans:['Noto Sans TC','sans-serif'], serif:['Noto Serif TC','serif'] }
+  } }
+}
+</script>
+<style>
+  html, body { height: 100%; margin: 0; overflow: hidden; background: #2D2926; overscroll-behavior: none; }
+  #app { height: 100vh; height: 100dvh; }
+  .slide { opacity: 0; visibility: hidden; transition: opacity .8s ease, visibility .8s; }
+  .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+  .slide-bg { background-color: #3a342f; background-size: cover; background-position: center; filter: brightness(.55); transition: background-image .3s; }
+  .scroll-area { overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: rgba(217,174,108,.5) transparent; touch-action: pan-y; }
+  .glass { background: rgba(45,41,38,.78); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid rgba(217,174,108,.3); border-radius: .75rem; }
+  .text-gradient-gold { background: linear-gradient(to right,#D9AE6C,#F5F0E8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tshadow { text-shadow: 2px 2px 6px rgba(0,0,0,.7); }
+  .ctl { width: 2.5rem; height: 2.5rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px;
+         background: rgba(0,0,0,.45); color: #fff; border: 1px solid rgba(255,255,255,.25);
+         -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background .2s; }
+  .ctl:hover { background: rgba(255,255,255,.35); }
+  .ctl.on { background: #9E2A2B; }
+  button:focus-visible, a:focus-visible { outline: 3px solid #D9AE6C; outline-offset: 2px; }
+  .fade-in { animation: fadeIn 1s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(.97);} to { opacity: 1; transform: scale(1);} }
+  #progress { height: 3px; width: 0; background: #D9AE6C; }
+  #progress.run { animation: prog var(--dur,9s) linear forwards; }
+  @keyframes prog { from { width: 0;} to { width: 100%;} }
+  #toast { transition: opacity .4s, transform .4s; }
+  dialog::backdrop { background: rgba(0,0,0,.7); }
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .fade-in, #progress.run { transition: none; animation: none; }
+  }
+  @media (min-width: 768px) { .ctl { width: 2.75rem; height: 2.75rem; } }
+</style>
+</head>
+<body class="text-light font-sans">
+<audio id="bgMusic" loop preload="none"><source src="https://ping763573.github.io/big-adventure/11.mp3" type="audio/mpeg"></audio>
+
+<div id="app" class="relative w-screen overflow-hidden">
+  <div id="progress" class="absolute top-0 left-0 z-30"></div>
+  <main id="slidesContainer" class="relative h-full w-full" aria-live="polite"></main>
+
+  <!-- 上方控制列 -->
+  <div class="absolute top-3 right-3 md:top-5 md:right-5 z-30 flex items-center gap-2" style="padding-top:env(safe-area-inset-top)">
+    <button id="langBtn" class="ctl text-sm font-bold" aria-label="切換語言 / Switch language">EN</button>
+    <button id="speakBtn" class="ctl" aria-label="朗讀本頁"><i class="fa fa-volume-up"></i></button>
+    <button id="playBtn" class="ctl" aria-label="自動播放"><i class="fa fa-play"></i></button>
+    <button id="musicBtn" class="ctl" aria-label="背景音樂"><i class="fa fa-music"></i></button>
+    <button id="fsBtn" class="ctl hidden sm:inline-flex" aria-label="全螢幕"><i class="fa fa-expand"></i></button>
+    <button id="helpBtn" class="ctl" aria-label="操作說明"><i class="fa fa-question"></i></button>
+  </div>
+
+  <!-- 底部導覽 -->
+  <nav class="absolute bottom-0 inset-x-0 z-30 flex justify-center items-center gap-3 pb-3 md:pb-5" style="padding-bottom:max(.75rem,env(safe-area-inset-bottom))" aria-label="頁面導覽">
+    <button id="prevBtn" class="ctl" aria-label="上一頁"><i class="fa fa-chevron-left"></i></button>
+    <div class="flex items-center">
+      <span id="counter" class="md:hidden text-sm font-medium bg-black/45 rounded-full px-4 py-2 border border-white/25 tabular-nums"></span>
+      <div id="dots" class="hidden md:flex gap-2 bg-black/35 rounded-full px-3 py-2"></div>
+    </div>
+    <button id="nextBtn" class="ctl" aria-label="下一頁"><i class="fa fa-chevron-right"></i></button>
+  </nav>
+
+  <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-20 z-40 max-w-[90vw] bg-black/80 text-white text-sm md:text-base px-5 py-3 rounded-full opacity-0 pointer-events-none text-center"></div>
+</div>
+
+<!-- 操作說明 -->
+<dialog id="helpDlg" class="rounded-xl p-0 bg-dark text-light border border-secondary/40 w-[92vw] max-w-md">
+  <div class="p-6">
+    <h2 id="helpTitle" class="font-serif text-2xl font-bold text-secondary mb-4"></h2>
+    <ul id="helpList" class="space-y-2 text-base leading-relaxed"></ul>
+    <button id="helpClose" class="mt-6 w-full bg-primary hover:bg-secondary hover:text-dark transition-colors rounded-full py-3 font-bold"></button>
+  </div>
+</dialog>
+
+<script>
+/* ============ 內容資料（中英對照集中管理） ============ */
+const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="100%" height="100%" fill="#3a342f"/><text x="50%" y="50%" fill="#D9AE6C" font-size="24" text-anchor="middle" font-family="sans-serif">Image unavailable</text></svg>');
+const OFFICIAL = 'https://www.npm.gov.tw/';
+const ARCHIVE = 'https://digitalarchive.npm.gov.tw/';
+const MAP = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('國立故宮博物院');
+
+const UI = {
+  zh: { langBtn:'EN', lang:'切換語言', speak:'朗讀本頁', stopSpeak:'停止朗讀', play:'開始自動播放', pause:'暫停自動播放', music:'播放音樂', musicOff:'關閉音樂',
+        fs:'全螢幕', fsExit:'結束全螢幕', help:'操作說明', prev:'上一頁', next:'下一頁', close:'我知道了', go:'前往第',
+        helpTitle:'操作說明',
+        helpItems:['👆 手機：左右滑動換頁，上下滑動閱讀內容','⌨️ 電腦：← → 換頁、空白鍵 自動播放','F 全螢幕　M 音樂　R 朗讀　? 說明','🌐 右上角可切換中文／English','🔊 朗讀功能使用瀏覽器內建語音'],
+        hint:'左右滑動或點箭頭換頁；點右上「？」看說明', noSpeech:'此瀏覽器不支援語音朗讀', musicFail:'音樂無法播放，請稍後再試' },
+  en: { langBtn:'中', lang:'Switch language', speak:'Read aloud', stopSpeak:'Stop reading', play:'Start autoplay', pause:'Pause autoplay', music:'Play music', musicOff:'Mute music',
+        fs:'Fullscreen', fsExit:'Exit fullscreen', help:'Help', prev:'Previous', next:'Next', close:'Got it', go:'Go to slide ',
+        helpTitle:'How to use',
+        helpItems:['👆 Mobile: swipe left/right to change slides, swipe up/down to read','⌨️ Desktop: ← → to navigate, Space to autoplay','F fullscreen · M music · R read aloud · ? help','🌐 Switch 中文 / English at the top right','🔊 Read-aloud uses your browser\'s built-in voices'],
+        hint:'Swipe or tap the arrows to navigate; tap "?" for help', noSpeech:'Speech is not supported in this browser', musicFail:'Music could not be played' }
+};
+
+const treasure = (o) => ({ type:'treasure', ...o });
+
+const SLIDES = [
+  { type:'hero', bg:'https://www.travel.taipei/content/images/attractions/221739/1920x1080_attractions-image-hrvtkvaowueb7-w8--qy9g.jpg',
+    title:{zh:'台北故宮博物院',en:'National Palace Museum'}, sub:{zh:'東方文明的璀璨寶庫',en:'A Treasure Trove of Eastern Civilization'},
+    facts:[
+      ['fa-calendar-check-o',{zh:'1925年成立於北平，1965年於台北外雙溪落成',en:'Founded in Beijing in 1925; the Taipei building opened in 1965'}],
+      ['fa-diamond',{zh:'典藏約70萬件，涵蓋中華文化數千年藝術',en:'About 700,000 artifacts spanning thousands of years of Chinese art'}],
+      ['fa-globe',{zh:'常被譽為世界知名的大型博物館之一',en:'Widely regarded as one of the world\'s great museums'}],
+      ['fa-map-marker',{zh:'台北市士林區至善路二段221號',en:'No. 221, Sec. 2, Zhishan Rd., Shilin Dist., Taipei'}]
+    ] },
+
+  { type:'timeline', bg:'https://www.taiwan.net.tw/att/1/big_scenic_spots/pic_74_4.jpg',
+    title:{zh:'從遷藏到弘揚的歷史軌跡',en:'A Journey of Preservation and Promotion'},
+    items:[
+      [{zh:'1925年',en:'1925'},{zh:'北京紫禁城成立故宮博物院，為中國現代博物館事業的重要里程碑。',en:'The Palace Museum was founded in the Forbidden City, Beijing, a milestone for modern museums in China.'}],
+      [{zh:'1933–1949年',en:'1933–1949'},{zh:'因戰亂，文物歷經南遷與西遷，部分精品於1948至1949年間運抵台灣。',en:'Because of war, the collection was moved south and west; a selection of treasures reached Taiwan in 1948–49.'}],
+      [{zh:'1965年',en:'1965'},{zh:'台北故宮博物院於外雙溪落成啟用，成為保存與展示中華文物的重要場所。',en:'The Taipei museum opened at Waishuanghsi, becoming a major home for Chinese cultural treasures.'}],
+      [{zh:'2000年代',en:'2000s'},{zh:'推動數位典藏，讓文物以數位方式長久保存，並擴大國際文化交流。',en:'Digital archiving began, preserving artifacts digitally and expanding international exchange.'}],
+      [{zh:'近年',en:'Today'},{zh:'持續推動展覽創新、數位沉浸體驗與教育推廣，提升觀眾參觀體驗。',en:'Continues to innovate with new exhibitions, immersive digital experiences and education programs.'}]
+    ] },
+
+  { type:'arch', bg:'https://digitalarchive.npm.gov.tw/Image/GetImage?imageId=654933&randomCode=45340830',
+    title:{zh:'現代與古典融合的宮殿美學',en:'Palace Aesthetics: Tradition Meets Modernity'},
+    cards:[
+      { img:'https://www.npm.gov.tw/images/ogimg.jpg', alt:{zh:'台北故宮博物院建築外觀',en:'Exterior of the National Palace Museum'},
+        h:{zh:'傳統宮殿式建築',en:'Palace-style Architecture'},
+        p:[{zh:'正館採中國宮殿式造型，以綠色琉璃瓦與白牆為特色，莊重而典雅，展現東方建築之美。',en:'The main hall follows a traditional Chinese palace design, with green glazed tiles and white walls that feel both dignified and elegant.'},
+           {zh:'設計兼顧傳統意象與現代博物館的展示、典藏與參觀需求。',en:'The design balances traditional imagery with the modern needs of display, storage and visitors.'}] },
+      { img:'https://www.npm.gov.tw/Att_FCK/image/2021/zhishan.jpg', alt:{zh:'至善園景色',en:'Zhishan Garden'},
+        h:{zh:'建築空間與至善園',en:'Spaces and Zhishan Garden'},
+        p:[{zh:'正館共有多層展廳，動線規劃講究層次與流暢，讓觀眾能舒適地欣賞文物。',en:'The main building has several floors of galleries, planned for a smooth, comfortable viewing flow.'},
+           {zh:'鄰近的至善園是仿宋代風格的庭園，提供寧靜沉思的休憩空間。',en:'The nearby Zhishan Garden, in classical Chinese style, offers a quiet place to rest and reflect.'}] }
+    ],
+    exTitle:{zh:'展覽與館藏特色',en:'Exhibitions & Collection Highlights'},
+    ex:[
+      ['fa-building-o',{zh:'常設展廳',en:'Permanent Galleries'},{zh:'正館設有多個展廳，依主題輪流展出豐富館藏。',en:'Themed galleries rotate works from the museum\'s rich collection.'}],
+      ['fa-star-o',{zh:'特展',en:'Special Exhibitions'},{zh:'定期推出主題特展，內容與檔期請以官網公告為準。',en:'Themed special exhibitions are held regularly; see the official site for current schedules.'}],
+      ['fa-desktop',{zh:'數位展覽',en:'Digital Exhibitions'},{zh:'結合科技的沉浸式展覽，提供創新的觀展體驗。',en:'Technology-driven immersive shows offer a fresh way to see the collection.'}],
+      ['fa-diamond',{zh:'館藏重點',en:'Collection Highlights'},{zh:'書畫、器物與圖書文獻三大類；鎮院之寶包括范寬〈谿山行旅圖〉、郭熙〈早春圖〉、李唐〈萬壑松風圖〉；翠玉白菜、肉形石、毛公鼎人氣最高。',en:'Paintings & calligraphy, artifacts, and rare books. Treasures include Fan Kuan\'s "Travelers among Mountains and Streams", Guo Xi\'s "Early Spring" and Li Tang\'s "Wind in the Pines"; the Jadeite Cabbage, Meat-shaped Stone and Mao Gong Ding are crowd favorites.'}]
+    ] },
+
+  { type:'collection', bg:'https://x0.ifengimg.com/ucms/2022_48/7BE193D8D1C27AB00E736D213DE2F6EC2789F806_size603_w1200_h3009.jpg',
+    title:{zh:'千年文化的精華典藏',en:'Millennia of Cultural Treasures'},
+    cols:[
+      { img:'https://www.npm.gov.tw/NewFileAtt.ashx?name=exbit/04010118/08016647.jpg', alt:{zh:'歷代書畫',en:'Paintings and calligraphy'},
+        h:{zh:'書畫類',en:'Painting & Calligraphy'}, p:{zh:'涵蓋魏晉至明清的名家傑作，見證中國書畫藝術的演變。',en:'Masterpieces from the Wei-Jin to Ming-Qing periods trace the evolution of Chinese painting and calligraphy.'}, ic:'fa-paint-brush',
+        li:[{zh:'王羲之書法，展現魏晉風流',en:'Calligraphy by Wang Xizhi'},{zh:'宋徽宗繪畫，體現皇家藝術',en:'Paintings by Emperor Huizong of Song'},{zh:'董其昌等明清大師精品',en:'Works by Ming-Qing masters such as Dong Qichang'}] },
+      { img:'https://www.npm.gov.tw/NewFileAtt.ashx?name=exbit/04000569/08009710.jpg', alt:{zh:'歷代陶瓷',en:'Ceramics'},
+        h:{zh:'陶瓷類',en:'Ceramics'}, p:{zh:'種類齊全、年代久遠，從早期青瓷到明清彩瓷，展現陶瓷藝術的輝煌。',en:'From early celadon to Ming and Qing polychrome wares, the collection shows the splendor of Chinese ceramics.'}, ic:'fa-flask',
+        li:[{zh:'宋代汝、官、哥、鈞、定名窯',en:'Famed Song kilns: Ru, Guan, Ge, Jun, Ding'},{zh:'元代青花瓷',en:'Yuan dynasty blue-and-white porcelain'},{zh:'明清彩瓷，色彩絢麗',en:'Colorful Ming and Qing porcelain'}] },
+      { img:'https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-01.jpg', alt:{zh:'歷代器物',en:'Antiquities'},
+        h:{zh:'器物類',en:'Antiquities'}, p:{zh:'涵蓋青銅、玉器、漆器與佛教文物，見證工藝美術的發展。',en:'Bronzes, jades, lacquerware and Buddhist art witness the growth of Chinese craftsmanship.'}, ic:'fa-diamond',
+        li:[{zh:'商周青銅器，紋飾精美',en:'Shang and Zhou bronzes'},{zh:'歷代玉器，雕工細緻',en:'Finely carved jades through the ages'},{zh:'佛像、經卷等佛教藝術',en:'Buddhist statues and sutras'}] }
+    ] },
+
+  treasure({ bg:'https://d3d9mb8xdsbq52.cloudfront.net/s3/200713/173257znh.jpg', img:'https://i.ytimg.com/vi/TqrponPFPRY/maxresdefault.jpg', flip:false,
+    title:{zh:'人氣國寶・巧奪天工',en:'Crowd Favorite: Superb Craftsmanship'}, name:{zh:'肉形石',en:'Meat-shaped Stone'}, label:{zh:'肉形石',en:'Meat-shaped Stone'},
+    pts:[['fa-history',{zh:'清代玉雕作品，以天然瑪瑙（條紋石）雕成，是故宮最受歡迎的藏品之一。',en:'A Qing dynasty carving made from natural banded agate, and one of the museum\'s most popular pieces.'}],
+         ['fa-paint-brush',{zh:'工匠利用石材天然色澤，細緻呈現豬肉的皮、脂與肉，幾可亂真。',en:'The artisan used the stone\'s natural colors to render skin, fat and lean meat so convincingly it looks real.'}],
+         ['fa-star',{zh:'展現精湛技藝，也反映「食」與「藝」結合的生活之美。',en:'It shows exquisite skill and the union of food and art in daily life.'}]],
+    size:{zh:'尺寸：高5.7公分，寬6.6公分，厚5.3公分。',en:'Dimensions: H 5.7 cm, W 6.6 cm, D 5.3 cm.'} }),
+
+  treasure({ bg:'https://i2.kknews.cc/NJimdWWrmRaJMuXTAWTSRprdJAKq9oWrpA/0.jpg', img:'https://theme.npm.edu.tw/exh106/NorthandSouth-4/common/images/selection/img3s.png', flip:true,
+    title:{zh:'人氣國寶・吉祥寓意',en:'Crowd Favorite: Auspicious Symbolism'}, name:{zh:'翠玉白菜',en:'Jadeite Cabbage'}, label:{zh:'翠玉白菜',en:'Jadeite Cabbage'},
+    pts:[['fa-history',{zh:'相傳為光緒皇帝瑾妃的嫁妝，以精巧技藝與吉祥寓意聞名。',en:'Believed to be part of the dowry of Consort Jin of the Guangxu Emperor, famed for its craft and symbolism.'}],
+         ['fa-pagelines',{zh:'工匠巧用玉石天然的綠與白，呈現白菜的葉與梗。',en:'The carver cleverly used the jade\'s natural green and white for the leaves and stalk.'}],
+         ['fa-bug',{zh:'菜葉上雕有螽斯與蝗蟲，象徵多子多孫的祝福。',en:'A katydid and a locust on the leaves symbolize fertility and many descendants.'}]],
+    size:{zh:'尺寸：高18.7公分，寬9.1公分，厚5.07公分。',en:'Dimensions: H 18.7 cm, W 9.1 cm, D 5.07 cm.'} }),
+
+  treasure({ bg:'https://img.jiguzuo.com/guohua/tupian/202503/061d9d49d56d7558893979b37237f6ea.jpg!list.jpg', img:'https://theme.npm.edu.tw/selection/att/collection/04001041/17009605.jpg', flip:false,
+    title:{zh:'人氣國寶・史料重器',en:'Crowd Favorite: A Historic Vessel'}, name:{zh:'毛公鼎',en:'Mao Gong Ding'}, label:{zh:'毛公鼎',en:'Mao Gong Ding'},
+    pts:[['fa-history',{zh:'西周晚期青銅器，是現存銘文最長的青銅器之一，被譽為「青銅器之王」。',en:'A late Western Zhou bronze with one of the longest inscriptions of any surviving bronze, hailed as the "King of Bronzes".'}],
+         ['fa-file-text-o',{zh:'內壁鑄有近500字銘文，記載周王對毛公的誥誡。',en:'Nearly 500 characters are cast inside, recording a Zhou king\'s charge to Duke Mao.'}],
+         ['fa-gavel',{zh:'既是藝術珍品，也是研究西周歷史與制度的重要文獻。',en:'It is both an artwork and a key source for studying Western Zhou history and institutions.'}]],
+    size:{zh:'尺寸：高53.8公分，口徑47.9公分，重34.7公斤。',en:'Dimensions: H 53.8 cm, D 47.9 cm, 34.7 kg.'} }),
+
+  treasure({ bg:'https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-16.jpg', img:'https://theme.npm.edu.tw/selection/att/collection/04000959/17009764.jpg', flip:true,
+    title:{zh:'鎮院之寶・山水巨作',en:'NPM Treasure: A Landscape Masterpiece'}, name:{zh:'范寬〈谿山行旅圖〉',en:'Fan Kuan, "Travelers among Mountains and Streams"'}, label:{zh:'谿山行旅圖',en:'Travelers among Mountains'},
+    pts:[['fa-image',{zh:'巍峨雄壯的主峰佔據畫面中央，氣勢磅礴。',en:'A towering central peak dominates the scene with overwhelming grandeur.'}],
+         ['fa-sitemap',{zh:'構圖雄偉，展現北宋山水畫的宏大氣魄。',en:'The monumental composition epitomizes Northern Song landscape painting.'}],
+         ['fa-paint-brush',{zh:'以細密的「雨點皴」表現山石質感，筆法堅實。',en:'Dense "raindrop" texture strokes give the rocks a solid, weighty feel.'}],
+         ['fa-users',{zh:'山腳可見行旅商隊，為壯闊山水增添人間氣息。',en:'A mule caravan at the foot of the mountain adds a human touch to the vast scene.'}]] }),
+
+  treasure({ bg:'https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-05.jpg', img:'https://theme.npm.edu.tw/selection/att/collection/04000960/17009765.jpg', flip:false,
+    title:{zh:'鎮院之寶・早春詩意',en:'NPM Treasure: The Poetry of Early Spring'}, name:{zh:'郭熙〈早春圖〉',en:'Guo Xi, "Early Spring"'}, label:{zh:'早春圖',en:'Early Spring'},
+    pts:[['fa-leaf',{zh:'描繪早春時節，萬物復甦的景致。',en:'Depicts the awakening of nature in early spring.'}],
+         ['fa-cloud',{zh:'筆觸柔和，山勢連綿、雲霧繚繞，氛圍朦朧夢幻。',en:'Soft brushwork, rolling hills and drifting mist create a hazy, dreamlike mood.'}],
+         ['fa-sitemap',{zh:'運用「三遠」構圖法，空間深遠、層次分明。',en:'The "three distances" method gives the scene depth and clear layers.'}],
+         ['fa-search',{zh:'畫中藏有舟船與行人等細節，充滿生機。',en:'Boats and travelers hidden in the landscape bring it to life.'}]] }),
+
+  treasure({ bg:'https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-11.jpg', img:'https://theme.npm.edu.tw/selection/att/VideoYoutube/00000029.jpg', flip:true,
+    title:{zh:'鎮院之寶・松壑風聲',en:'NPM Treasure: Wind in Pines and Valleys'}, name:{zh:'李唐〈萬壑松風圖〉',en:'Li Tang, "Wind in the Pines among a Myriad Valleys"'}, label:{zh:'萬壑松風圖',en:'Wind in the Pines'},
+    pts:[['fa-tree',{zh:'蒼勁挺拔的松樹與深邃幽谷，氣勢雄渾。',en:'Sturdy pines and deep valleys form a majestic scene.'}],
+         ['fa-paint-brush',{zh:'以剛健的「斧劈皴」與豐富墨色表現山石質感。',en:'Bold "axe-cut" strokes and rich ink tones render the rock and pine textures.'}],
+         ['fa-bolt',{zh:'畫面動靜相宜，既有幽谷深遠，又有松風呼嘯之感。',en:'Stillness and motion meet: deep valleys and the sound of wind in the pines.'}],
+         ['fa-university',{zh:'為南宋畫院風格的重要代表作。',en:'A key example of Southern Song academy style.'}]] }),
+
+  treasure({ bg:'https://imageproxy.pixnet.cc/imgproxy?url=https://pic.pimg.tw/threethree33/1582446941-1824307859.jpg', img:'https://theme.npm.edu.tw/selection/att/collection/04000988/17010203.jpg', flip:false,
+    title:{zh:'傳世經典・風俗畫卷',en:'Classic Scroll: Scenes of Daily Life'}, name:{zh:'〈清明上河圖〉（清院本）',en:'"Along the River During the Qingming Festival" (Qing Court version)'}, label:{zh:'清明上河圖',en:'Qingming Scroll'},
+    pts:[['fa-map-o',{zh:'題材源自張擇端的北宋汴京風貌；台北故宮所藏為清代宮廷畫家繪製的「清院本」。',en:'Inspired by Zhang Zeduan\'s view of Northern Song Bianjing; the Taipei museum holds the Qing court painters\' version.'}],
+         ['fa-video-camera',{zh:'長卷如動態紀錄片，涵蓋市井百態與商販交易。',en:'The long scroll reads like a moving documentary of city life and trade.'}],
+         ['fa-pencil',{zh:'筆法細緻，人物表情與動作生動。',en:'Meticulous brushwork gives the figures lively expressions and gestures.'}],
+         ['fa-book',{zh:'兼具藝術價值與風俗史料價值。',en:'Valued both as art and as a record of customs.'}]] }),
+
+  treasure({ bg:'https://digitalarchive.npm.gov.tw/Image/GetImage?imageId=428653&randomCode=17980244182', img:'https://theme.npm.edu.tw/selection/att/collection/04000975/17010399.jpg', flip:true,
+    title:{zh:'傳世經典・水墨之宗',en:'Classic Scroll: Master of Ink Wash'}, name:{zh:'黃公望〈富春山居圖〉（無用師卷）',en:'Huang Gongwang, "Dwelling in the Fuchun Mountains" (Wuyong Scroll)'}, label:{zh:'富春山居圖',en:'Fuchun Mountains'},
+    pts:[['fa-image',{zh:'描繪富春江兩岸山水，層層推展，意境深遠。',en:'Shows the hills and waters along the Fuchun River in unfolding layers.'}],
+         ['fa-tint',{zh:'筆墨淡雅，以乾筆皴擦與水墨渲染表現山石層次。',en:'Light ink, dry-brush strokes and washes build the rocks and hills.'}],
+         ['fa-star',{zh:'被視為元代山水畫的經典，對後世影響深遠。',en:'A landmark of Yuan landscape painting with profound influence on later artists.'}],
+         ['fa-fire',{zh:'畫卷曾遭焚毀而分為兩段，其中「無用師卷」藏於台北故宮。',en:'The scroll was burned and split in two; the "Wuyong" section is in Taipei.'}]] }),
+
+  treasure({ bg:'https://www.mdnkids.com/upload/images/20241012-15-02.jpg', img:'https://digitalarchive.npm.gov.tw/Image/GetImage?imageId=1278633&randomCode=1893156048', flip:false,
+    title:{zh:'傳世經典・江南氣韻',en:'Classic Scroll: The Spirit of Jiangnan'}, name:{zh:'巨然〈秋山問道圖〉',en:'Juran, "Seeking the Dao in Autumn Mountains"'}, label:{zh:'秋山問道圖',en:'Autumn Mountains'},
+    pts:[['fa-pagelines',{zh:'描繪秋日山林中高士問道的情景，充滿禪意。',en:'A scholar seeks wisdom in autumn mountains, full of Zen spirit.'}],
+         ['fa-image',{zh:'層巒疊嶂、山勢渾厚圓潤，展現江南山水的溫潤氣息。',en:'Layered, rounded peaks convey the gentle, moist air of Jiangnan.'}],
+         ['fa-paint-brush',{zh:'以長披麻皴表現山石體積感，線條綿密細長。',en:'Long hemp-fiber texture strokes give the rocks volume.'}],
+         ['fa-user-circle-o',{zh:'人物與亭臺點綴其間，增添人文氣息。',en:'Figures and pavilions add a human, narrative touch.'}]] }),
+
+  { type:'visit', bg:'https://www.npm.gov.tw/NewFileAtt.ashx?name=exbit/04011102/08019085.jpg',
+    title:{zh:'參觀資訊與交通指南',en:'Visitor Information & Transportation'},
+    note:{zh:'※ 開放時間、票價與特展檔期可能調整，出發前請至官網確認。',en:'Hours, prices and exhibitions may change — please confirm on the official website before your visit.'},
+    blocks:[
+      ['fa-clock-o',{zh:'開放時間',en:'Opening Hours'},[{zh:'第一展覽區：週二至週日 09:00–17:00（最後入場約 16:30）',en:'Main galleries: Tue–Sun, 9:00–17:00 (last entry about 16:30)'},{zh:'一般週一休館；特展期間可能調整開放日與時間',en:'Usually closed Mondays; hours may change during special exhibitions'}]],
+      ['fa-ticket',{zh:'票價資訊',en:'Admission'},[{zh:'普通參觀券：新台幣 350 元',en:'Regular: NT$350'},{zh:'團體參觀券：新台幣 300 元（10人以上）',en:'Group: NT$300 (10 or more)'},{zh:'學生、長者、身心障礙者等另有優惠或免費規定',en:'Discounts or free entry apply to students, seniors, visitors with disabilities and others'},{zh:'每年1/1、元宵節、5/18、9/27、10/10 免費參觀',en:'Free on Jan 1, Lantern Festival, May 18, Sep 27 and Oct 10'}]],
+      ['fa-bus',{zh:'交通方式',en:'Getting There'},[{zh:'捷運＋公車：搭淡水信義線至「士林站」，轉乘紅30、255等公車至故宮博物院站',en:'MRT + bus: Tamsui–Xinyi Line to Shilin Station, then bus R30, 255, etc. to the museum'},{zh:'計程車：從士林站約10–15分鐘',en:'Taxi: about 10–15 minutes from Shilin Station'},{zh:'自行開車：可停放於館內停車場',en:'By car: parking is available at the museum'}]]
+    ],
+    links:[[OFFICIAL,'fa-external-link',{zh:'官方網站',en:'Official Website'}],[MAP,'fa-map',{zh:'開啟地圖',en:'Open in Maps'}]] },
+
+  { type:'digital', bg:'https://image.peoplemedia.tw/news/073b9947-845e-4155-9f03-0ce4064061e6.jpg',
+    title:{zh:'數位典藏與互動學習',en:'Digital Archives & Interactive Learning'},
+    cards:[
+      ['fa-globe',{zh:'線上展覽與導覽',en:'Online Exhibitions'},{zh:'前往官方網站，瀏覽線上展覽、展覽資訊與各項數位導覽服務。',en:'Visit the official website for online exhibitions, schedules and digital guides.'},OFFICIAL,{zh:'前往官網',en:'Visit Website'}],
+      ['fa-book',{zh:'數位典藏資料庫',en:'Digital Archives Database'},{zh:'收錄大量高解析文物影像與詳細資訊，是研究與文化愛好者的寶貴資源。',en:'A vast database of high-resolution images and detailed records for researchers and enthusiasts.'},ARCHIVE,{zh:'探索資料庫',en:'Explore Database'}]
+    ],
+    voice:{h:{zh:'語音朗讀導覽',en:'Read-aloud Guide'},p:{zh:'讓瀏覽器為你朗讀當前頁面內容，邊走邊聽、更加輕鬆。',en:'Let your browser read the current page aloud — easy to follow on the go.'},b:{zh:'開始朗讀',en:'Start Reading'}} },
+
+  { type:'end', bg:'https://picsum.photos/id/1056/1920/1080',
+    title:{zh:'感謝您的瀏覽',en:'Thank You for Visiting'},
+    sub:{zh:'希望這趟虛擬旅程能讓您對台北故宮有更深的認識，期待您親自蒞臨，感受中華文化的博大精深。',en:'We hope this virtual tour deepened your appreciation of the National Palace Museum. We look forward to welcoming you in person.'},
+    links:[[OFFICIAL,'fa-globe',{zh:'官方網站',en:'Official Website'}]] }
+];
+
+/* ============ 狀態與工具 ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+let lang = store.get('npm-lang') || ((navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en');
+let index = 0, autoplay = false, musicOn = false, speaking = false, timer = null;
+const container = $('#slidesContainer');
+const t = (o) => (o && (o[lang] ?? o.zh)) || '';
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const img = (src, alt, cls) => `<img src="${src}" alt="${esc(alt)}" class="${cls}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=PLACEHOLDER">`;
+const H2 = (o) => `<h2 class="font-serif font-bold text-white tshadow text-center text-[clamp(1.7rem,6vw,3.2rem)] leading-tight mb-6 md:mb-10">${t(o)}</h2>`;
+
+/* ============ 各類型投影片渲染 ============ */
+const R = {
+  hero: s => `<div class="min-h-full flex flex-col justify-center items-center text-center">
+    <h1 class="font-serif font-extrabold text-gradient-gold tshadow text-[clamp(2.4rem,10vw,6rem)] leading-tight mb-3">${t(s.title)}</h1>
+    <p class="text-white/90 tshadow font-light text-[clamp(1.05rem,3.5vw,1.8rem)] mb-8 max-w-3xl">${t(s.sub)}</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5 max-w-4xl w-full text-left">
+      ${s.facts.map(f => `<div class="glass p-4 md:p-5 text-base md:text-lg flex gap-3 items-start"><i class="fa ${f[0]} text-secondary text-xl mt-1 w-6 text-center"></i><span>${t(f[1])}</span></div>`).join('')}
+    </div>
+    <button data-go="1" class="mt-8 bg-primary hover:bg-secondary hover:text-dark transition-colors rounded-full px-8 py-3 font-bold text-lg">${lang==='zh'?'開始導覽':'Start the Tour'} <i class="fa fa-arrow-right ml-2"></i></button>
+  </div>`,
+
+  timeline: s => `<div class="max-w-5xl mx-auto">${H2(s.title)}
+    <div class="relative">
+      <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-primary rounded-full"></div>
+      ${s.items.map((it,i) => `<div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-14 mb-8 md:mb-12">
+        <span class="absolute left-4 md:left-1/2 -translate-x-1/2 top-6 w-5 h-5 md:w-7 md:h-7 rounded-full bg-primary border-4 border-light z-10"></span>
+        <div class="glass p-5 ${i%2 ? 'md:col-start-2' : 'md:col-start-1 md:text-right'}">
+          <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl mb-1">${t(it[0])}</h3>
+          <p class="text-base md:text-lg leading-relaxed">${t(it[1])}</p></div></div>`).join('')}
+    </div></div>`,
+
+  arch: s => `<div class="max-w-6xl mx-auto">${H2(s.title)}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+      ${s.cards.map(c => `<article class="glass p-5 md:p-7 flex flex-col">
+        <div class="bg-black/30 rounded-lg mb-4 h-48 md:h-60 flex items-center justify-center overflow-hidden">${img(c.img, t(c.alt), 'w-full h-full object-contain fade-in')}</div>
+        <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl mb-3">${t(c.h)}</h3>
+        ${c.p.map(p => `<p class="text-base md:text-lg leading-relaxed mb-3">${t(p)}</p>`).join('')}
+      </article>`).join('')}
+      <section class="glass p-5 md:p-7 md:col-span-2">
+        <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl mb-5 text-center">${t(s.exTitle)}</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          ${s.ex.map(e => `<div><h4 class="text-lg md:text-xl font-semibold text-secondary mb-1"><i class="fa ${e[0]} fa-fw mr-2"></i>${t(e[1])}</h4><p class="text-base md:text-lg leading-relaxed">${t(e[2])}</p></div>`).join('')}
+        </div>
+      </section></div></div>`,
+
+  collection: s => `<div class="max-w-7xl mx-auto">${H2(s.title)}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
+      ${s.cols.map(c => `<article class="glass overflow-hidden flex flex-col">
+        <div class="h-48 md:h-60 bg-black/30 flex items-center justify-center">${img(c.img, t(c.alt), 'w-full h-full object-contain')}</div>
+        <div class="p-5 flex-grow flex flex-col">
+          <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl text-center mb-3">${t(c.h)}</h3>
+          <p class="text-base md:text-lg leading-relaxed mb-4">${t(c.p)}</p>
+          <ul class="space-y-2 text-base md:text-lg mt-auto">${c.li.map(l => `<li class="flex gap-3"><i class="fa ${c.ic} text-secondary mt-1"></i><span>${t(l)}</span></li>`).join('')}</ul>
+        </div></article>`).join('')}
+    </div></div>`,
+
+  treasure: s => `<div class="max-w-6xl mx-auto min-h-full flex flex-col justify-center">${H2(s.title)}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
+      <figure class="relative ${s.flip ? 'md:order-2' : ''}">
+        <div class="bg-black/30 rounded-lg p-3 md:p-4">${img(s.img, t(s.name), 'w-full h-auto max-h-[38vh] md:max-h-[58vh] object-contain rounded-lg shadow-2xl border-4 border-secondary/50 fade-in mx-auto')}</div>
+        <figcaption class="absolute -bottom-3 ${s.flip ? 'right-2 md:-right-3' : 'left-2 md:-left-3'} bg-primary text-white px-4 py-2 rounded-lg font-serif font-bold text-lg md:text-2xl shadow-lg">${t(s.label)}</figcaption>
+      </figure>
+      <div class="glass p-5 md:p-8 ${s.flip ? 'md:order-1' : ''}">
+        <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl text-center mb-5">${t(s.name)}</h3>
+        <ul class="space-y-4 text-base md:text-xl leading-relaxed">
+          ${s.pts.map(p => `<li class="flex gap-3 items-start"><i class="fa ${p[0]} text-secondary text-xl md:text-2xl mt-1 w-7 text-center"></i><span>${t(p[1])}</span></li>`).join('')}
+          ${s.size ? `<li class="flex gap-3 items-start text-sm md:text-lg text-white/80"><i class="fa fa-info-circle text-secondary text-lg mt-1 w-7 text-center"></i><span>${t(s.size)}</span></li>` : ''}
+        </ul>
+      </div>
+    </div></div>`,
+
+  visit: s => `<div class="max-w-4xl mx-auto">${H2(s.title)}
+    <div class="space-y-5 md:space-y-6">
+      ${s.blocks.map(b => `<section class="glass p-5 md:p-7">
+        <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl mb-3 flex items-center gap-3"><i class="fa ${b[0]}"></i>${t(b[1])}</h3>
+        <ul class="space-y-2 text-base md:text-xl leading-relaxed list-disc pl-5">${b[2].map(x => `<li>${t(x)}</li>`).join('')}</ul></section>`).join('')}
+      <p class="text-sm md:text-base text-white/80 text-center">${t(s.note)}</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        ${s.links.map(l => `<a href="${l[0]}" target="_blank" rel="noopener noreferrer" class="bg-primary hover:bg-secondary hover:text-dark transition-colors rounded-full px-6 py-3 font-bold"><i class="fa ${l[1]} mr-2"></i>${t(l[2])}</a>`).join('')}
+      </div></div></div>`,
+
+  digital: s => `<div class="max-w-5xl mx-auto">${H2(s.title)}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+      ${s.cards.map(c => `<section class="glass p-5 md:p-7 flex flex-col">
+        <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl mb-3"><i class="fa ${c[0]} mr-3"></i>${t(c[1])}</h3>
+        <p class="text-base md:text-lg leading-relaxed mb-5">${t(c[2])}</p>
+        <a href="${c[3]}" target="_blank" rel="noopener noreferrer" class="mt-auto self-start bg-primary hover:bg-secondary hover:text-dark transition-colors rounded-full px-7 py-3 font-bold">${t(c[4])} <i class="fa fa-external-link ml-1"></i></a>
+      </section>`).join('')}
+      <section class="glass p-5 md:p-7 md:col-span-2 text-center">
+        <h3 class="font-serif font-bold text-secondary text-2xl md:text-3xl mb-3"><i class="fa fa-headphones mr-3"></i>${t(s.voice.h)}</h3>
+        <p class="text-base md:text-lg leading-relaxed mb-5">${t(s.voice.p)}</p>
+        <button data-speak class="bg-primary hover:bg-secondary hover:text-dark transition-colors rounded-full px-8 py-3 font-bold text-lg"><i class="fa fa-microphone mr-2"></i>${t(s.voice.b)}</button>
+      </section></div></div>`,
+
+  end: s => `<div class="min-h-full flex flex-col justify-center items-center text-center">
+    <h2 class="font-serif font-bold text-white tshadow text-[clamp(2rem,8vw,4.5rem)] mb-4">${t(s.title)}</h2>
+    <p class="text-white/90 tshadow font-light text-[clamp(1rem,3vw,1.6rem)] mb-8 max-w-3xl leading-relaxed">${t(s.sub)}</p>
+    <div class="flex flex-wrap gap-3 justify-center">
+      ${s.links.map(l => `<a href="${l[0]}" target="_blank" rel="noopener noreferrer" class="bg-primary hover:bg-secondary hover:text-dark transition-colors rounded-full px-7 py-3 font-bold text-lg"><i class="fa ${l[1]} mr-2"></i>${t(l[2])}</a>`).join('')}
+      <button data-go="0" class="bg-white/20 hover:bg-white/35 transition-colors rounded-full px-7 py-3 font-bold text-lg border border-white/30"><i class="fa fa-repeat mr-2"></i>${lang==='zh'?'回到首頁':'Back to Start'}</button>
+    </div></div>`
+};
+
+/* ============ 建立與更新畫面 ============ */
+function build() {
+  container.innerHTML = SLIDES.map((s, i) => `
+    <section class="slide absolute inset-0" data-i="${i}" aria-roledescription="slide" aria-label="${i+1} / ${SLIDES.length}">
+      <div class="slide-bg absolute inset-0" data-bg="${s.bg}"></div>
+      <div class="scroll-area absolute inset-0 px-4 md:px-12 pt-16 md:pt-20 pb-24 md:pb-28">${R[s.type](s)}</div>
+    </section>`).join('');
+  $('#dots').innerHTML = SLIDES.map((_, i) => `<button class="rounded-full transition-all bg-white/50 hover:bg-white" data-dot="${i}" aria-label="${UI[lang].go}${i+1}" style="width:.75rem;height:.75rem"></button>`).join('');
+  document.title = t(SLIDES[0].title) + ' | ' + (lang === 'zh' ? '互動導覽' : 'Interactive Guide');
+  document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
+  refreshUI();
+  show(index, true);
+}
+
+function refreshUI() {
+  const u = UI[lang];
+  $('#langBtn').textContent = u.langBtn; $('#langBtn').setAttribute('aria-label', u.lang);
+  $('#prevBtn').setAttribute('aria-label', u.prev); $('#nextBtn').setAttribute('aria-label', u.next);
+  $('#helpBtn').setAttribute('aria-label', u.help);
+  $('#speakBtn').setAttribute('aria-label', speaking ? u.stopSpeak : u.speak); $('#speakBtn').title = speaking ? u.stopSpeak : u.speak;
+  $('#playBtn').setAttribute('aria-label', autoplay ? u.pause : u.play); $('#playBtn').title = autoplay ? u.pause : u.play;
+  $('#musicBtn').setAttribute('aria-label', musicOn ? u.musicOff : u.music); $('#musicBtn').title = musicOn ? u.musicOff : u.music;
+  const fs = !!document.fullscreenElement;
+  $('#fsBtn').setAttribute('aria-label', fs ? u.fsExit : u.fs); $('#fsBtn').title = fs ? u.fsExit : u.fs;
+  $('#helpTitle').textContent = u.helpTitle; $('#helpClose').textContent = u.close;
+  $('#helpList').innerHTML = u.helpItems.map(x => `<li>${x}</li>`).join('');
+  $('#speakBtn').classList.toggle('on', speaking); $('#playBtn').classList.toggle('on', autoplay); $('#musicBtn').classList.toggle('on', musicOn);
+  $('#playBtn').innerHTML = `<i class="fa fa-${autoplay ? 'pause' : 'play'}"></i>`;
+  $('#speakBtn').innerHTML = `<i class="fa fa-${speaking ? 'stop' : 'volume-up'}"></i>`;
+  $('#musicBtn').innerHTML = `<i class="fa fa-${musicOn ? 'volume-off' : 'music'}"></i>`;
+  $('#fsBtn').innerHTML = `<i class="fa fa-${fs ? 'compress' : 'expand'}"></i>`;
+}
+
+function loadBg(i) {
+  const n = SLIDES.length, el = container.children[((i % n) + n) % n]?.querySelector('.slide-bg');
+  if (el && !el.dataset.loaded) { el.style.backgroundImage = `url("${el.dataset.bg}")`; el.dataset.loaded = '1'; }
+}
+
+function show(i, silent) {
+  const n = SLIDES.length; index = ((i % n) + n) % n;
+  [...container.children].forEach((sl, k) => {
+    const on = k === index;
+    sl.classList.toggle('active', on); sl.inert = !on; sl.setAttribute('aria-hidden', String(!on));
+    if (on) sl.querySelector('.scroll-area').scrollTop = 0;
+  });
+  [index - 1, index, index + 1].forEach(loadBg);
+  $('#counter').textContent = `${index + 1} / ${n}`;
+  [...$('#dots').children].forEach((d, k) => { const on = k === index; d.style.width = d.style.height = on ? '1rem' : '.75rem'; d.style.background = on ? '#D9AE6C' : ''; d.setAttribute('aria-current', on ? 'true' : 'false'); });
+  if (!silent) history.replaceState(null, '', '#' + (index + 1));
+  if (speaking) stopSpeak();
+  schedule();
+}
+const next = () => show(index + 1), prev = () => show(index - 1);
+
+/* ============ 自動播放 ============ */
+function schedule() {
+  clearTimeout(timer); const bar = $('#progress'); bar.classList.remove('run'); void bar.offsetWidth;
+  if (!autoplay) return;
+  const ms = SLIDES[index].type === 'hero' || SLIDES[index].type === 'end' ? 7000 : 12000;
+  bar.style.setProperty('--dur', ms + 'ms'); bar.classList.add('run');
+  timer = setTimeout(next, ms);
+}
+function toggleAuto() { autoplay = !autoplay; schedule(); refreshUI(); toast(autoplay ? UI[lang].pause : UI[lang].play); }
+
+/* ============ 朗讀 ============ */
+function stopSpeak() { try { speechSynthesis.cancel(); } catch(e){} speaking = false; refreshUI(); }
+function toggleSpeak() {
+  if (!('speechSynthesis' in window)) return toast(UI[lang].noSpeech);
+  if (speaking) return stopSpeak();
+  const text = container.children[index].querySelector('.scroll-area').innerText.replace(/\s+/g, ' ').trim();
+  const u = new SpeechSynthesisUtterance(text); u.lang = lang === 'zh' ? 'zh-TW' : 'en-US'; u.rate = .95;
+  u.onend = u.onerror = () => { speaking = false; refreshUI(); };
+  speechSynthesis.cancel(); speechSynthesis.speak(u); speaking = true; refreshUI();
+}
+
+/* ============ 音樂 / 全螢幕 / 語言 / 提示 ============ */
+function toggleMusic() {
+  const a = $('#bgMusic');
+  if (!musicOn) a.play().then(() => { musicOn = true; refreshUI(); }).catch(() => toast(UI[lang].musicFail));
+  else { a.pause(); musicOn = false; refreshUI(); }
+}
+function toggleFs() {
+  if (!document.fullscreenEnabled) return;
+  if (!document.fullscreenElement) $('#app').requestFullscreen().catch(() => {}); else document.exitFullscreen();
+}
+function setLang(l) { lang = l; store.set('npm-lang', l); if (speaking) stopSpeak(); build(); }
+let toastT;
+function toast(msg) { const el = $('#toast'); el.textContent = msg; el.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => el.style.opacity = 0, 2600); }
+
+/* ============ 事件 ============ */
+$('#prevBtn').onclick = prev; $('#nextBtn').onclick = next;
+$('#playBtn').onclick = toggleAuto; $('#speakBtn').onclick = toggleSpeak; $('#musicBtn').onclick = toggleMusic;
+$('#fsBtn').onclick = toggleFs; $('#langBtn').onclick = () => setLang(lang === 'zh' ? 'en' : 'zh');
+$('#helpBtn').onclick = () => $('#helpDlg').showModal(); $('#helpClose').onclick = () => $('#helpDlg').close();
+document.addEventListener('fullscreenchange', refreshUI);
+
+document.addEventListener('click', e => {
+  const dot = e.target.closest('[data-dot]'); if (dot) return show(+dot.dataset.dot);
+  const go = e.target.closest('[data-go]'); if (go) return show(+go.dataset.go);
+  if (e.target.closest('[data-speak]')) toggleSpeak();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.target.closest('dialog[open]') && e.key !== 'Escape') return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  switch (e.key) {
+    case 'ArrowRight': case 'PageDown': next(); break;
+    case 'ArrowLeft': case 'PageUp': prev(); break;
+    case 'Home': show(0); break;
+    case 'End': show(SLIDES.length - 1); break;
+    case ' ': if (!e.target.closest('button, a')) { e.preventDefault(); toggleAuto(); } break;
+    case 'f': case 'F': toggleFs(); break;
+    case 'm': case 'M': toggleMusic(); break;
+    case 'r': case 'R': toggleSpeak(); break;
+    case '?': $('#helpDlg').showModal(); break;
+  }
+});
+
+/* 觸控滑動：橫向為主才換頁，不影響上下捲動 */
+let sx = 0, sy = 0;
+container.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+container.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { dx < 0 ? next() : prev(); }
+}, { passive: true });
+/* 使用者操作內容時，重新計時自動播放，避免閱讀到一半被切換 */
+['pointerdown', 'wheel', 'scroll'].forEach(ev => container.addEventListener(ev, () => { if (autoplay) schedule(); }, { passive: true, capture: true }));
+window.addEventListener('hashchange', () => { const n = parseInt(location.hash.slice(1), 10); if (n >= 1 && n <= SLIDES.length && n - 1 !== index) show(n - 1, true); });
+
+/* ============ 啟動 ============ */
+const startN = parseInt(location.hash.slice(1), 10);
+if (startN >= 1 && startN <= SLIDES.length) index = startN - 1;
+build();
+if (!store.get('npm-hint')) { setTimeout(() => toast(UI[lang].hint), 1200); store.set('npm-hint', '1'); }
+</script>
+</body>
+</html>
