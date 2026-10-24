@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026年10月24日 全球市場衝擊型財經新聞深度研報與語音摘要</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .pulse-red {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+        .wave-bar {
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: #38bdf8;
+            border-radius: 2px;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+        .wave-bar:nth-child(2) { animation-delay: -1.0s; }
+        .wave-bar:nth-child(3) { animation-delay: -0.8s; }
+        .wave-bar:nth-child(4) { animation-delay: -0.6s; }
+        @keyframes bounce {
+            0%, 40%, 100% { transform: scaleY(0.4); }
+            20% { transform: scaleY(1.0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-16">
+
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-800 bg-slate-900/90 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">⚡</span>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        全球市場衝擊研報 <span class="bg-red-500/20 text-red-400 text-xs px-2 py-0.5 rounded-full border border-red-500/30">2026.10.24 特刊</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">荷姆茲危機升級 • AI資本支出反噬 • 全球停滯性通膨重估</p>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-auto bg-slate-800/90 rounded-xl p-2.5 flex items-center gap-3 border border-slate-700/60 shadow-lg">
+                <button id="playBtn" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all shadow-md shadow-cyan-500/20">
+                    <span id="playIcon">🎙️</span>
+                    <span id="playText">播放AI語音摘要</span>
+                </button>
+                <button id="pauseBtn" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-lg text-sm font-semibold hidden">
+                    ⏸️ 暫停
+                </button>
+                <div class="flex items-center gap-1.5 px-2">
+                    <div id="audioWave" class="hidden flex items-center gap-1">
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                    </div>
+                    <span id="audioStatus" class="text-xs text-slate-400 font-medium">語音導讀準備就緒</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-8">
+
+        <section class="glass-card rounded-2xl p-6 border-l-4 border-l-red-500 pulse-red relative overflow-hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-red-400 bg-red-950/60 px-2.5 py-1 rounded-md border border-red-800">核心市場脈絡</span>
+                    <h2 class="text-2xl font-bold text-white mt-2">地緣供應衝擊與AI資本結構質變共振</h2>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-slate-400">研報發布時間</p>
+                    <p class="text-sm font-mono text-cyan-400">2026-10-24 10:30 CST</p>
+                </div>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                截至2026年10月24日當周，全球金融市場經歷由美伊戰爭升級、荷姆茲海峽封鎖威脅、科技巨頭失控型AI資本支出與主權財政脆弱性交織的劇烈重新定價。布蘭特原油飆破117美元，聯準會12月升息機率陡升至86%，高實質利率徹底壓制黃金避險功能，金價跌破4,000美元大關。
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 font-medium mb-1">布蘭特原油 Brent</p>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-2xl font-extrabold text-red-400">$116.91</span>
+                        <span class="text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">+3.30%</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">盤中最高衝破 $117/桶</p>
+                </div>
+
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 font-medium mb-1">美10年期公債殖利率</p>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-2xl font-extrabold text-amber-400">4.97%</span>
+                        <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">高點5.15%</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">通膨溢價與避險拉鋸</p>
+                </div>
+
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 font-medium mb-1">現貨黃金 XAU/USD</p>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-2xl font-extrabold text-emerald-400">$3,993.96</span>
+                        <span class="text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">-0.77%</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">跌破4000整數心理關卡</p>
+                </div>
+
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 font-medium mb-1">台灣加權指數 TAIEX</p>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-2xl font-extrabold text-cyan-400">46,041.43</span>
+                        <span class="text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">-1.81%</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">自高點拉回 跌破季線</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span>🛢️</span> 中東戰事升級與全球能源價格跳升
+                        </h3>
+                        <span class="text-xs bg-red-500/20 text-red-300 px-2 py-0.5 rounded">波斯灣運費暴增10倍</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">
+                        美伊戰爭進入第八個月，荷姆茲海峽襲船事件擴散至阿曼灣。波斯灣原油運費由常態$2-3/桶暴漲至$30/桶。終端精煉油品（柴油、熱燃油）嚴重短缺。
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span>🏛️</span> 聯準會利率路徑與12月升息定價
+                        </h3>
+                        <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">12/9升息機率86%</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">
+                        聯準會於9月升息25bps後，10月28日按兵不動為市場共識（機率>83%），但隔夜衍生品市場完全定價12月9日升息25bps至4.00%-4.25%。
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="fedChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span>💻</span> 美股科技巨頭：亮眼獲利 vs AI資本支出恐慌
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">
+                        S&P 500第三季獲利成長率達29.5%，但Meta租賃合約承諾高達8,250億美元，Tesla GAAP獲利暴跌43.6%，市場對融資成本與變現週期產生疑慮。
+                    </p>
+                </div>
+                <div class="mt-3 md:mt-0 flex gap-2">
+                    <span class="text-xs bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30">S&P500 EPS +29.5%</span>
+                    <span class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30">Nasdaq100 EPS +45%</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-slate-200">Meta Platforms</span>
+                        <span class="text-xs text-red-400 font-semibold">資本支出失控</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-normal">
+                        資本支出指引下限調升50億美元，費用年增逾營收兩倍。監管文件揭露總租賃與合約承諾暴增1,250億至<strong class="text-amber-400">8,250億美元</strong>。
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-slate-200">Tesla (TSLA)</span>
+                        <span class="text-xs text-red-400 font-semibold">GAAP利益腰斬</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-normal">
+                        Non-GAAP EPS 0.48美元超預期，但<strong class="text-red-400">GAAP EPS僅0.22美元（-43.6%）</strong>，營業利益率降至2.6%，全年Capex預計突破200億美元。
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-slate-200">CoreWeave & SPCX</span>
+                        <span class="text-xs text-amber-400 font-semibold">算力積壓高企</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-normal">
+                        CoreWeave積壓營收達<strong class="text-cyan-400">1,042億美元</strong>，SPCX算力營收季增3倍，但 Capex 同步暴增近3倍，融資疑慮引發拋售。
+                    </p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="techEarningsChart"></canvas>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 glass-card rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span>🇹🇼</span> 台積電法說會與台股高檔拉回分析
+                        </h3>
+                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2.5 py-1 rounded">2奈米佔比躍升至8%</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">
+                        台積電Q3營收467.2億美元創歷史新高，Q4指引最高達543億美元。然而2奈米初期量產與海外擴廠預計將稀釋毛利率3-4%，加上光復節連假防禦賣壓，台股跌破季線。
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="tsmcChart"></canvas>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 glass-card rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <span>💎</span> 貴金屬避險失靈與金銀比飆升
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-4">
+                        實質殖利率衝高至2.80%壓制零息資產，現貨黃金自1月天價$5,608回落26%至$3,993.96。印度現貨白銀較高點大幅腰斬55%。
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="preciousMetalsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-2xl p-6">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>🌐</span> 全球主要經濟體分化現況
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-red-400 text-base">🇫🇷 法國主權債危機</span>
+                        <span class="text-xs bg-red-500/20 text-red-300 px-2 py-0.5 rounded">借貸成本 > 5%</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        高物價引發全國暴動，逾2,500人被捕。巴黎羅浮宮與藝博會緊急閉館。2027年國債利息將達730億歐元，引發歐元區銀行股重挫4.2%。
+                    </p>
+                    <div class="text-xs text-slate-400 pt-2 border-t border-slate-800 flex justify-between">
+                        <span>歐元區10月PMI</span>
+                        <span class="text-amber-400 font-bold">51.9 (創4個月新低)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-cyan-400 text-base">🇨🇳 中國雙速經濟</span>
+                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded">Q3 GDP +4.5%</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        第三季GDP成長4.5%優於預期，AI硬體帶動Q3出口飆升36.3%至4,471億美元。然而建築業年減4.4%、房地產業年減0.4%，內需依然萎縮。
+                    </p>
+                    <div class="text-xs text-slate-400 pt-2 border-t border-slate-800 flex justify-between">
+                        <span>前三季進出口</span>
+                        <span class="text-cyan-400 font-bold">39.93兆RMB (+18.8%)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-emerald-400 text-base">🇮🇳 印度市場背離</span>
+                        <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">Jio IPO 3021億盧比</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        高油價導致外資撤出二級市場，Sensex指數單日重挫1.17%。但信實旗下Jio Platforms啟動史上最大IPO，僅100分鐘即超額認購完畢。
+                    </p>
+                    <div class="text-xs text-slate-400 pt-2 border-t border-slate-800 flex justify-between">
+                        <span>美元對盧比 USD/INR</span>
+                        <span class="text-red-400 font-bold">95.19 (歷史低點)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-2xl p-6">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>🗓️</span> 下周全球市場關鍵決戰日曆 (10/26 - 10/30)
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/80 uppercase text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="p-3">日期</th>
+                            <th class="p-3">核心宏觀政策與數據</th>
+                            <th class="p-3">科技巨頭財報風向</th>
+                            <th class="p-3">跨資產預期傳導機制</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="p-3 font-bold text-cyan-400">10/26 (一)</td>
+                            <td class="p-3">台灣光復節連假休市；法國穆迪評級後續影響</td>
+                            <td class="p-3">歐洲企業財報週開啟</td>
+                            <td class="p-3">台股週二面臨補跌壓力，法債殖利率牽動歐元</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="p-3 font-bold text-amber-400">10/28 (三)</td>
+                            <td class="p-3 font-bold text-white">美聯準會 FOMC 利率決策與記者會</td>
+                            <td class="p-3 font-bold text-cyan-300">Alphabet (GOOG), 微軟 (MSFT)</td>
+                            <td class="p-3">評估12月升息指引；雲端AI資本支出將決定那指方向</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="p-3 font-bold text-cyan-400">10/29 (四)</td>
+                            <td class="p-3">美國 Q3 GDP初值、9月 PCE 物價指數</td>
+                            <td class="p-3 font-bold text-cyan-300">亞馬遜 (AMZN)</td>
+                            <td class="p-3">若PCE高於預期，美債殖利率恐再測5.15%高點</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="p-3 font-bold text-purple-400">10/30 (五)</td>
+                            <td class="p-3">美國 Q3 雇用成本指數 (ECI)</td>
+                            <td class="p-3">標普500 單週 179 家企業財報收官</td>
+                            <td class="p-3">檢驗薪資通膨是否與油價共振形成二次通膨螺旋</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="audioScriptSection" class="glass-card rounded-2xl p-6 bg-slate-900/90 border border-cyan-500/30">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-cyan-300 flex items-center gap-2">
+                    <span>🎙️</span> 完整語音摘要文稿 (Voice Overview Script)
+                </h3>
+                <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">點擊上方播放按鈕收聽</span>
+            </div>
+            <div class="bg-slate-950/80 p-4 rounded-xl text-slate-300 text-xs sm:text-sm leading-relaxed space-y-3 font-sans border border-slate-800">
+                <p>
+                    各位投資人好，歡迎收聽2026年10月24日全球市場衝擊型財經新聞語音摘要。
+                </p>
+                <p>
+                    本周全球金融市場的核心主軸，已由單純的AI獲利成長，急遽轉向高油價驅動的停滯性通膨與AI資本支出回報率的雙重審視。
+                </p>
+                <p>
+                    地緣政治方面，美伊戰爭進入第八個月，荷姆茲海峽與阿曼灣襲船事件劇增，布蘭特原油盤中飆破117美元，波斯灣運費暴增10倍。終端柴油與熱燃油極度短缺，推升全球二次通膨風險。
+                </p>
+                <p>
+                    受通膨預期影響，美聯準會雖然預期在10月28日會議維持利率不變，但衍生品市場已將12月9日再度升息的機率定價至86%。10年期美債殖利率一度衝上5.15%。高實質利率壓制了黃金的避險功能，國際現貨金價跌破4,000美元大關。
+                </p>
+                <p>
+                    股票市場方面，標普500第三季獲利成長達29.5%，台積電更繳出467億美元的歷史新高營收，但Meta等巨頭高達8,250億美元的租賃合約承諾，加上特斯拉GAAP獲利腰斬，引發市場對AI資本支出吞噬自由現金流的疑慮。台股在光復節長假前夕外資大舉賣超816億元，加權指數跌破季線收在46,041點。
+                </p>
+                <p>
+                    展望下周，市場將迎來FOMC利率決策、Alphabet、微軟與亞馬遜財報，以及美國9月PCE通膨數據，建議投資人密切關注能源通膨與實質利率動態，維持嚴格風險控制。感謝收聽。
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const wrapText = (str, maxLen = 16) => {
+            if (typeof str !== 'string' || str.length <= maxLen) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxLen) {
+                    if (currentLine) lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            if (currentLine) lines.push(currentLine.trim());
+            return lines.length > 0 ? lines : str;
+        };
+
+        const globalTooltipConfig = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const energyLabels = [
+            wrapText('布蘭特原油 Brent Crude'),
+            wrapText('西德州原油 WTI Crude'),
+            wrapText('歐洲天然氣 EU Gas MWh'),
+            wrapText('熱燃油 Heating Oil'),
+            wrapText('汽油 Gasoline')
+        ];
+
+        new Chart(document.getElementById('energyChart'), {
+            type: 'bar',
+            data: {
+                labels: energyLabels,
+                datasets: [{
+                    label: '最新價格/指數 (USD or EUR)',
+                    data: [116.91, 103.44, 93.19, 5.00, 3.21],
+                    backgroundColor: ['#ef4444', '#f97316', '#eab308', '#06b6d4', '#3b82f6'],
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                },
+                ...globalTooltipConfig
+            }
+        });
+
+        const fedLabels = [
+            wrapText('10月按兵不動機率'),
+            wrapText('12月升息25bps機率'),
+            wrapText('12個月累積升息預期')
+        ];
+
+        new Chart(document.getElementById('fedChart'), {
+            type: 'doughnut',
+            data: {
+                labels: fedLabels,
+                datasets: [{
+                    data: [86, 86, 78.5],
+                    backgroundColor: ['#38bdf8', '#f59e0b', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', font: { size: 11 } }
+                    },
+                    ...globalTooltipConfig.plugins
+                }
+            }
+        });
+
+        const techLabels = [
+            wrapText('S&P 500 Q3 EPS增長'),
+            wrapText('Nasdaq 100 Q3 EPS增長'),
+            wrapText('Meta 租賃合約暴增'),
+            wrapText('Tesla GAAP EPS下滑')
+        ];
+
+        new Chart(document.getElementById('techEarningsChart'), {
+            type: 'bar',
+            data: {
+                labels: techLabels,
+                datasets: [{
+                    label: '變動百分比 %',
+                    data: [29.5, 45.0, 17.8, -43.6],
+                    backgroundColor: ['#10b981', '#06b6d4', '#f59e0b', '#ef4444'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y: {
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                },
+                ...globalTooltipConfig
+            }
+        });
+
+        const tsmcLabels = [
+            wrapText('2奈米 (N2) 製程'),
+            wrapText('3奈米 (N3) 製程'),
+            wrapText('5奈米 (N5) 製程'),
+            wrapText('7奈米 (N7) 製程')
+        ];
+
+        new Chart(document.getElementById('tsmcChart'), {
+            type: 'pie',
+            data: {
+                labels: tsmcLabels,
+                datasets: [{
+                    data: [8, 33, 28, 10],
+                    backgroundColor: ['#38bdf8', '#8b5cf6', '#ec4899', '#64748b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#cbd5e1', font: { size: 11 } }
+                    },
+                    ...globalTooltipConfig.plugins
+                }
+            }
+        });
+
+        const metalsLabels = [
+            wrapText('現貨黃金 (歷史高點$5,608)'),
+            wrapText('印度現貨白銀 (高點$42.7萬盧比)')
+        ];
+
+        new Chart(document.getElementById('preciousMetalsChart'), {
+            type: 'bar',
+            data: {
+                labels: metalsLabels,
+                datasets: [{
+                    label: '自最高點回落幅度 %',
+                    data: [-26.0, -55.0],
+                    backgroundColor: ['#f59e0b', '#94a3b8'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                },
+                ...globalTooltipConfig
+            }
+        });
+
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.getElementById('playText');
+        const audioWave = document.getElementById('audioWave');
+        const audioStatus = document.getElementById('audioStatus');
+
+        let synth = window.speechSynthesis;
+        let utterance = null;
+        let isSpeaking = false;
+
+        const voiceScriptText = `
+            2026年10月24日全球市場衝擊型財經新聞語音摘要。
+            本周全球金融市場的核心主軸，已由單純的AI獲利成長，急遽轉向高油價驅動的停滯性通膨與AI資本支出回報率的雙重審視。
+            地緣政治方面，美伊戰爭進入第八個月，荷姆茲海峽與阿曼灣襲船事件劇增，布蘭特原油盤中飆破117美元，波斯灣運費暴增10倍。終端柴油與熱燃油極度短缺，推升全球二次通膨風險。
+            受通膨預期影響，美聯準會雖然預期在10月28日會議維持利率不變，但衍生品市場已將12月9日再度升息的機率定價至86百分比。10年期美債殖利率一度衝上5.15百分比。高實質利率壓制了黃金的避險功能，國際現貨金價跌破4,000美元大關。
+            股票市場方面，標普500第三季獲利成長達29.5百分比，台積電更繳出467億美元的歷史新高營收，但Meta等巨頭高達8,250億美元的租賃合約承諾，加上特斯拉GAAP獲利腰斬，引發市場對AI資本支出吞噬自由現金流的疑慮。台股在光復節長假前夕外資大舉賣超816億元，加權指數跌破季線收在46,041點。
+            展望下周，市場將迎來FOMC利率決策、Alphabet、微軟與亞馬遜財報，以及美國9月PCE通膨數據，建議投資人密切關注能源通膨與實質利率動態，維持嚴格風險控制。感謝收聽。
+        `;
+
+        function speakBriefing() {
+            if (!('speechSynthesis' in window)) {
+                alert('您的瀏覽器不支援語音合成功能，請閱讀文稿頁面。');
+                return;
+            }
+
+            if (synth.speaking && synth.paused) {
+                synth.resume();
+                setUIPlaying();
+                return;
+            }
+
+            if (synth.speaking) {
+                synth.cancel();
+            }
+
+            utterance = new SpeechSynthesisUtterance(voiceScriptText);
+            utterance.lang = 'zh-TW';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+
+            utterance.onstart = function() {
+                setUIPlaying();
+            };
+
+            utterance.onend = function() {
+                setUIStopped();
+            };
+
+            utterance.onerror = function(e) {
+                setUIStopped();
+            };
+
+            synth.speak(utterance);
+        }
+
+        function setUIPlaying() {
+            isSpeaking = true;
+            playText.textContent = '播放中...';
+            playIcon.textContent = '🔊';
+            audioWave.classList.remove('hidden');
+            audioStatus.textContent = 'AI 導讀播放中';
+            audioStatus.classList.add('text-cyan-400');
+            pauseBtn.classList.remove('hidden');
+        }
+
+        function setUIStopped() {
+            isSpeaking = false;
+            playText.textContent = '重新播放語音摘要';
+            playIcon.textContent = '🎙️';
+            audioWave.classList.add('hidden');
+            audioStatus.textContent = '播放結束';
+            audioStatus.classList.remove('text-cyan-400');
+            pauseBtn.classList.add('hidden');
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (isSpeaking && !synth.paused) {
+                synth.pause();
+                playText.textContent = '繼續播放';
+                playIcon.textContent = '▶️';
+                audioWave.classList.add('hidden');
+                audioStatus.textContent = '已暫停';
+            } else {
+                speakBriefing();
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            if (synth.speaking) {
+                synth.pause();
+                playText.textContent = '繼續播放';
+                playIcon.textContent = '▶️';
+                audioWave.classList.add('hidden');
+                audioStatus.textContent = '已暫停';
+            }
+        });
+    </script>
+</body>
+</html>
