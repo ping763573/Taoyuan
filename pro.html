@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>終極心情舒壓魔性大鈴鐺 PRO 🔔💥</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    body {
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+      overflow: hidden;
+    }
+
+    /* 隱藏捲軸 */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ==========================================
+       誇張戲劇化螢幕震動與故障特效
+       ========================================== */
+    @keyframes shake-mild {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-5px, 4px) rotate(-1.2deg); }
+      40% { transform: translate(5px, -4px) rotate(1.2deg); }
+      60% { transform: translate(-4px, -3px) rotate(0.6deg); }
+      80% { transform: translate(4px, 3px) rotate(-0.6deg); }
+    }
+    @keyframes shake-heavy {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      15% { transform: translate(-14px, 10px) rotate(-3.5deg) scale(1.03); }
+      30% { transform: translate(14px, -12px) rotate(3.5deg) scale(0.98); }
+      45% { transform: translate(-16px, -10px) rotate(-2.5deg) scale(1.02); }
+      60% { transform: translate(12px, 14px) rotate(2.5deg) scale(1.01); }
+      75% { transform: translate(-10px, 8px) rotate(-1.5deg); }
+    }
+    @keyframes shake-apocalypse {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); filter: hue-rotate(0deg); }
+      10% { transform: translate(-25px, 18px) rotate(-6deg) scale(1.06); filter: hue-rotate(90deg) contrast(1.4); }
+      25% { transform: translate(22px, -22px) rotate(6deg) scale(0.94); filter: invert(0.8); }
+      40% { transform: translate(-28px, -15px) rotate(-5deg) scale(1.08); filter: hue-rotate(240deg); }
+      60% { transform: translate(24px, 20px) rotate(5deg) scale(0.96); }
+      80% { transform: translate(-15px, 12px) rotate(-3deg) scale(1.03); }
+    }
+
+    .anim-shake-mild { animation: shake-mild 0.22s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+    .anim-shake-heavy { animation: shake-heavy 0.36s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+    .anim-shake-nuke { animation: shake-apocalypse 0.85s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+    /* RGB 色差故障濾鏡 */
+    .rgb-glitch {
+      text-shadow: -4px 0 #ff0055, 4px 0 #00ffcc;
+    }
+
+    /* 終極暴走邊框脈衝 */
+    @keyframes ultra-rage-border {
+      0%, 100% { box-shadow: inset 0 0 35px rgba(239, 68, 68, 0.75), 0 0 40px rgba(239, 68, 68, 0.6); }
+      50% { box-shadow: inset 0 0 95px rgba(249, 115, 22, 0.95), 0 0 90px rgba(239, 68, 68, 1); }
+    }
+    .ultra-rage-mode {
+      animation: ultra-rage-border 0.28s infinite alternate;
+    }
+
+    /* ==========================================
+       3D 巨型魔性鈴鐺與 Squash & Stretch 物理形變
+       ========================================== */
+    .bell-3d-stage {
+      perspective: 1000px;
+    }
+    .bell-core-btn {
+      transition: transform 0.07s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.07s ease, filter 0.1s ease;
+      transform-origin: center bottom;
+      will-change: transform;
+    }
+    /* 極度誇張壓扁與回彈效果 */
+    .bell-core-btn.squash-mild {
+      transform: translateY(18px) scale(1.18, 0.76) !important;
+      filter: brightness(1.22) saturate(1.2);
+    }
+    .bell-core-btn.squash-extreme {
+      transform: translateY(28px) scale(1.34, 0.62) rotate(3deg) !important;
+      filter: brightness(1.45) contrast(1.25);
+    }
+
+    /* 衝擊波擴散光環 */
+    @keyframes shockwave-expand {
+      0% { transform: scale(0.75); opacity: 0.95; border-width: 12px; }
+      100% { transform: scale(2.35); opacity: 0; border-width: 1px; }
+    }
+    .shockwave-ring {
+      position: absolute;
+      border-radius: 9999px;
+      pointer-events: none;
+      animation: shockwave-expand 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* 漫畫感大字報彈跳動畫 */
+    @keyframes comic-pop-fly {
+      0% { transform: translate(-50%, -50%) scale(0.15) rotate(-18deg); opacity: 0; }
+      40% { transform: translate(-50%, -65%) scale(1.42) rotate(8deg); opacity: 1; }
+      75% { transform: translate(-50%, -75%) scale(1.15) rotate(-4deg); opacity: 0.95; }
+      100% { transform: translate(-50%, -105%) scale(0.85) rotate(6deg); opacity: 0; }
+    }
+    .comic-callout {
+      position: absolute;
+      pointer-events: none;
+      animation: comic-pop-fly 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      text-shadow: 
+        3px 3px 0 #000, -3px -3px 0 #000, 
+        3px -3px 0 #000, -3px 3px 0 #000,
+        0 8px 18px rgba(0,0,0,0.65);
+      z-index: 45;
+    }
+
+    /* 熱血動漫集中線特效 */
+    .speed-lines-overlay {
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0) 0deg 4deg,
+        rgba(255, 255, 255, 0.14) 4deg 5.2deg,
+        rgba(255, 255, 255, 0) 5.2deg 11deg
+      );
+      mask-image: radial-gradient(circle, transparent 35%, black 75%);
+      -webkit-mask-image: radial-gradient(circle, transparent 35%, black 75%);
+    }
+
+    /* 核爆按鈕閃爍 */
+    @keyframes nuke-pulse {
+      0%, 100% { transform: scale(1) rotate(-1deg); box-shadow: 0 0 20px #ef4444, 0 0 40px #f59e0b; }
+      50% { transform: scale(1.09) rotate(1deg); box-shadow: 0 0 35px #ef4444, 0 0 70px #fef08a; }
+    }
+    .nuke-ready-btn {
+      animation: nuke-pulse 0.45s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body id="app-body" class="bg-slate-950 text-slate-100 h-full flex flex-col justify-between select-none transition-colors duration-300 relative overflow-hidden">
+
+  <!-- 1. 全螢幕閃光與特效圖層 -->
+  <div id="flash-overlay" class="fixed inset-0 bg-white pointer-events-none opacity-0 z-50 transition-opacity duration-75"></div>
+  <div id="speed-lines" class="fixed inset-0 speed-lines-overlay pointer-events-none opacity-0 z-30 transition-opacity duration-150"></div>
+
+  <!-- 2. 多重玻璃碎裂 SVG 覆蓋層 -->
+  <svg id="crack-svg" class="fixed inset-0 w-full h-full pointer-events-none z-40 opacity-0 transition-opacity duration-300" viewBox="0 0 400 800" preserveAspectRatio="none">
+    <!-- 第一階段裂紋 -->
+    <g id="crack-stage-1" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round" fill="none">
+      <path d="M200,400 L110,270 L50,210 M200,400 L295,280 L365,230 M200,400 L140,540 L70,630 M200,400 L280,530 L345,650" />
+      <path d="M110,270 L170,180 M295,280 L265,160 M140,540 L210,640 M280,530 L245,680" stroke-width="1.5" />
+    </g>
+    <!-- 第二階段重度蜘蛛網裂紋 -->
+    <g id="crack-stage-2" class="hidden" stroke="rgba(254,202,202,0.9)" stroke-width="3.5" stroke-linecap="round" fill="none">
+      <path d="M200,400 L40,390 L5,360 M200,400 L360,410 L395,450 M200,400 L195,150 L140,50 M200,400 L215,670 L280,780" />
+      <polygon points="160,360 220,345 245,405 205,445 155,420" stroke="rgba(255,255,255,0.6)" stroke-width="2" />
+      <polygon points="110,270 195,240 295,280 315,410 280,530 140,540 95,400" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" />
+    </g>
+  </svg>
+
+  <!-- 3. 頂部導航與成就狀態列 -->
+  <header class="w-full max-w-lg mx-auto pt-2.5 px-3.5 flex flex-col gap-2 z-30">
+    <div class="flex items-center justify-between gap-2">
+      <!-- 心情頭像與稱號 -->
+      <div class="flex items-center gap-2 min-w-0">
+        <div id="mood-avatar-box" class="w-11 h-11 rounded-2xl bg-slate-800/90 border border-slate-700 flex items-center justify-center text-2xl shadow-md shrink-0 animate-bounce">
+          🔥
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <h1 id="app-heading" class="text-base sm:text-lg font-black tracking-wide text-rose-500 truncate">怒火衝天大鈴鐺</h1>
+            <span id="total-hits-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 border border-slate-700 shrink-0">累積 0 擊</span>
+          </div>
+          <p id="user-rank-title" class="text-xs text-amber-400 font-bold truncate">稱號：按鍵見習生 🍼</p>
+        </div>
+      </div>
+
+      <!-- 快捷工具按鈕群 -->
+      <div class="flex items-center gap-1 shrink-0">
+        <!-- 自訂出氣筒按鈕 -->
+        <button id="open-target-modal" class="px-2.5 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 text-xs font-black flex items-center gap-1 active:scale-90 transition-all shadow-sm" title="設定出氣對象與台詞">
+          <span>🎯</span>
+          <span class="hidden sm:inline">貼出氣名牌</span>
+        </button>
+        <!-- 隨機盲盒開關 -->
+        <button id="toggle-blindbox" class="px-2.5 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 text-slate-300 text-xs font-black flex items-center gap-1 active:scale-90 transition-all shadow-sm" title="全曲庫隨機盲盒">
+          <span>🎲</span>
+          <span id="blindbox-txt">盲盒</span>
+        </button>
+        <!-- 靜音開關 -->
+        <button id="toggle-mute" class="w-8 h-8 rounded-xl bg-slate-800/90 border border-slate-700 flex items-center justify-center text-sm active:scale-90 transition-transform">
+          🔊
+        </button>
+        <!-- 晝夜主題切換 -->
+        <button id="toggle-theme" class="w-8 h-8 rounded-xl bg-slate-800/90 border border-slate-700 flex items-center justify-center text-sm active:scale-90 transition-transform" title="切換深色/淺色背景">
+          🌙
+        </button>
+      </div>
+    </div>
+
+    <!-- 發洩能量槽 & 100% 終極核爆觸發條 -->
+    <div class="flex items-center gap-2">
+      <div class="flex-1 bg-slate-900/95 rounded-full h-4 p-0.5 border border-slate-800 flex items-center relative overflow-hidden shadow-inner">
+        <div id="rage-bar-fill" class="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-600 transition-all duration-150 w-0"></div>
+        <span id="rage-bar-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-black tracking-widest text-white drop-shadow">
+          舒壓暴走能量 0% (集滿解鎖核爆清場)
+        </span>
+      </div>
+      <!-- 滿 100% 出現的終極核爆按鈕 -->
+      <button id="nuke-climax-btn" class="hidden nuke-ready-btn px-3 py-1 rounded-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 text-slate-950 font-black text-xs tracking-wider shadow-lg shrink-0 cursor-pointer">
+        ☢️ 終極核爆！
+      </button>
+    </div>
+  </header>
+
+  <!-- 4. 八大心情情境橫向切換列 (8 Moods Selector) -->
+  <nav class="w-full max-w-lg mx-auto px-3 mt-1.5 z-30">
+    <div id="mood-tabs-container" class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
+      <!-- 由 JS 動態生成 8 種心情卡片 -->
+    </div>
+  </nav>
+
+  <!-- 5. 中央核心舞台：物理粒子 Canvas + 衝擊波 + 巨型 3D 魔性鈴鐺 -->
+  <main class="relative flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full px-4 overflow-hidden">
+    <!-- 物理 Emoji 重力與彈跳噴泉 Canvas -->
+    <canvas id="particle-canvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+    <!-- 漫畫大字報容器 -->
+    <div id="comic-callout-box" class="absolute inset-0 pointer-events-none z-40 overflow-hidden"></div>
+
+    <!-- 即時 Combo 連擊與心情語錄 -->
+    <div id="combo-header" class="relative z-20 flex flex-col items-center mb-1.5 transition-transform duration-75">
+      <div class="flex items-baseline gap-1.5">
+        <span class="text-xs font-black tracking-widest text-slate-400">COMBO</span>
+        <span id="combo-number" class="text-4xl sm:text-5xl font-black text-rose-500 tracking-tighter drop-shadow-md">0</span>
+        <span id="combo-fire-tag" class="hidden text-xs bg-gradient-to-r from-red-600 to-amber-500 text-white font-black px-2 py-0.5 rounded-full animate-bounce shadow">
+          🔥 狂暴連擊中
+        </span>
+      </div>
+      <p id="mood-quote-text" class="text-xs font-bold text-slate-400 text-center max-w-xs truncate mt-0.5">
+        「今日怒氣：直接開除老闆，摔爛鍵盤！」
+      </p>
+    </div>
+
+    <!-- 巨型 3D 舒壓鈴鐺主體 -->
+    <div class="bell-3d-stage relative flex items-center justify-center my-1 z-20">
+      <!-- 動態呼吸背光 -->
+      <div id="bell-aura" class="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-rose-500/25 blur-2xl transition-all duration-300 pointer-events-none"></div>
+      
+      <!-- 衝擊波產生容器 -->
+      <div id="shockwave-container" class="absolute inset-0 flex items-center justify-center pointer-events-none"></div>
+
+      <!-- 鈴鐺金屬厚重底座 -->
+      <div id="bell-base-plate" class="w-56 h-56 sm:w-68 sm:h-68 rounded-full p-3.5 sm:p-4 flex items-center justify-center border-4 shadow-2xl transition-all duration-300 bg-gradient-to-b from-slate-800 to-slate-950 border-rose-500/60">
+        
+        <!-- 可按壓 3D 核心鈴鐺 -->
+        <button id="main-bell-btn" class="bell-core-btn w-full h-full rounded-full flex flex-col items-center justify-center text-white relative cursor-pointer outline-none select-none"
+          style="background: radial-gradient(circle at 35% 28%, #ff6b6b, #dc2626 62%, #7f1d1d 100%); box-shadow: 0 16px 0 #450a0a, 0 22px 35px rgba(0,0,0,0.65), inset 0 6px 10px rgba(255,255,255,0.65), inset 0 -10px 16px rgba(0,0,0,0.5);">
+          
+          <!-- 頂部玻璃反光高光 -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-white/10 to-white/40 pointer-events-none"></div>
+
+          <!-- 自訂出氣標靶貼紙 (設定後顯示在鈴鐺上讓人扁) -->
+          <div id="custom-target-sticker" class="hidden absolute -top-2 bg-yellow-300 text-slate-950 font-black text-xs px-3 py-0.5 rounded-full border-2 border-slate-950 shadow-md transform -rotate-6 z-30">
+            🎯 扁他：<span id="target-sticker-name">慣老闆</span>
+          </div>
+
+          <!-- 鈴鐺中央大圖示 -->
+          <span id="bell-main-icon" class="text-6xl sm:text-7xl mb-1 filter drop-shadow-lg transition-transform duration-100 pointer-events-none">💣</span>
+          
+          <!-- 當前音效名稱 -->
+          <span id="bell-main-title" class="text-lg sm:text-xl font-black tracking-wider uppercase drop-shadow-md text-amber-100 pointer-events-none px-2 text-center leading-tight">
+            毀滅大爆炸
+          </span>
+          
+          <!-- 按壓提示小標籤 -->
+          <span id="bell-sub-hint" class="text-[10px] tracking-widest font-extrabold opacity-90 mt-1 bg-black/35 px-2.5 py-0.5 rounded-full border border-white/20 pointer-events-none">
+            單擊爆破 / 長按機關槍
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 變聲調音台與自動狂按控制條 -->
+    <div class="w-full max-w-md mt-2 z-20 flex items-center gap-1.5">
+      <!-- 音高滑桿與快速預設 -->
+      <div class="flex-1 bg-slate-900/90 backdrop-blur rounded-2xl px-3 py-1.5 border border-slate-800 flex items-center justify-between gap-2 shadow">
+        <button id="pitch-preset-btn" class="text-[11px] font-black text-amber-400 hover:text-amber-300 whitespace-nowrap flex items-center gap-0.5 active:scale-95" title="點擊快速切換變聲模式">
+          <span id="pitch-icon">🎵</span>
+          <span id="pitch-mode-label">原音</span>
+        </button>
+        <input id="pitch-slider" type="range" min="0.45" max="2.1" step="0.05" value="1.0" class="w-full accent-rose-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+        <span id="pitch-val-display" class="text-[11px] font-black text-rose-400 w-9 text-right">1.0x</span>
+      </div>
+
+      <!-- 自動狂按機關槍切換 -->
+      <button id="toggle-auto-fire" class="px-3 py-2 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs font-black text-slate-300 flex items-center gap-1 active:scale-95 transition-all shrink-0 shadow">
+        <span>⚡</span>
+        <span id="auto-fire-txt">連發: 關</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- 6. 底部面板：當前心情專屬 5 款特技舒壓鈴矩陣 -->
+  <footer class="w-full max-w-lg mx-auto px-3 pb-3 pt-1 z-30">
+    <div id="footer-card" class="bg-slate-900/90 backdrop-blur-md rounded-2xl p-2.5 border border-slate-800 shadow-xl transition-colors duration-300">
+      <div class="flex items-center justify-between px-1 mb-1.5">
+        <span id="sound-matrix-title" class="text-xs font-black text-slate-300 flex items-center gap-1.5">
+          <span>🔥</span> 怒火衝天專屬舒壓鈴 (點擊切換並試聽)
+        </span>
+        <span class="text-[10px] font-bold text-slate-500">空白鍵 / 長按連射</span>
+      </div>
+      <!-- 5 格音效矩陣 -->
+      <div id="sound-matrix-grid" class="grid grid-cols-5 gap-1.5">
+        <!-- JS 動態生成 5 個特技音效按鈕 -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- 7. 自訂發洩對象 / 怒吼台詞 彈出對話框 (Modal) -->
+  <div id="target-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-rose-500/60 rounded-3xl max-w-sm w-full p-5 shadow-2xl text-slate-100 animate-bounce-once">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-black text-rose-400 flex items-center gap-1.5">
+          <span>🎯</span> 專屬出氣筒 & 怒吼訂製
+        </h3>
+        <button id="close-target-modal" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white font-bold">✕</button>
+      </div>
+      
+      <p class="text-xs text-slate-400 mb-3 leading-relaxed">
+        把惹毛你的人事物貼在鈴鐺上狂扁！還可輸入自訂台詞，按下鈴鐺時讓系統大聲幫你吼出來！
+      </p>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs font-bold text-slate-300 block mb-1">🏷️ 貼在鈴鐺上的出氣對象名稱：</label>
+          <input id="custom-target-input" type="text" maxlength="10" placeholder="例如：慣老闆、禮拜一、前任、BUG" 
+            class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm font-bold text-amber-300 focus:outline-none focus:border-rose-500">
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-300 block mb-1">📢 自訂語音咆哮台詞 (選填)：</label>
+          <input id="custom-shout-input" type="text" maxlength="28" placeholder="例如：別再改需求了！我要下班！" 
+            class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm font-bold text-rose-300 focus:outline-none focus:border-rose-500">
+        </div>
+
+        <!-- 熱門快速標籤 -->
+        <div class="pt-1">
+          <span class="text-[11px] text-slate-400 font-bold block mb-1.5">🔥 一鍵套用熱門怨念：</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button class="preset-target-chip text-[11px] bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-700 font-bold" data-target="改需求主管" data-shout="第18版了！到底懂不懂需求啊！">🤬 改需求主管</button>
+            <button class="preset-target-chip text-[11px] bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-700 font-bold" data-target="憂鬱星期一" data-shout="不想上班！讓我躺平睡到自然醒！">🫠 憂鬱星期一</button>
+            <button class="preset-target-chip text-[11px] bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-700 font-bold" data-target="體重計" data-shout="這體重計絕對壞掉了！吃飽才有力氣減肥！">🐷 體重計壞了</button>
+            <button class="preset-target-chip text-[11px] bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-700 font-bold" data-target="無窮BUG" data-shout="為什麼在我電腦上明明可以跑？！">💻 詭異BUG</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-5">
+        <button id="clear-target-btn" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
+          清除設定
+        </button>
+        <button id="save-target-btn" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-500 text-white font-black text-xs shadow-lg shadow-rose-900/50">
+          貼上鈴鐺開始扁！💥
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       1. 八大心情完整資料庫 (8 Moods x 5 Sounds = 40 款舒壓特效音)
+       ============================================================ */
+    const MOOD_DATABASE = {
+      rage: {
+        id: 'rage',
+        name: '怒火衝天',
+        sub: '氣到炸裂',
+        avatar: '🔥',
+        quote: '「今日怒氣：直接開除老闆，砸爛鍵盤！」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #ff5252, #dc2626 62%, #7f1d1d 100%)',
+        shadowHex: '#450a0a',
+        accentHex: '#ef4444',
+        auraColor: 'rgba(239, 68, 68, 0.35)',
+        emojis: ['🔥', '💥', '💢', '💣', '🤬', '👊', '🔨', '⚡'],
+        callouts: ['💥 毀滅吧！', '💢 忍無可忍！', '💣 徹底炸裂！', '🔥 氣死我啦！', '👊 吃我一拳！', '⚡ 碎屍萬段！'],
+        vibrate: [80, 30, 100, 40, 140],
+        sounds: [
+          { id: 'explosion', name: '毀滅大爆炸', icon: '💣', type: 'explosion' },
+          { id: 'dish_smash', name: '狂摔大瓷盤', icon: '🍽️', type: 'dish' },
+          { id: 'thunder_strike', name: '天打雷劈轟', icon: '⚡', type: 'thunder' },
+          { id: 'lion_roar', name: '狂暴大咆哮', icon: '🦁', type: 'roar' },
+          { id: 'speech_fire', name: '開除慣老闆', icon: '🤬', type: 'speech', text: '我不幹了！資遣費現在拿來！' }
+        ]
+      },
+      worker: {
+        id: 'worker',
+        name: '社畜崩潰',
+        sub: '加班怨念',
+        avatar: '💼',
+        quote: '「這份企劃到底誰要看？已經改第 18 版了！」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #38bdf8, #0284c7 62%, #0c4a6e 100%)',
+        shadowHex: '#082f49',
+        accentHex: '#0ea5e9',
+        auraColor: 'rgba(14, 165, 233, 0.35)',
+        emojis: ['💼', '📊', '☕', '📑', '🏃‍♂️', '💸', '⌨️', '🚨'],
+        callouts: ['🚨 奪命連環催！', '😱 改第18版！', '🛑 退件重寫！', '🏃‍♂️ 準時下班！', '⌨️ 鍵盤冒煙！', '💸 薪水小偷！'],
+        vibrate: [40, 40, 40, 40, 110],
+        sounds: [
+          { id: 'dingding', name: '奪命連環CALL', icon: '📞', type: 'call' },
+          { id: 'keyboard_smash', name: '怒砸機械鍵盤', icon: '⌨️', type: 'keyboard' },
+          { id: 'stamp_reject', name: '超大駁回印章', icon: '🛑', type: 'stamp' },
+          { id: 'offwork_bell', name: '下班爽打卡鐘', icon: '🍻', type: 'offwork' },
+          { id: 'speech_work', name: '怒嗆改需求', icon: '📢', type: 'speech', text: '改了又改，你到底懂不懂需求啊？！' }
+        ]
+      },
+      dead: {
+        id: 'dead',
+        name: '生無可戀',
+        sub: '躺平擺爛',
+        avatar: '🫠',
+        quote: '「今天也是一條不想翻身的特級鹹魚...」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #94a3b8, #475569 62%, #1e293b 100%)',
+        shadowHex: '#0f172a',
+        accentHex: '#94a3b8',
+        auraColor: 'rgba(148, 163, 184, 0.28)',
+        emojis: ['🫠', '🥀', '🦥', '🐟', '💤', '💧', '🍃', '👻'],
+        callouts: ['🫠 人間不值得', '🥀 算了隨便啦', '💤 我要原地躺平', '👻 靈魂已登出', '🐟 鹹魚翻不動', '🍃 錢包空空'],
+        vibrate: [20, 90, 20, 100],
+        sounds: [
+          { id: 'erhu_sad', name: '悽慘悲涼二胡', icon: '🎻', type: 'erhu' },
+          { id: 'sigh_deep', name: '無奈深嘆氣', icon: '😮‍💨', type: 'sigh' },
+          { id: 'fish_flop', name: '鹹魚翻不動', icon: '🐟', type: 'flop' },
+          { id: 'empty_wind', name: '窮困淒涼風吹', icon: '💸', type: 'wind' },
+          { id: 'speech_quit', name: '回火星睡覺', icon: '🛌', type: 'speech', text: '人間太累了，我要回火星睡覺。' }
+        ]
+      },
+      glitch: {
+        id: 'glitch',
+        name: '腦袋當機',
+        sub: '荒謬藍屏',
+        avatar: '🫨',
+        quote: '「大腦 CPU 使用率 999%，理智線已斷裂。」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #c084fc, #9333ea 62%, #4c1d95 100%)',
+        shadowHex: '#2e1065',
+        accentHex: '#a855f7',
+        auraColor: 'rgba(168, 85, 247, 0.38)',
+        emojis: ['🫨', '❓', '🤯', '🌀', '🛸', '👀', '🧠', '⚠️'],
+        callouts: ['⚠️ 404 NOT FOUND', '❓ 蛤？你說啥？', '🧠 理智線啪裂！', '🌀 大腦格式化', '🦅 尷尬癌發作', '💻 藍屏死機中'],
+        vibrate: [120, 40, 25, 40, 160],
+        sounds: [
+          { id: 'bsod_beep', name: '死機藍屏音', icon: '💻', type: 'bsod' },
+          { id: 'snap_mind', name: '理智線啪裂', icon: '🧠', type: 'snap' },
+          { id: 'crow_awkward', name: '尷尬冷場烏鴉', icon: '🦅', type: 'crow' },
+          { id: 'kazoo_fail', name: '魔性走音笛', icon: '🪈', type: 'kazoo' },
+          { id: 'speech_huh', name: '黑人問號蛤', icon: '❓', type: 'speech', text: '蛤？你剛剛到底說了什麼鬼話？' }
+        ]
+      },
+      crazy: {
+        id: 'crazy',
+        name: '瘋癲亢奮',
+        sub: '多巴胺狂歡',
+        avatar: '🎉',
+        quote: '「多巴胺徹底失控！管他的嗨起來！」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #fbbf24, #f59e0b 62%, #92400e 100%)',
+        shadowHex: '#451a03',
+        accentHex: '#eab308',
+        auraColor: 'rgba(234, 179, 8, 0.4)',
+        emojis: ['🎉', '🐔', '🥳', '🎺', '✨', '🎈', '🤪', '💃'],
+        callouts: ['🐔 尖叫雞出動！', '🎉 嗨到外太空！', '🥳 徹底瘋啦！', '🎺 拉炮放起來！', '🌀 彈簧亂跳！', '💃 搖勒搖勒！'],
+        vibrate: [30, 20, 30, 20, 40, 20, 90],
+        sounds: [
+          { id: 'chicken_scream', name: '魔性尖叫雞', icon: '🐔', type: 'chicken' },
+          { id: 'party_horn', name: '開趴拉炮喇叭', icon: '🎉', type: 'horn' },
+          { id: 'spring_boing', name: '超級彈簧啵啵', icon: '🌀', type: 'spring' },
+          { id: 'wild_scream', name: '失控高音慘叫', icon: '😱', type: 'scream' },
+          { id: 'speech_laugh', name: '反派癲狂大笑', icon: '🤣', type: 'speech', text: '哈哈哈哈哈！我已經徹底瘋啦！' }
+        ]
+      },
+      meme: {
+        id: 'meme',
+        name: '迷因搞笑',
+        sub: '整人魔音',
+        avatar: '🤡',
+        quote: '「只要我不尷尬，尷尬的就是別人！」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #fb7185, #e11d48 62%, #881337 100%)',
+        shadowHex: '#4c0519',
+        accentHex: '#f43f5e',
+        auraColor: 'rgba(244, 63, 94, 0.35)',
+        emojis: ['💨', '💩', '🦆', '🍌', '🐹', '🤡', '🤪', '📢'],
+        callouts: ['💨 噗滋超大聲！', '🦆 嘎嘎嘎嘎！', '🍌 滑倒摔個狗吃屎', '🐹 啊啊啊啊啊！', '💩 有毒氣警報！'],
+        vibrate: [60, 30, 60, 30, 120],
+        sounds: [
+          { id: 'super_fart', name: '噗滋超級放屁', icon: '💨', type: 'fart' },
+          { id: 'quack_duck', name: '魔性嘎嘎鴨', icon: '🦆', type: 'duck' },
+          { id: 'banana_slip', name: '香蕉皮滑倒', icon: '🍌', type: 'slip' },
+          { id: 'groundhog_roar', name: '咆哮土撥鼠', icon: '🐹', type: 'groundhog' },
+          { id: 'speech_noob', name: '嘲諷太遜啦', icon: '🤡', type: 'speech', text: '你就這點本事嗎？太遜了吧！' }
+        ]
+      },
+      animal: {
+        id: 'animal',
+        name: '萌寵洗腦',
+        sub: '可愛療癒',
+        avatar: '🐱',
+        quote: '「卡皮巴拉情緒穩定，吸口貓咪瞬間回血～」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #34d399, #059669 62%, #064e3b 100%)',
+        shadowHex: '#022c22',
+        accentHex: '#10b981',
+        auraColor: 'rgba(16, 185, 129, 0.35)',
+        emojis: ['🦫', '🐱', '🐕', '🐦', '🍊', '🐾', '✨', '🦖'],
+        callouts: ['🦫 Capybara~', '🐱 喵嗚！蛤？！', '🐕 柴犬魔性汪！', '🐦 鴿子點頭ググ', '🍊 水豚頂橘子'],
+        vibrate: [25, 35, 25],
+        sounds: [
+          { id: 'capybara_song', name: '水豚洗腦歌', icon: '🦫', type: 'capybara' },
+          { id: 'doge_bark', name: '柴犬魔性汪', icon: '🐕', type: 'doge' },
+          { id: 'pigeon_coo', name: '鴿子點頭波', icon: '🐦', type: 'pigeon' },
+          { id: 'dino_roar', name: '暴龍嗷嗚叫', icon: '🦖', type: 'dino' },
+          { id: 'speech_cat', name: '貓咪震驚蛤', icon: '🐱', type: 'speech', text: '喵嗚！蛤？！' }
+        ]
+      },
+      game: {
+        id: 'game',
+        name: '復古電玩',
+        sub: '8-Bit 街機',
+        avatar: '🕹️',
+        quote: '「吃下無敵星星，把生活裡的怪物全部踩扁！」',
+        btnGrad: 'radial-gradient(circle at 35% 28%, #818cf8, #4f46e5 62%, #312e81 100%)',
+        shadowHex: '#1e1b4b',
+        accentHex: '#6366f1',
+        auraColor: 'rgba(99, 102, 241, 0.38)',
+        emojis: ['🍄', '🪙', '⭐', '👾', '🕹️', '🏆', '🆙', '💥'],
+        callouts: ['🪙 +999 金幣！', '🍄 1-UP 無敵升級！', '👾 踩扁小怪物！', '🏆 破關斬將！', '☠️ GAME OVER!'],
+        vibrate: [30, 30, 80],
+        sounds: [
+          { id: 'coin_ding', name: '狂吃金幣叮鈴', icon: '🪙', type: 'coin' },
+          { id: 'mario_jump', name: '超級瑪利跳躍', icon: '🍄', type: 'jump' },
+          { id: 'power_up', name: '無敵星星升級', icon: '🎺', type: 'powerup' },
+          { id: 'stomp_mob', name: '踩扁怪物啵', icon: '👾', type: 'stomp' },
+          { id: 'game_over', name: '慘烈GameOver', icon: '☠️', type: 'gameover' }
+        ]
+      }
+    };
+
+    // 成就稱號階梯
+    const RANK_LADDER = [
+      { min: 0, title: '按鍵見習生 🍼' },
+      { min: 15, title: '摸魚薪水小偷 🦥' },
+      { min: 40, title: '辦公室噪音元兇 📢' },
+      { min: 80, title: '狂暴鍵盤毀滅者 🔨' },
+      { min: 150, title: '理智斷線狂人 ⚡' },
+      { min: 300, title: '宇宙級解壓霸主 👑' },
+      { min: 500, title: '傳說中的核爆神之手 ☢️' }
+    ];
+
+    /* ============================================================
+       2. Web Audio API 全能合成器 (支援 20+ 種獨立物理音效 + 語音)
+       ============================================================ */
+    let audioCtx = null;
+    let pitchMultiplier = 1.0;
+    let isMuted = false;
+
+    function ensureAudioCtx() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    const SynthEngine = {
+      getRate() {
+        return (Math.random() * 0.12 - 0.06) + pitchMultiplier;
+      },
+
+      // 1. 毀滅大爆炸
+      explosion(isNuke = false) {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const dur = isNuke ? 1.6 : 0.75;
+
+        const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < buf.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (buf.length * 0.45));
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400 * rate, now);
+        filter.frequency.exponentialRampToValueAtTime(35 * rate, now + dur);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(isNuke ? 1.2 : 0.9, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+
+        const sub = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(180 * rate, now);
+        sub.frequency.exponentialRampToValueAtTime(22 * rate, now + dur * 0.8);
+        subGain.gain.setValueAtTime(0.9, now);
+        subGain.gain.exponentialRampToValueAtTime(0.01, now + dur * 0.8);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        sub.connect(subGain);
+        subGain.connect(ctx.destination);
+
+        noise.start(now);
+        sub.start(now);
+        noise.stop(now + dur);
+        sub.stop(now + dur * 0.8);
+      },
+
+      // 2. 狂摔大瓷盤
+      dish() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [2800, 4200, 5600, 7400, 9100].forEach((f, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = idx % 2 === 0 ? 'sawtooth' : 'square';
+          osc.frequency.setValueAtTime(f * rate, now);
+          osc.frequency.exponentialRampToValueAtTime(350, now + 0.35);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.36);
+        });
+      },
+
+      // 3. 天打雷劈轟
+      thunder() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        // 高頻閃電劈啪 + 低頻雷鳴
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(1800 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(45 * rate, now + 0.45);
+        g.gain.setValueAtTime(0.6, now);
+        g.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.46);
+        this.explosion(false);
+      },
+
+      // 4. 狂暴咆哮 / 暴龍叫
+      roar(isDino = false) {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate() * (isDino ? 0.7 : 1.0);
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220 * rate, now);
+        osc.frequency.linearRampToValueAtTime(340 * rate, now + 0.12);
+        osc.frequency.exponentialRampToValueAtTime(65 * rate, now + 0.55);
+
+        const lfo = ctx.createOscillator();
+        const lfoG = ctx.createGain();
+        lfo.frequency.value = 32;
+        lfoG.gain.value = 45;
+        lfo.connect(osc.frequency);
+        lfo.start(now);
+        lfo.stop(now + 0.55);
+
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.56);
+      },
+
+      // 5. 悲涼二胡
+      erhu() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(440 * rate, now);
+        osc.frequency.linearRampToValueAtTime(370 * rate, now + 0.3);
+        osc.frequency.linearRampToValueAtTime(293.6 * rate, now + 0.72);
+
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.frequency.value = 6.5;
+        lfoGain.gain.value = 15 * rate;
+        lfo.connect(osc.frequency);
+        lfo.start(now);
+        lfo.stop(now + 0.75);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 920;
+        filter.Q.value = 2.4;
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.76);
+      },
+
+      // 6. 嘆氣
+      sigh() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const dur = 0.55;
+        const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < buf.length; i++) d[i] = Math.random() * 2 - 1;
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(620 * rate, now);
+        filter.frequency.linearRampToValueAtTime(240 * rate, now + dur);
+        filter.Q.value = 3.0;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.linearRampToValueAtTime(0.38, now + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
+        noise.stop(now + dur);
+      },
+
+      // 7. 鹹魚拍打
+      flop() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(125 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(42 * rate, now + 0.22);
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.23);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+      },
+
+      // 8. 窮困風吹
+      wind() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const dur = 0.6;
+        const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < buf.length; i++) data[i] = Math.random() * 2 - 1;
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(380 * rate, now);
+        filter.frequency.linearRampToValueAtTime(680 * rate, now + 0.3);
+        filter.frequency.linearRampToValueAtTime(280 * rate, now + dur);
+        filter.Q.value = 5.0;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.linearRampToValueAtTime(0.38, now + 0.25);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
+        noise.stop(now + dur);
+      },
+
+      // 9. 奪命連環 CALL
+      call() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [0, 0.11, 0.22].forEach((off) => {
+          const t = now + off;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1250 * rate, t);
+          osc.frequency.setValueAtTime(1650 * rate, t + 0.045);
+          gain.gain.setValueAtTime(0.38, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.095);
+        });
+      },
+
+      // 10. 怒砸鍵盤
+      keyboard() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        for (let i = 0; i < 4; i++) {
+          const t = now + i * 0.035;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime((1050 + Math.random() * 750) * rate, t);
+          gain.gain.setValueAtTime(0.38, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.028);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.032);
+        }
+      },
+
+      // 11. 駁回印章
+      stamp() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(280 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(32 * rate, now + 0.26);
+        gain.gain.setValueAtTime(0.85, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.29);
+      },
+
+      // 12. 下班打卡鐘
+      offwork() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [880, 1174.6].forEach((freq, i) => {
+          const t = now + i * 0.14;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq * rate, t);
+          gain.gain.setValueAtTime(0.4, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.43);
+        });
+      },
+
+      // 13. 藍屏死機
+      bsod() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440 * rate, now);
+        osc.frequency.setValueAtTime(220 * rate, now + 0.11);
+        osc.frequency.setValueAtTime(110 * rate, now + 0.22);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.46);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.47);
+      },
+
+      // 14. 理智線啪裂
+      snap() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(2400 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(110 * rate, now + 0.13);
+        gain.gain.setValueAtTime(0.65, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      },
+
+      // 15. 尷尬烏鴉
+      crow() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(690 * rate, now);
+        osc.frequency.linearRampToValueAtTime(530 * rate, now + 0.38);
+        filter.type = 'bandpass';
+        filter.frequency.value = 1150 * rate;
+        filter.Q.value = 3.2;
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.41);
+      },
+
+      // 16. 卡祖笛走音
+      kazoo() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(330 * rate, now);
+        osc.frequency.linearRampToValueAtTime(470 * rate, now + 0.14);
+        osc.frequency.linearRampToValueAtTime(250 * rate, now + 0.35);
+        gain.gain.setValueAtTime(0.38, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.37);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.38);
+      },
+
+      // 17. 魔性尖叫雞
+      chicken() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc1.type = 'sawtooth';
+        osc2.type = 'square';
+        osc1.frequency.setValueAtTime(290 * rate, now);
+        osc1.frequency.exponentialRampToValueAtTime(1450 * rate, now + 0.14);
+        osc1.frequency.exponentialRampToValueAtTime(420 * rate, now + 0.52);
+        osc2.frequency.setValueAtTime(295 * rate, now);
+        osc2.frequency.exponentialRampToValueAtTime(1465 * rate, now + 0.14);
+        osc2.frequency.exponentialRampToValueAtTime(410 * rate, now + 0.52);
+        gain.gain.setValueAtTime(0.38, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.54);
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.55);
+        osc2.stop(now + 0.55);
+      },
+
+      // 18. 開趴拉炮喇叭
+      horn() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [523.25, 659.25, 783.99].forEach((freq) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq * rate, now);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.36);
+        });
+      },
+
+      // 19. 彈簧啵啵
+      spring() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(920 * rate, now + 0.27);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.29);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      },
+
+      // 20. 魔性慘叫
+      scream() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320 * rate, now);
+        osc.frequency.linearRampToValueAtTime(980 * rate, now + 0.14);
+        osc.frequency.linearRampToValueAtTime(540 * rate, now + 0.5);
+        const lfo = ctx.createOscillator();
+        const lfoG = ctx.createGain();
+        lfo.frequency.value = 20;
+        lfoG.gain.value = 65 * rate;
+        lfo.connect(osc.frequency);
+        lfo.start(now);
+        lfo.stop(now + 0.5);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.52);
+      },
+
+      // 21. 超級放屁
+      fart() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const dur = 0.44;
+        const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < buf.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (buf.length * 0.7));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(330 * rate, now);
+        filter.frequency.exponentialRampToValueAtTime(65 * rate, now + dur);
+
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(115 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(34 * rate, now + dur);
+        const oscGain = ctx.createGain();
+        oscGain.gain.setValueAtTime(0.5, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(0.95, now);
+        master.gain.exponentialRampToValueAtTime(0.01, now + dur);
+
+        noise.connect(filter);
+        filter.connect(master);
+        osc.connect(oscGain);
+        oscGain.connect(master);
+        master.connect(ctx.destination);
+        noise.start(now);
+        osc.start(now);
+        noise.stop(now + dur);
+        osc.stop(now + dur);
+      },
+
+      // 22. 嘎嘎鴨
+      duck() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(390 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(240 * rate, now + 0.22);
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(920 * rate, now);
+        filter.Q.value = 4.2;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.42, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.24);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      },
+
+      // 23. 香蕉滑倒
+      slip() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(360 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(1450 * rate, now + 0.2);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.23);
+        setTimeout(() => this.stamp(), 160);
+      },
+
+      // 24. 土撥鼠咆哮
+      groundhog() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(520 * rate, now);
+        osc.frequency.linearRampToValueAtTime(1120 * rate, now + 0.38);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.46);
+      },
+
+      // 25. 水豚洗腦歌
+      capybara() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [261.6, 329.6, 392.0, 523.2].forEach((freq, idx) => {
+          const t = now + idx * 0.075;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq * rate, t);
+          gain.gain.setValueAtTime(0.36, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.07);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.075);
+        });
+      },
+
+      // 26. 柴犬汪汪
+      doge() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(460 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(180 * rate, now + 0.16);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.17);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      },
+
+      // 27. 鴿子點頭
+      pigeon() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [0, 0.11].forEach((off) => {
+          const t = now + off;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(325 * rate, t);
+          osc.frequency.linearRampToValueAtTime(290 * rate, t + 0.09);
+          gain.gain.setValueAtTime(0.36, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.105);
+        });
+      },
+
+      // 28. 瑪利歐跳躍
+      jump() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(145 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(640 * rate, now + 0.2);
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.23);
+      },
+
+      // 29. 吃金幣叮鈴
+      coin() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.7 * rate, now);
+        osc.frequency.setValueAtTime(1318.5 * rate, now + 0.075);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.34);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      },
+
+      // 30. 無敵升級
+      powerup() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [330, 392, 659, 523, 587, 784].forEach((freq, idx) => {
+          const t = now + idx * 0.048;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq * rate, t);
+          gain.gain.setValueAtTime(0.28, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.085);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.09);
+        });
+      },
+
+      // 31. 踩扁怪物
+      stomp() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(260 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(42 * rate, now + 0.16);
+        gain.gain.setValueAtTime(0.42, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      },
+
+      // 32. Game Over
+      gameover() {
+        if (isMuted) return;
+        const ctx = ensureAudioCtx();
+        const now = ctx.currentTime;
+        const rate = this.getRate();
+        [440, 415, 392, 349].forEach((freq, idx) => {
+          const t = now + idx * 0.11;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq * rate, t);
+          gain.gain.setValueAtTime(0.22, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.13);
+        });
+      },
+
+      // 33. Web Speech API 真人誇張語音朗讀
+      speak(text) {
+        if (isMuted) return;
+        if (!('speechSynthesis' in window)) {
+          this.chicken();
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-TW';
+        utter.rate = Math.min(2.0, Math.max(0.6, 1.35 * pitchMultiplier));
+        utter.pitch = Math.min(2.0, Math.max(0.4, 1.2 * pitchMultiplier));
+        window.speechSynthesis.speak(utter);
+      }
+    };
+
+    /* ============================================================
+       3. 升級版 Canvas 物理引擎 (Emoji 重力、地面與牆壁反彈、火花)
+       ============================================================ */
+    const canvas = document.getElementById('particle-canvas');
+    const cCtx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class PhysicsEmoji {
+      constructor(x, y, emoji, powerScale = 1.0) {
+        this.x = x;
+        this.y = y;
+        this.emoji = emoji;
+        const speed = (9 + Math.random() * 13) * powerScale;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.1;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.gravity = 0.52;
+        this.bounce = -0.52;
+        this.floor = canvas.height - 24;
+        this.size = (24 + Math.random() * 18) * Math.min(1.35, powerScale);
+        this.rot = Math.random() * 360;
+        this.rotSpeed = (Math.random() - 0.5) * 18;
+        this.alpha = 1.0;
+        this.decay = 0.011 + Math.random() * 0.01;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += this.gravity;
+        this.rot += this.rotSpeed;
+
+        // 左右牆壁反彈
+        if (this.x < 20 || this.x > canvas.width - 20) {
+          this.vx *= -0.75;
+          this.x = Math.max(20, Math.min(canvas.width - 20, this.x));
+        }
+
+        // 地面反彈
+        if (this.y >= this.floor) {
+          this.y = this.floor;
+          this.vy *= this.bounce;
+          this.vx *= 0.82;
+        }
+        this.alpha -= this.decay;
+      }
+
+      draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.alpha);
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rot * Math.PI) / 180);
+        ctx.font = `${this.size}px 'Noto Color Emoji', sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.emoji, 0, 0);
+        ctx.restore();
+      }
+    }
+
+    function spawnParticles(x, y, emojiList, count = 14, powerScale = 1.0) {
+      for (let i = 0; i < count; i++) {
+        const em = emojiList[Math.floor(Math.random() * emojiList.length)];
+        particles.push(new PhysicsEmoji(x + (Math.random() - 0.5) * 36, y + (Math.random() - 0.5) * 20, em, powerScale));
+      }
+    }
+
+    function animateCanvas() {
+      cCtx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw(cCtx);
+        if (p.alpha <= 0) particles.splice(i, 1);
+      }
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+
+    /* ============================================================
+       4. 核心狀態與戲劇化視覺反饋引擎
+       ============================================================ */
+    let currentMood = MOOD_DATABASE.rage;
+    let currentSound = currentMood.sounds[0];
+    let isBlindBoxMode = false;
+    let isDarkMode = true;
+
+    let combo = 0;
+    let totalHits = 0;
+    let rageMeter = 0; // 0 ~ 100
+    let isUltraRage = false;
+    let comboResetTimeout = null;
+    let holdFireTimeout = null;
+    let holdFireInterval = null;
+    let autoFireInterval = null;
+    let isPointerDown = false;
+
+    // 自訂出氣筒與台詞狀態
+    let customTargetName = '';
+    let customShoutText = '';
+
+    // DOM 參照
+    const appBody = document.getElementById('app-body');
+    const flashOverlay = document.getElementById('flash-overlay');
+    const speedLines = document.getElementById('speed-lines');
+    const crackSvg = document.getElementById('crack-svg');
+    const crackStage2 = document.getElementById('crack-stage-2');
+    const comicBox = document.getElementById('comic-callout-box');
+    const shockwaveContainer = document.getElementById('shockwave-container');
+
+    const moodAvatarBox = document.getElementById('mood-avatar-box');
+    const appHeading = document.getElementById('app-heading');
+    const totalHitsBadge = document.getElementById('total-hits-badge');
+    const userRankTitle = document.getElementById('user-rank-title');
+    const rageBarFill = document.getElementById('rage-bar-fill');
+    const rageBarText = document.getElementById('rage-bar-text');
+    const nukeBtn = document.getElementById('nuke-climax-btn');
+
+    const comboHeader = document.getElementById('combo-header');
+    const comboNumber = document.getElementById('combo-number');
+    const comboFireTag = document.getElementById('combo-fire-tag');
+    const moodQuoteText = document.getElementById('mood-quote-text');
+
+    const bellAura = document.getElementById('bell-aura');
+    const bellBasePlate = document.getElementById('bell-base-plate');
+    const mainBellBtn = document.getElementById('main-bell-btn');
+    const bellMainIcon = document.getElementById('bell-main-icon');
+    const bellMainTitle = document.getElementById('bell-main-title');
+    const bellSubHint = document.getElementById('bell-sub-hint');
+    const customTargetSticker = document.getElementById('custom-target-sticker');
+    const targetStickerName = document.getElementById('target-sticker-name');
+
+    // 產生擴散衝擊波光環
+    function spawnShockwave(colorHex) {
+      const ring = document.createElement('div');
+      ring.className = 'shockwave-ring w-56 h-56 sm:w-64 sm:h-64';
+      ring.style.borderColor = colorHex || currentMood.accentHex;
+      shockwaveContainer.appendChild(ring);
+      setTimeout(() => ring.remove(), 560);
+    }
+
+    // 產生漫畫感大字報
+    function spawnComicCallout(customText = null) {
+      let text = customText;
+      if (!text) {
+        if (customTargetName && Math.random() < 0.42) {
+          text = `💥 狂扁${customTargetName}！`;
+        } else {
+          const list = currentMood.callouts;
+          text = list[Math.floor(Math.random() * list.length)];
+        }
+      }
+      const el = document.createElement('div');
+      el.className = 'comic-callout font-black text-2xl sm:text-3xl text-amber-300 whitespace-nowrap tracking-wider';
+      el.textContent = text;
+      el.style.left = `${32 + Math.random() * 36}%`;
+      el.style.top = `${36 + Math.random() * 14}%`;
+      comicBox.appendChild(el);
+      setTimeout(() => el.remove(), 860);
+    }
+
+    // 觸發誇張戲劇性視覺反饋
+    function triggerDramaticVisuals(intensity = 'normal') {
+      const isExtreme = intensity === 'heavy' || isUltraRage;
+
+      // 1. 螢幕震動與 RGB 色差
+      appBody.classList.remove('anim-shake-mild', 'anim-shake-heavy', 'rgb-glitch');
+      void appBody.offsetWidth;
+      appBody.classList.add(isExtreme ? 'anim-shake-heavy' : 'anim-shake-mild');
+      if (isExtreme) appBody.classList.add('rgb-glitch');
+
+      // 2. 閃光與熱血集中線
+      flashOverlay.style.opacity = isExtreme ? '0.55' : '0.2';
+      setTimeout(() => { flashOverlay.style.opacity = '0'; }, isExtreme ? 95 : 55);
+
+      if (combo >= 8 || isExtreme) {
+        speedLines.style.opacity = '1';
+        setTimeout(() => { speedLines.style.opacity = '0'; }, 240);
+      }
+
+      // 3. 階段式玻璃裂紋
+      if (rageMeter >= 45 || isExtreme) {
+        crackSvg.style.opacity = '1';
+        if (rageMeter >= 80 || isUltraRage) {
+          crackStage2.classList.remove('hidden');
+        } else {
+          crackStage2.classList.add('hidden');
+        }
+        setTimeout(() => { crackSvg.style.opacity = '0'; }, 520);
+      }
+
+      // 4. 衝擊波與漫畫大字報
+      spawnShockwave(currentMood.accentHex);
+      spawnComicCallout();
+
+      // 5. 手機硬體震動回饋
+      if ('vibrate' in navigator) {
+        navigator.vibrate(isExtreme ? [70, 30, 110, 30, 150] : currentMood.vibrate);
+      }
+    }
+
+    // 執行音效路由
+    function playSoundItem(soundObj) {
+      // 若使用者有設定自訂咆哮台詞，且點擊的是語音類或隨機機率觸發
+      if (customShoutText && (soundObj.type === 'speech' || Math.random() < 0.25)) {
+        SynthEngine.speak(customShoutText);
+        return;
+      }
+
+      switch (soundObj.type) {
+        case 'explosion': SynthEngine.explosion(false); break;
+        case 'dish': SynthEngine.dish(); break;
+        case 'thunder': SynthEngine.thunder(); break;
+        case 'roar': SynthEngine.roar(false); break;
+        case 'dino': SynthEngine.roar(true); break;
+        case 'erhu': SynthEngine.erhu(); break;
+        case 'sigh': SynthEngine.sigh(); break;
+        case 'flop': SynthEngine.flop(); break;
+        case 'wind': SynthEngine.wind(); break;
+        case 'call': SynthEngine.call(); break;
+        case 'keyboard': SynthEngine.keyboard(); break;
+        case 'stamp': SynthEngine.stamp(); break;
+        case 'offwork': SynthEngine.offwork(); break;
+        case 'bsod': SynthEngine.bsod(); break;
+        case 'snap': SynthEngine.snap(); break;
+        case 'crow': SynthEngine.crow(); break;
+        case 'kazoo': SynthEngine.kazoo(); break;
+        case 'chicken': SynthEngine.chicken(); break;
+        case 'horn': SynthEngine.horn(); break;
+        case 'spring': SynthEngine.spring(); break;
+        case 'scream': SynthEngine.scream(); break;
+        case 'fart': SynthEngine.fart(); break;
+        case 'duck': SynthEngine.duck(); break;
+        case 'slip': SynthEngine.slip(); break;
+        case 'groundhog': SynthEngine.groundhog(); break;
+        case 'capybara': SynthEngine.capybara(); break;
+        case 'doge': SynthEngine.doge(); break;
+        case 'pigeon': SynthEngine.pigeon(); break;
+        case 'jump': SynthEngine.jump(); break;
+        case 'coin': SynthEngine.coin(); break;
+        case 'powerup': SynthEngine.powerup(); break;
+        case 'stomp': SynthEngine.stomp(); break;
+        case 'gameover': SynthEngine.gameover(); break;
+        case 'speech': SynthEngine.speak(soundObj.text); break;
+        default: SynthEngine.explosion(false);
+      }
+    }
+
+    // 核心按壓觸發函式
+    function triggerBellSmash(isRapidFire = false) {
+      let activeSound = currentSound;
+      let activeMood = currentMood;
+
+      // 盲盒模式：從 8 大心情 40 種音效隨機抽取
+      if (isBlindBoxMode) {
+        const moodKeys = Object.keys(MOOD_DATABASE);
+        const randMoodKey = moodKeys[Math.floor(Math.random() * moodKeys.length)];
+        activeMood = MOOD_DATABASE[randMoodKey];
+        activeSound = activeMood.sounds[Math.floor(Math.random() * activeMood.sounds.length)];
+        bellMainIcon.textContent = activeSound.icon;
+        bellMainTitle.textContent = `🎲 ${activeSound.name}`;
+      }
+
+      // 1. 播放音效
+      playSoundItem(activeSound);
+
+      // 2. 鈴鐺誇張壓扁 Squash & Stretch 動畫
+      const squashClass = (isRapidFire || isUltraRage) ? 'squash-extreme' : 'squash-mild';
+      mainBellBtn.classList.add(squashClass);
+      bellMainIcon.style.transform = `scale(1.35) rotate(${(Math.random() - 0.5) * 35}deg)`;
+      setTimeout(() => {
+        mainBellBtn.classList.remove('squash-mild', 'squash-extreme');
+        bellMainIcon.style.transform = 'scale(1) rotate(0deg)';
+      }, 85);
+
+      // 3. 觸發戲劇性視覺與震動
+      triggerDramaticVisuals(isRapidFire ? 'heavy' : 'normal');
+
+      // 4. 噴射物理 Emoji 噴泉
+      const rect = mainBellBtn.getBoundingClientRect();
+      const cRect = canvas.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2 - cRect.left;
+      const centerY = rect.top + rect.height / 2 - cRect.top;
+      spawnParticles(centerX, centerY, activeMood.emojis, isUltraRage ? 22 : 13, isUltraRage ? 1.3 : 1.0);
+
+      // 5. 更新連擊、總擊數與暴走能量條
+      updateComboAndRage();
+    }
+
+    function updateComboAndRage() {
+      combo++;
+      totalHits++;
+      comboNumber.textContent = combo;
+      totalHitsBadge.textContent = `累積 ${totalHits} 擊`;
+
+      // Combo 數字彈跳放大
+      const scaleVal = Math.min(1.45, 1 + combo * 0.012);
+      comboHeader.style.transform = `scale(${scaleVal})`;
+
+      // 更新稱號
+      let currentRank = RANK_LADDER[0].title;
+      for (let i = RANK_LADDER.length - 1; i >= 0; i--) {
+        if (totalHits >= RANK_LADDER[i].min) {
+          currentRank = RANK_LADDER[i].title;
+          break;
+        }
+      }
+      userRankTitle.textContent = `稱號：${currentRank}`;
+
+      // 能量累積
+      rageMeter = Math.min(100, rageMeter + 4.5);
+      rageBarFill.style.width = `${rageMeter}%`;
+
+      if (rageMeter >= 100) {
+        rageBarText.textContent = '☢️ 能量 100% 滿載！點擊右側【終極核爆】清場！';
+        nukeBtn.classList.remove('hidden');
+        if (!isUltraRage) {
+          isUltraRage = true;
+          comboFireTag.classList.remove('hidden');
+          appBody.classList.add('ultra-rage-mode');
+        }
+      } else {
+        rageBarText.textContent = `舒壓暴走能量 ${Math.floor(rageMeter)}% (集滿解鎖核爆清場)`;
+      }
+
+      // 2 秒未點擊則連擊中斷、能量緩慢消退
+      clearTimeout(comboResetTimeout);
+      comboResetTimeout = setTimeout(() => {
+        combo = 0;
+        comboNumber.textContent = '0';
+        comboHeader.style.transform = 'scale(1)';
+        comboFireTag.classList.add('hidden');
+      }, 2000);
+    }
+
+    // ☢️ 100% 終極大暴走核爆清場大招 (Ultimate Nuke Climax)
+    function triggerUltimateNuke() {
+      // 播放雙重核爆重低音 + 升級號角 + 語音歡呼
+      SynthEngine.explosion(true);
+      setTimeout(() => SynthEngine.dish(), 180);
+      setTimeout(() => SynthEngine.powerup(), 450);
+      setTimeout(() => {
+        SynthEngine.speak(customTargetName ? `${customTargetName}已經被徹底轟飛到外太空啦！太爽啦！` : '壓力徹底清零！煩惱全部灰飛煙滅啦！');
+      }, 550);
+
+      // 全螢幕末日級別搖晃與閃光
+      appBody.classList.remove('anim-shake-mild', 'anim-shake-heavy', 'anim-shake-nuke');
+      void appBody.offsetWidth;
+      appBody.classList.add('anim-shake-nuke');
+
+      flashOverlay.style.opacity = '0.95';
+      setTimeout(() => { flashOverlay.style.opacity = '0'; }, 350);
+
+      // 連續 4 道巨大衝擊波
+      ['#ef4444', '#f59e0b', '#eab308', '#ffffff'].forEach((col, idx) => {
+        setTimeout(() => spawnShockwave(col), idx * 110);
+      });
+
+      // 噴發 85 顆全心情狂歡 Emoji 煙火
+      const allEmojis = ['💥', '☢️', '🎉', '🔥', '🏆', '✨', '👑', '🚀', '🥳', '🪙'];
+      spawnParticles(canvas.width / 2, canvas.height / 2, allEmojis, 85, 1.55);
+
+      // 超大漫畫字報
+      spawnComicCallout('☢️ 終極核爆！煩惱清零！🎉');
+
+      if ('vibrate' in navigator) {
+        navigator.vibrate([150, 50, 200, 50, 350]);
+      }
+
+      // 重置暴走能量條並獎勵 50 擊
+      totalHits += 50;
+      totalHitsBadge.textContent = `累積 ${totalHits} 擊`;
+      rageMeter = 0;
+      isUltraRage = false;
+      rageBarFill.style.width = '0%';
+      rageBarText.textContent = '✨ 煩惱已徹底轟飛！神清氣爽 0%';
+      nukeBtn.classList.add('hidden');
+      appBody.classList.remove('ultra-rage-mode');
+    }
+
+    nukeBtn.addEventListener('click', triggerUltimateNuke);
+
+    /* ============================================================
+       5. 介面渲染與八大心情切換
+       ============================================================ */
+    const moodTabsContainer = document.getElementById('mood-tabs-container');
+    const soundMatrixTitle = document.getElementById('sound-matrix-title');
+    const soundMatrixGrid = document.getElementById('sound-matrix-grid');
+
+    function renderMoodTabs() {
+      moodTabsContainer.innerHTML = '';
+      Object.values(MOOD_DATABASE).forEach((m) => {
+        const isSelected = m.id === currentMood.id;
+        const btn = document.createElement('button');
+        btn.className = `flex-shrink-0 px-3 py-1.5 rounded-2xl border-2 transition-all active:scale-95 flex items-center gap-2 ${
+          isSelected
+            ? 'bg-slate-800 text-white shadow-lg'
+            : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+        }`;
+        if (isSelected) {
+          btn.style.borderColor = m.accentHex;
+          btn.style.boxShadow = `0 4px 15px ${m.auraColor}`;
+        }
+        btn.innerHTML = `
+          <span class="text-xl">${m.avatar}</span>
+          <div class="text-left">
+            <div class="text-xs font-black leading-none">${m.name}</div>
+            <div class="text-[9px] font-bold opacity-75 mt-0.5">${m.sub}</div>
+          </div>
+        `;
+        btn.addEventListener('click', () => {
+          selectMood(m.id);
+          if ('vibrate' in navigator) navigator.vibrate(20);
+        });
+        moodTabsContainer.appendChild(btn);
+      });
+    }
+
+    function renderSoundMatrix() {
+      soundMatrixGrid.innerHTML = '';
+      currentMood.sounds.forEach((snd) => {
+        const isSelected = !isBlindBoxMode && snd.id === currentSound.id;
+        const btn = document.createElement('button');
+        btn.className = `flex flex-col items-center justify-center p-2 rounded-xl text-center border transition-all active:scale-90 ${
+          isSelected
+            ? 'bg-slate-800 border-white text-white font-black shadow-md ring-2 ring-white/30'
+            : 'bg-slate-950/80 hover:bg-slate-800/60 border-slate-800 text-slate-400 font-bold'
+        }`;
+        btn.innerHTML = `
+          <span class="text-xl sm:text-2xl mb-0.5">${snd.icon}</span>
+          <span class="text-[10px] truncate w-full leading-tight">${snd.name}</span>
+        `;
+        btn.addEventListener('click', () => {
+          if (isBlindBoxMode) toggleBlindBox(false);
+          currentSound = snd;
+          bellMainIcon.textContent = snd.icon;
+          bellMainTitle.textContent = snd.name;
+          renderSoundMatrix();
+          triggerBellSmash(false);
+        });
+        soundMatrixGrid.appendChild(btn);
+      });
+    }
+
+    function selectMood(moodKey) {
+      currentMood = MOOD_DATABASE[moodKey];
+      currentSound = currentMood.sounds[0];
+
+      // 更新頂部與語錄
+      moodAvatarBox.textContent = currentMood.avatar;
+      appHeading.textContent = `${currentMood.name}大鈴鐺`;
+      appHeading.style.color = currentMood.accentHex;
+      moodQuoteText.textContent = currentMood.quote;
+
+      // 更新 3D 鈴鐺配色與背光
+      mainBellBtn.style.background = currentMood.btnGrad;
+      mainBellBtn.style.boxShadow = `0 16px 0 ${currentMood.shadowHex}, 0 22px 35px rgba(0,0,0,0.65), inset 0 6px 10px rgba(255,255,255,0.65), inset 0 -10px 16px rgba(0,0,0,0.5)`;
+      bellBasePlate.style.borderColor = `${currentMood.accentHex}99`;
+      bellAura.style.backgroundColor = currentMood.auraColor;
+
+      if (!isBlindBoxMode) {
+        bellMainIcon.textContent = currentSound.icon;
+        bellMainTitle.textContent = currentSound.name;
+      }
+
+      soundMatrixTitle.innerHTML = `<span>${currentMood.avatar}</span> ${currentMood.name}專屬舒壓鈴 (點擊切換並試聽)`;
+      renderMoodTabs();
+      renderSoundMatrix();
+    }
+
+    /* ============================================================
+       6. 互動控制：長按連發、盲盒、變聲器、自訂出氣筒 Modal
+       ============================================================ */
+    // 鈴鐺單擊與長按機關槍掃射
+    mainBellBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      isPointerDown = true;
+      triggerBellSmash(false);
+
+      clearTimeout(holdFireTimeout);
+      clearInterval(holdFireInterval);
+      holdFireTimeout = setTimeout(() => {
+        if (isPointerDown) {
+          bellSubHint.textContent = '⚡ 機關槍狂暴掃射中！';
+          holdFireInterval = setInterval(() => {
+            if (!isPointerDown) {
+              clearInterval(holdFireInterval);
+              return;
+            }
+            triggerBellSmash(true);
+          }, 115);
+        }
+      }, 260);
+    });
+
+    function stopPointerHold() {
+      isPointerDown = false;
+      clearTimeout(holdFireTimeout);
+      clearInterval(holdFireInterval);
+      bellSubHint.textContent = '單擊爆破 / 長按機關槍';
+    }
+    window.addEventListener('pointerup', stopPointerHold);
+    window.addEventListener('pointercancel', stopPointerHold);
+
+    // 鍵盤空白鍵與 Enter 狂按支援
+    window.addEventListener('keydown', (e) => {
+      if (document.getElementById('target-modal').classList.contains('flex')) return;
+      if ((e.code === 'Space' || e.code === 'Enter') && !e.repeat) {
+        e.preventDefault();
+        triggerBellSmash(false);
+      }
+    });
+
+    // 盲盒開關
+    const toggleBlindboxBtn = document.getElementById('toggle-blindbox');
+    const blindboxTxt = document.getElementById('blindbox-txt');
+    function toggleBlindBox(forceState) {
+      isBlindBoxMode = typeof forceState === 'boolean' ? forceState : !isBlindBoxMode;
+      blindboxTxt.textContent = isBlindBoxMode ? '盲盒:開' : '盲盒';
+      toggleBlindboxBtn.className = isBlindBoxMode
+        ? 'px-2.5 py-1.5 rounded-xl bg-amber-500 text-slate-950 border border-amber-300 text-xs font-black flex items-center gap-1 active:scale-90 transition-all shadow-md'
+        : 'px-2.5 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 text-slate-300 text-xs font-black flex items-center gap-1 active:scale-90 transition-all shadow-sm';
+      renderSoundMatrix();
+    }
+    toggleBlindboxBtn.addEventListener('click', () => toggleBlindBox());
+
+    // 變聲器滑桿與快速預設 (原音 -> 花栗鼠 -> 惡魔低音)
+    const pitchSlider = document.getElementById('pitch-slider');
+    const pitchValDisplay = document.getElementById('pitch-val-display');
+    const pitchPresetBtn = document.getElementById('pitch-preset-btn');
+    const pitchIcon = document.getElementById('pitch-icon');
+    const pitchModeLabel = document.getElementById('pitch-mode-label');
+
+    function updatePitchUI(val) {
+      pitchMultiplier = val;
+      pitchSlider.value = val;
+      pitchValDisplay.textContent = `${val.toFixed(2)}x`;
+      if (val >= 1.45) {
+        pitchIcon.textContent = '🐿️';
+        pitchModeLabel.textContent = '花栗鼠';
+      } else if (val <= 0.65) {
+        pitchIcon.textContent = '👹';
+        pitchModeLabel.textContent = '大魔王';
+      } else {
+        pitchIcon.textContent = '🎵';
+        pitchModeLabel.textContent = '原音';
+      }
+    }
+
+    pitchSlider.addEventListener('input', (e) => {
+      updatePitchUI(parseFloat(e.target.value));
+    });
+
+    pitchPresetBtn.addEventListener('click', () => {
+      if (pitchMultiplier === 1.0) updatePitchUI(1.65);
+      else if (pitchMultiplier > 1.2) updatePitchUI(0.55);
+      else updatePitchUI(1.0);
+    });
+
+    // 自動狂按開關
+    const toggleAutoFireBtn = document.getElementById('toggle-auto-fire');
+    const autoFireTxt = document.getElementById('auto-fire-txt');
+    toggleAutoFireBtn.addEventListener('click', () => {
+      if (autoFireInterval) {
+        clearInterval(autoFireInterval);
+        autoFireInterval = null;
+        autoFireTxt.textContent = '連發: 關';
+        toggleAutoFireBtn.className = 'px-3 py-2 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs font-black text-slate-300 flex items-center gap-1 active:scale-95 transition-all shrink-0 shadow';
+      } else {
+        autoFireTxt.textContent = '狂暴連發 🔥';
+        toggleAutoFireBtn.className = 'px-3 py-2 rounded-2xl bg-rose-600 border border-rose-400 text-xs font-black text-white flex items-center gap-1 active:scale-95 transition-all shrink-0 shadow-lg';
+        autoFireInterval = setInterval(() => {
+          triggerBellSmash(true);
+        }, 145);
+      }
+    });
+
+    // 靜音與深淺色主題切換
+    const toggleMuteBtn = document.getElementById('toggle-mute');
+    toggleMuteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      toggleMuteBtn.textContent = isMuted ? '🔇' : '🔊';
+      toggleMuteBtn.classList.toggle('bg-rose-900/80', isMuted);
+    });
+
+    const toggleThemeBtn = document.getElementById('toggle-theme');
+    const footerCard = document.getElementById('footer-card');
+    toggleThemeBtn.addEventListener('click', () => {
+      isDarkMode = !isDarkMode;
+      if (isDarkMode) {
+        appBody.className = 'bg-slate-950 text-slate-100 h-full flex flex-col justify-between select-none transition-colors duration-300 relative overflow-hidden';
+        footerCard.className = 'bg-slate-900/90 backdrop-blur-md rounded-2xl p-2.5 border border-slate-800 shadow-xl transition-colors duration-300';
+        toggleThemeBtn.textContent = '🌙';
+      } else {
+        appBody.className = 'bg-amber-50 text-slate-900 h-full flex flex-col justify-between select-none transition-colors duration-300 relative overflow-hidden';
+        footerCard.className = 'bg-white/90 backdrop-blur-md rounded-2xl p-2.5 border border-amber-200 shadow-xl transition-colors duration-300';
+        toggleThemeBtn.textContent = '☀️';
+      }
+    });
+
+    /* ============================================================
+       7. 自訂出氣對象與咆哮台詞 Modal 邏輯
+       ============================================================ */
+    const targetModal = document.getElementById('target-modal');
+    const openTargetModalBtn = document.getElementById('open-target-modal');
+    const closeTargetModalBtn = document.getElementById('close-target-modal');
+    const customTargetInput = document.getElementById('custom-target-input');
+    const customShoutInput = document.getElementById('custom-shout-input');
+    const saveTargetBtn = document.getElementById('save-target-btn');
+    const clearTargetBtn = document.getElementById('clear-target-btn');
+    const presetChips = document.querySelectorAll('.preset-target-chip');
+
+    openTargetModalBtn.addEventListener('click', () => {
+      targetModal.classList.remove('hidden');
+      targetModal.classList.add('flex');
+    });
+
+    function closeModal() {
+      targetModal.classList.add('hidden');
+      targetModal.classList.remove('flex');
+    }
+    closeTargetModalBtn.addEventListener('click', closeModal);
+
+    presetChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        customTargetInput.value = chip.dataset.target;
+        customShoutInput.value = chip.dataset.shout;
+      });
+    });
+
+    saveTargetBtn.addEventListener('click', () => {
+      customTargetName = customTargetInput.value.trim();
+      customShoutText = customShoutInput.value.trim();
+
+      if (customTargetName) {
+        targetStickerName.textContent = customTargetName;
+        customTargetSticker.classList.remove('hidden');
+      } else {
+        customTargetSticker.classList.add('hidden');
+      }
+      closeModal();
+      triggerBellSmash(true);
+    });
+
+    clearTargetBtn.addEventListener('click', () => {
+      customTargetInput.value = '';
+      customShoutInput.value = '';
+      customTargetName = '';
+      customShoutText = '';
+      customTargetSticker.classList.add('hidden');
+      closeModal();
+    });
+
+    // 初始化啟動
+    selectMood('rage');
+  </script>
+</body>
+</html>
