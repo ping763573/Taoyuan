@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漫遊桃園・探索桃園區</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:#FAF6EF;color:#2B2118;line-height:1.7}
+a{color:inherit}header{position:sticky;top:0;z-index:50;background:#1E4D3B;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+.logo{font-weight:900;font-size:18px}.logo small{display:block;font-weight:400;font-size:12px;opacity:.85}
+nav{display:flex;gap:6px;flex-wrap:wrap}nav button{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;padding:8px 14px;border-radius:999px;cursor:pointer;font-size:14px}nav button.active,nav button:hover{background:#E8732A;border-color:#E8732A}
+.burger{display:none;background:#fff;color:#1E4D3B;border:0;padding:8px 12px;border-radius:8px;font-weight:800;cursor:pointer}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 18px 60px}
+.hero{border-radius:22px;overflow:hidden;position:relative;background:#000}.hero img{width:100%;height:420px;object-fit:cover;display:block;opacity:.92}.hero-txt{position:absolute;left:0;right:0;bottom:0;padding:28px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff}.hero-txt h1{margin:0;font-size:36px;line-height:1.2}.hero-txt p{margin:8px 0 14px}.btn{background:#E8732A;color:#fff;border:0;padding:11px 18px;border-radius:999px;font-weight:800;cursor:pointer}.btn2{background:#fff;color:#1E4D3B;border:0;padding:11px 18px;border-radius:999px;font-weight:800;cursor:pointer;margin-left:8px}
+h2{font-size:26px;margin:36px 0 8px}h3{margin:0}.lead{color:#6b5a48}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px}.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 22px rgba(0,0,0,.08);transition:.2s}.card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.13)}.card img{width:100%;height:190px;object-fit:cover;display:block}.card-body{padding:16px}.tag{display:inline-block;background:#FFF0E2;color:#B64A0A;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;margin:0 4px 8px 0}.tag.green{background:#E6F2EA;color:#1E4D3B}.tag.brown{background:#F3EAD9;color:#7a5a22}
+.stat{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}.stat div{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.06)}.stat b{font-size:22px;color:#E8732A;display:block}
+.timeline{border-left:4px solid #C9A86A;margin:18px 0 0 8px;padding-left:18px}.tl{margin:0 0 16px;position:relative}.tl b{color:#1E4D3B}.tl::before{content:"";width:12px;height:12px;background:#E8732A;border-radius:50%;position:absolute;left:-26px;top:6px}
+.filter{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.filter button{padding:8px 14px;border-radius:999px;border:1px solid #C9A86A;background:#fff;cursor:pointer}.filter button.active{background:#1E4D3B;color:#fff;border-color:#1E4D3B}
+.note{background:#FFF7E8;border:1px solid #F2D8A8;border-radius:14px;padding:14px 16px;font-size:14px;margin-top:16px}
+.chartbox{background:#fff;border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.bar-row{display:grid;grid-template-columns:70px 1fr 70px;gap:10px;align-items:center;margin:6px 0;font-size:13px}.bar{height:18px;background:#F2E8D5;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:#E8732A;border-radius:999px}
+footer{background:#1E4D3B;color:#CDE0D4;padding:28px 18px;margin-top:30px}footer .inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px}footer button{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;margin:3px}
+.back{margin-top:28px}.back button{background:#1E4D3B;color:#fff;border:0;padding:10px 16px;border-radius:999px;cursor:pointer}
+.page{display:none}.page.active{display:block}
+canvas{max-width:100%}@media(max-width:820px){.grid{grid-template-columns:1fr 1fr}.stat{grid-template-columns:1fr 1fr}nav{display:none}nav.open{display:flex;flex-direction:column;position:absolute;top:64px;right:12px;background:#1E4D3B;padding:12px;border-radius:14px}.burger{display:block}.hero img{height:300px}.hero-txt h1{font-size:28px}footer .inner{grid-template-columns:1fr}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="logo">漫遊桃園・探索桃園區<small>歷史・景點・美食・人口</small></div><button class="burger" onclick="document.querySelector('nav').classList.toggle('open')">☰ 選單</button><nav id="nav"><button data-p="home" class="active" onclick="showPage('home')">首頁</button><button data-p="history" onclick="showPage('history')">文化歷史</button><button data-p="attractions" onclick="showPage('attractions')">知名景點</button><button data-p="food" onclick="showPage('food')">食物特色</button><button data-p="population" onclick="showPage('population')">人口結構</button></nav></header>
+<main class="wrap">
+<!-- HOME -->
+<section id="page-home" class="page active">
+<div class="hero"><img src="images/hutoushan.jpg" alt="虎頭山公園"><div class="hero-txt"><h1>走進桃園，探索城市的文化與魅力</h1><p>從歷史人文、特色景點、在地美食到人口發展，認識桃園區的多元風貌。</p><button class="btn" onclick="showPage('history')">開始探索 →</button><button class="btn2" onclick="showPage('attractions')">先看景點</button></div></div>
+<h2>認識桃園區</h2><p class="lead">桃園區位於桃園市東北部，桃園台地之上，南崁溪貫穿東北部，東北鄰龜山、西鄰蘆竹與中壢、南鄰八德、東南鄰新北市鶯歌。為桃園市政府所在地，是全市政治、經濟、文化與交通中心，臺鐵桃園車站站前商圈為最大商業區，藝文特區、中路、大有亦繁華。面積 34.8046 平方公里，郵遞區號 330。</p>
+<div class="stat"><div><b>478,589 人</b>總人口・2026年7月</div><div><b>85 里</b>1,778 鄰</div><div><b>13,751</b>人 / 平方公里</div><div><b>210,949 戶</b>2026年7月戶數</div></div>
+<p style="font-size:13px;color:#888">資料來源：內政部戶政司、桃園市政府民政局及桃園區戶政事務所統計。人口數字皆標示統計時間，非虛構。</p>
+<h2>四大主題</h2>
+<div class="grid">
+<div class="card" onclick="showPage('history')" style="cursor:pointer"><img src="images/shrine.jpg"><div class="card-body"><span class="tag">文化歷史</span><h3>從虎茅莊到桃園</h3><p>1726 年入墾、1747 年改稱桃仔園、1938 年神社、2014 年升格直轄市。</p><b style="color:#E8732A">了解更多 →</b></div></div>
+<div class="card" onclick="showPage('attractions')" style="cursor:pointer"><img src="images/huanbao.jpg"><div class="card-body"><span class="tag green">知名景點</span><h3>神社、虎頭山與公園</h3><p>忠烈祠、虎頭山公園、孔廟、景福宮、77 藝文町、展演中心、環保公園、風禾公園。</p><b style="color:#E8732A">了解更多 →</b></div></div>
+<div class="card" onclick="showPage('food')" style="cursor:pointer"><img src="images/oyster.jpg"><div class="card-body"><span class="tag">食物特色</span><h3>夜市與市場的庶民味</h3><p>蚵仔煎、花枝羹、鍋貼、米粉湯、切仔麵，南門市場與桃園觀光夜市。</p><b style="color:#E8732A">了解更多 →</b></div></div>
+</div>
+<div class="grid"><div class="card" onclick="showPage('population')" style="cursor:pointer"><img src="images/yiwen.jpg"><div class="card-body"><span class="tag brown">人口結構</span><h3>全市人口最多的一區</h3><p>青壯年近七成，性別比 92.16，1951 年 4.2 萬人成長到 2026 年 47.8 萬人。</p><b style="color:#E8732A">了解更多 →</b></div></div></div>
+</section>
+<!-- HISTORY -->
+<section id="page-history" class="page">
+<h2>文化歷史 — 認識桃園的發展軌跡</h2><p class="lead">從凱達格蘭族龜崙社、南崁社領地，到漢人入墾、草店街市形成，再到今日的桃園市中心。</p>
+<div class="chartbox"><h3>歷史沿革</h3><p>1726 年漳州人藍勇入墾虎茅莊（茅草如虎傷人），1737 年粵籍薛啟隆大規模入墾，遍植桃樹，1747 年改稱桃仔園，1888 年魚鱗圖冊登載為「桃園」。閩粵移民、龜崙社交易、草店街市，逐漸形成以景福宮為中心的舊市街。</p><p><b>地方文化特色：</b>景福宮開漳聖王信仰、土地公稱「伯公」、客家與閩南混居、廟埕生活、大廟周邊商圈、孔廟釋奠與孔子文化節、神社轉忠烈祠的歷史轉折。</p></div>
+<h3>時間軸</h3><div class="timeline">
+<div class="tl"><b>1726</b> — 虎茅莊入墾，藍勇等人入墾</div>
+<div class="tl"><b>1737</b> — 薛啟隆大規模入墾</div>
+<div class="tl"><b>1745</b> — 景福宮草創</div>
+<div class="tl"><b>1747</b> — 改稱桃仔園</div>
+<div class="tl"><b>1813</b> — 景福宮重建竣工</div>
+<div class="tl"><b>1867</b> — 文昌宮建立</div>
+<div class="tl"><b>1888</b> — 魚鱗圖冊登載為桃園</div>
+<div class="tl"><b>1905</b> — 桃仔園廳改桃園廳</div>
+<div class="tl"><b>1920</b> — 桃園街屬新竹州桃園郡</div>
+<div class="tl"><b>1938</b> — 桃園神社竣工</div>
+<div class="tl"><b>1946</b> — 桃園街改桃園鎮</div>
+<div class="tl"><b>1950</b> — 桃園立縣</div>
+<div class="tl"><b>1971</b> — 改制縣轄市</div>
+<div class="tl"><b>1989</b> — 桃園孔廟落成</div>
+<div class="tl"><b>1994</b> — 神社指定國家三級古蹟（現市定古蹟）</div>
+<div class="tl"><b>2014</b> — 升格直轄市，桃園市改制桃園區</div>
+</div>
+<h3>文化資產</h3><div class="grid">
+<div class="card"><img src="images/jingfu.jpg"><div class="card-body"><h3>景福宮（大廟）</h3><p>1745 草創、1813 竣工，主祀開漳聖王，假四垂屋頂、螭虎栱聞名。</p></div></div>
+<div class="card"><img src="images/shrine.jpg"><div class="card-body"><h3>桃園神社／忠烈祠</h3><p>1938 年，全台保存最完整神社，本殿、拜殿、參道、鳥居俱存。</p></div></div>
+<div class="card"><img src="images/kongmiao.jpg"><div class="card-body"><h3>桃園孔廟</h3><p>1989 落成，全台最年輕孔廟，釋奠典禮與文化體驗。</p></div></div>
+<div class="card"><img src="images/q77.jpg"><div class="card-body"><h3>桃園77藝文町</h3><p>日治警察宿舍群活化，日式木造＋展覽＋餐飲。</p></div></div>
+</div>
+<div class="back"><button onclick="showPage('home')">← 返回首頁</button></div>
+</section>
+<!-- ATTRACTIONS -->
+<section id="page-attractions" class="page">
+<h2>知名景點 — 探索桃園的城市風景</h2><p class="lead">點下面分類可以即時篩選卡片。</p>
+<div class="filter" id="attFilter"><button class="active" onclick="filterAtt('all',this)">全部</button><button onclick="filterAtt('自然休閒',this)">自然休閒</button><button onclick="filterAtt('歷史文化',this)">歷史文化</button><button onclick="filterAtt('城市地標',this)">城市地標</button><button onclick="filterAtt('親子旅遊',this)">親子旅遊</button></div>
+<div class="grid" id="attGrid">
+<div class="card" data-cat="歷史文化"><img src="images/shrine.jpg"><div class="card-body"><span class="tag">歷史文化</span><h3>桃園忠烈祠暨神社文化園區</h3><p><b>位置：</b>成功路三段200號<br>日本境外保存最完整神社，參道、鳥居、本殿俱存。最能一次看懂日治到戰後歷史轉折。</p></div></div>
+<div class="card" data-cat="自然休閒"><img src="images/hutoushan.jpg"><div class="card-body"><span class="tag green">自然休閒</span><h3>虎頭山公園</h3><p><b>位置：</b>會稽區虎頭山<br>36 公頃，步道、奧爾森林學堂、芬多精。在地人從小玩到大的後花園。</p></div></div>
+<div class="card" data-cat="歷史文化"><img src="images/kongmiao.jpg"><div class="card-body"><span class="tag">歷史文化</span><h3>桃園市孔廟</h3><p><b>位置：</b>公園路<br>1989 落成，全台最年輕孔廟，釋奠典禮與文化體驗，宮廷感建築。</p></div></div>
+<div class="card" data-cat="歷史文化"><img src="images/jingfu.jpg"><div class="card-body"><span class="tag">歷史文化</span><h3>景福宮（大廟）</h3><p><b>位置：</b>中正路208號<br>1745 草創，桃園信仰中心與舊市街原點。看螭虎栱與假四垂屋頂必訪。</p></div></div>
+<div class="card" data-cat="歷史文化"><img src="images/q77.jpg"><div class="card-body"><span class="tag">歷史文化</span><h3>桃園77藝文町</h3><p><b>位置：</b>中正路77巷<br>日治警察宿舍活化，日式木造＋展覽＋餐飲。漫遊城市裡的日式印象。</p></div></div>
+<div class="card" data-cat="城市地標"><img src="images/yiwen.jpg"><div class="card-body"><span class="tag brown">城市地標</span><h3>桃園展演中心・藝文特區</h3><p><b>位置：</b>同德六街<br>藝文展演、圖書總館、異國美食商圈。晚上散步、看展、吃飯一次滿足。</p></div></div>
+<div class="card" data-cat="自然休閒"><img src="images/huanbao.jpg"><div class="card-body"><span class="tag green">自然休閒</span><h3>虎頭山環保公園</h3><p><b>位置：</b>虎頭山<br>舊掩埋場復育，2.5 公頃，360 度觀景平台。免費看大桃園夕陽與夜景。</p></div></div>
+<div class="card" data-cat="親子旅遊"><img src="images/fenghe.jpg"><div class="card-body"><span class="tag green">親子旅遊</span><h3>風禾公園</h3><p><b>位置：</b>中路重劃區<br>防災公園，沖繩風滾輪溜滑梯、沙坑、草坪。親子野餐、放電首選。</p></div></div>
+</div>
+<div class="note">以上 8 處皆位於桃園區，虎頭山一帶可一次串連神社、公園、孔廟、環保公園。照片皆為桃園區實景。</div>
+<div class="back"><button onclick="showPage('home')">← 返回首頁</button></div>
+</section>
+<!-- FOOD -->
+<section id="page-food" class="page">
+<h2>食物特色 — 品味桃園的在地美食</h2><p class="lead">大廟與市場養出的庶民味、閩南＋客家＋外省＋新住民與異國料理交會。南門市場早餐街、桃園觀光夜市從景福宮周邊發源，1988 年遷至北埔路現址，200 多攤。</p>
+<div class="filter" id="foodFilter"><button class="active" onclick="filterFood('all',this)">全部</button><button onclick="filterFood('傳統小吃',this)">傳統小吃</button><button onclick="filterFood('特色料理',this)">特色料理</button><button onclick="filterFood('傳統市場美食',this)">傳統市場美食</button></div>
+<div class="grid" id="foodGrid">
+<div class="card" data-cat="傳統小吃"><img src="images/oyster.jpg"><div class="card-body"><span class="tag">傳統小吃</span><h3>嘉義順蚵仔煎</h3><p>蚵仔＋蛋＋青菜＋太白粉漿，三色醬。夜市 35 年老攤，桃園夜市代表。</p></div></div>
+<div class="card" data-cat="特色料理"><img src="images/oyster.jpg"><div class="card-body"><span class="tag brown">特色料理</span><h3>生炒花枝羹</h3><p>花枝＋筍絲＋羹湯，現炒鑊氣。與蚵仔煎同為夜市雙寶（同攤）。</p></div></div>
+<div class="card" data-cat="傳統小吃"><img src="images/guotie.jpg"><div class="card-body"><span class="tag">傳統小吃</span><h3>阿財鍋貼</h3><p>豬肉＋高麗菜，底部煎至金黃酥脆。「煎不脆不賣」的夜市老牌。</p></div></div>
+<div class="card" data-cat="傳統市場美食"><img src="images/mifen.jpg"><div class="card-body"><span class="tag green">傳統市場美食</span><h3>南門市場米粉湯</h3><p>粗米粉＋大骨高湯＋韭菜油蔥酥，配黑白切。婆婆媽媽買菜後的早餐儀式。</p></div></div>
+<div class="card" data-cat="傳統小吃"><img src="images/mifen.jpg"><div class="card-body"><span class="tag">傳統小吃</span><h3>大廟口切仔麵・黑白切</h3><p>油麵＋豬油＋油蔥，嘴邊肉、豬心等黑白切。大廟口庶民麵攤文化（市場麵攤示意）。</p></div></div>
+<div class="card" data-cat="特色料理"><img src="images/nightmarket.jpg"><div class="card-body"><span class="tag brown">特色料理</span><h3>桃園觀光夜市巡禮</h3><p>蚵仔煎、花枝羹、鍋貼、地瓜球、愛玉、異國料理。全長約 3 公里、200 多攤。</p></div></div>
+</div>
+<div class="chartbox"><h3>市場與商圈</h3><p><b>南門市場：</b>中山路／南華街，早市、文化街早餐一條街：水煎包、廣東腸粉、米粉湯。<br><b>東門市場：</b>現代化美食街。<br><b>桃園觀光夜市：</b>北埔路、正康二街，17:00 起。</p><p style="font-size:13px;color:#888">提醒：南門市場曾於 2025 年火災後復原整建，出發前留意現場公告。</p></div>
+<div class="back"><button onclick="showPage('home')">← 返回首頁</button></div>
+</section>
+<!-- POPULATION -->
+<section id="page-population" class="page">
+<h2>人口結構 — 認識桃園區的人口發展</h2>
+<div class="stat"><div><b>478,589</b>總人口・2026年7月</div><div><b>210,949 戶</b>戶數</div><div><b>13,751</b>/km² 密度</div><div><b>34.8046</b>km² 面積</div></div>
+<div class="chartbox"><h3>男女比（2025 年底）</h3><canvas id="pie" width="320" height="220"></canvas><p>男約 22.9 萬（47.9%）、女約 24.9 萬（52.1%），性別比 92.16（女=100）。來源：民政局／戶政事務所 2025 年底。</p></div>
+<div class="chartbox"><h3>三組年齡比例（2025 年底）</h3><div class="bar-row"><span>幼年 0-14</span><div class="bar"><i style="width:13.62%"></i></div><span>13.62%</span></div><div class="bar-row"><span>青壯年 15-64</span><div class="bar"><i style="width:69.83%;background:#1E4D3B"></i></div><span>69.83%</span></div><div class="bar-row"><span>老年 65+</span><div class="bar"><i style="width:16.55%;background:#C9A86A"></i></div><span>16.55%</span></div><p>青壯年近七成，顯示就業與移入磁吸力強；幼年 13.62% 仍相對年輕，但老年已逾 16%，需同時顧及托育與高齡照顧。</p></div>
+<div class="chartbox"><h3>五歲年齡組人口（109 年底・2020 年底，總計 457,245 人）</h3><p style="font-size:13px">滑鼠移到長條上可看人數。來源：桃園區戶政事務所 109 年底。</p><div id="ageBars"></div></div>
+<div class="chartbox"><h3>歷史人口折線圖</h3><canvas id="line" width="640" height="260"></canvas><p>1951 年 42,793 → 1971 年 113,021 → 2001 年 338,361 → 2021 年 458,847 → 2025 年底約 478,000，持續成長。</p></div>
+<div class="note"><b>分析：</b>桃園區是桃園市人口最多、密度最高、性別比最低的行政區。同安里（2026 年 3 月拆分為同安里與藝文里前）曾為區內人口最多里 12,893 人，萬壽里最少 978 人（2025 年底）。<br><b>註：</b>詳細分齡為 109 年底戶政統計，三組比例與性別比為 2025 年底統計，總人口為 2026 年 7 月統計。</div>
+<div class="chartbox"><h3>資料來源</h3><p>桃園市政府民政局、桃園區戶政事務所、內政部戶政司、桃園區公所、桃園觀光導覽網。</p></div>
+<div class="back"><button onclick="showPage('home')">← 返回首頁</button></div>
+</section>
+</main>
+<footer><div class="inner"><div><h3>漫遊桃園・探索桃園區</h3><p>讓一般民眾、學生及觀光旅客，認識桃園區的歷史文化、知名景點、在地美食與人口發展。本網站為教育推廣、非官方網站。</p></div><div><h4>頁面導覽</h4><div><button onclick="showPage('home')">首頁</button><button onclick="showPage('history')">文化歷史</button><button onclick="showPage('attractions')">知名景點</button><button onclick="showPage('food')">食物特色</button><button onclick="showPage('population')">人口結構</button></div></div><div><h4>資料來源</h4><p>桃園市政府民政局<br>桃園區戶政事務所<br>內政部戶政司<br>桃園區公所、桃園觀光導覽網</p></div></div><div style="text-align:center;font-size:12px;opacity:.8;padding-top:14px">© 漫遊桃園・探索桃園區 — 教育推廣用途・人口數字皆標示統計年月與來源</div></footer>
+<script>
+function showPage(id){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.p===id));document.querySelector('nav').classList.remove('open');window.scrollTo({top:0});location.hash=id;if(id==='population'){drawCharts();}}
+function filterAtt(cat,btn){document.querySelectorAll('#attFilter button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#attGrid .card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none';});}
+function filterFood(cat,btn){document.querySelectorAll('#foodFilter button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#foodGrid .card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none';});}
+var ageData=[["0-4",20830],["5-9",24756],["10-14",23122],["15-19",25472],["20-24",30785],["25-29",30821],["30-34",30750],["35-39",38360],["40-44",41410],["45-49",36769],["50-54",35691],["55-59",32804],["60-64",27912],["65-69",24134],["70-74",14469],["75-79",8530],["80-84",5711],["85-89",3035],["90-94",1448],["95-99",381],["100+",55]];
+var ageBox=document.getElementById('ageBars');ageData.forEach(function(d){var row=document.createElement('div');row.className='bar-row';row.title=d[0]+'歲：'+d[1].toLocaleString()+'人';row.innerHTML='<span>'+d[0]+'歲</span><div class="bar"><i style="width:'+(d[1]/41410*100)+'%"></i></div><span>'+d[1].toLocaleString()+'</span>';ageBox.appendChild(row);});
+var drawn=false;
+function drawCharts(){if(drawn)return;drawn=true;
+var c=document.getElementById('pie');var ctx=c.getContext('2d');var cx=110,cy=110,r=90;var a0=-Math.PI/2;var parts=[{label:'男 47.9%',v:0.479,color:'#1E4D3B'},{label:'女 52.1%',v:0.521,color:'#E8732A'}];parts.forEach(function(p){var a1=a0+p.v*Math.PI*2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a0,a1);ctx.closePath();ctx.fillStyle=p.color;ctx.fill();a0=a1;});ctx.fillStyle='#2B2118';ctx.font='14px sans-serif';ctx.fillText('男 47.9%',230,80);ctx.fillText('女 52.1%',230,110);ctx.fillText('性別比 92.16',230,140);
+var lc=document.getElementById('line');var lctx=lc.getContext('2d');var data=[[1951,42793],[1956,52830],[1961,65471],[1966,80573],[1971,113021],[1976,155934],[1981,185257],[1986,210753],[1991,246056],[1996,283861],[2001,338361],[2006,384803],[2011,410113],[2016,434243],[2021,458847],[2025,478000]];var max=500000;var W=640,H=260;var padL=50,padB=30,padT=20;lctx.clearRect(0,0,W,H);lctx.strokeStyle='#ddd';lctx.beginPath();lctx.moveTo(padL,padT);lctx.lineTo(padL,H-padB);lctx.lineTo(W-10,H-padB);lctx.stroke();lctx.strokeStyle='#E8732A';lctx.lineWidth=3;lctx.beginPath();data.forEach(function(d,i){var x=padL+i/(data.length-1)*(W-padL-20);var y=H-padB-d[1]/max*(H-padB-padT);if(i===0)lctx.moveTo(x,y);else lctx.lineTo(x,y);});lctx.stroke();lctx.fillStyle='#1E4D3B';lctx.font='12px sans-serif';data.forEach(function(d,i){if(i%2===0){var x=padL+i/(data.length-1)*(W-padL-20);var y=H-padB-d[1]/max*(H-padB-padT);lctx.beginPath();lctx.arc(x,y,4,0,Math.PI*2);lctx.fill();lctx.fillText(d[0],x-14,H-8);}});lctx.fillText('人口',6,16);
+}
+if(location.hash){var h=location.hash.replace('#','');if(['home','history','attractions','food','population'].includes(h))showPage(h);}
+</script>
+</body>
+</html>
