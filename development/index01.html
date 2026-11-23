@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>下一個桃園：十五年城市轉型計畫 (2026–2040) 3D 立體互動導覽</title>
+  <style>
+    :root {
+      --bg-page: #f1f5f4;
+      --bg-card: #ffffff;
+      --bg-subtle: #e8efed;
+      --primary: #0f6e62;
+      --primary-dark: #094c44;
+      --primary-light: #e0f2ef;
+      --accent: #d97724;
+      --gold: #d4af37;
+      --gold-light: #f3e2a9;
+      --text-main: #1e293b;
+      --text-muted: #475569;
+      --border: #cbdad5;
+      --shadow-sm: 0 2px 8px rgba(15, 42, 38, 0.06);
+      --shadow-md: 0 12px 30px rgba(15, 42, 38, 0.12);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --side-x: 56%;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+    }
+
+    /* Top Home Bar */
+    .top-nav-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .btn-back-home {
+      background: linear-gradient(135deg, #0b4f47 0%, #147a6d 100%);
+      color: #ffffff;
+      border: 1.5px solid var(--gold);
+      padding: 9px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-back-home:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #094c44 0%, #0f6e62 100%);
+      box-shadow: 0 6px 16px rgba(15, 42, 38, 0.2);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #0b4f47 0%, #147a6d 55%, #1d8073 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      flex: 1 1 540px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.75rem, 3.4vw, 2.45rem);
+      line-height: 1.25;
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.92);
+      margin-bottom: 22px;
+    }
+
+    .vision-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .vision-tag {
+      background: #ffffff;
+      color: var(--primary-dark);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Book Cover 3D Mini Frame in Hero */
+    .hero-cover {
+      flex: 0 0 190px;
+      text-align: center;
+      margin: 0 auto;
+      perspective: 900px;
+    }
+
+    .book-3d-wrap {
+      display: inline-block;
+      padding: 8px;
+      background: linear-gradient(145deg, #2a6f65, #0a352f);
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      box-shadow:
+        -6px 8px 0 #06221e,
+        -12px 18px 28px rgba(0, 0, 0, 0.45);
+      transform: rotateY(-14deg) rotateX(5deg);
+      transition: transform 0.35s ease;
+      cursor: zoom-in;
+    }
+
+    .book-3d-wrap:hover {
+      transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+    }
+
+    .book-img {
+      width: 142px;
+      height: auto;
+      border-radius: 5px;
+      display: block;
+    }
+
+    .cover-caption {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.92);
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    /* Panels & Section Headers */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 1.38rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    /* =========================================================
+       高立體感 3D 博物館畫框展演舞台
+       ========================================================= */
+    .showcase-panel {
+      background: linear-gradient(180deg, #ffffff 0%, #eaf1ef 100%);
+      border: 1.5px solid #b8cfc9;
+    }
+
+    .playback-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-autoplay {
+      background: linear-gradient(135deg, var(--accent) 0%, #b45309 100%);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(217, 119, 36, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-autoplay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(217, 119, 36, 0.45);
+    }
+
+    .btn-autoplay.playing {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      box-shadow: 0 4px 14px rgba(15, 110, 98, 0.35);
+    }
+
+    .btn-zoom-modal {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: var(--gold-light);
+      border: 1.5px solid var(--gold);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.22);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-zoom-modal:hover {
+      transform: translateY(-2px);
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .btn-nav {
+      background: #ffffff;
+      color: var(--primary-dark);
+      border: 1px solid var(--border);
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    /* 深色聚光燈 3D 展廳舞台，讓立體畫框厚邊與光影極致明顯 */
+    .stage-3d-viewport {
+      position: relative;
+      width: 100%;
+      height: 470px;
+      perspective: 1350px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0 16px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(45, 138, 125, 0.42) 0%, rgba(12, 47, 43, 0.92) 62%, #061b18 100%);
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* 舞台地板透視網格與聚光倒影 */
+    .stage-3d-floor {
+      position: absolute;
+      bottom: -20px;
+      width: 120%;
+      height: 130px;
+      background:
+        radial-gradient(ellipse at center, rgba(212, 175, 55, 0.22) 0%, rgba(15, 110, 98, 0.08) 48%, transparent 75%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 60px);
+      transform: rotateX(72deg);
+      pointer-events: none;
+    }
+
+    .carousel-3d-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide-3d-item {
+      position: absolute;
+      width: min(560px, 84vw);
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.75s ease, filter 0.75s ease;
+      transform-style: preserve-3d;
+      cursor: zoom-in;
+    }
+
+    /* 真實 3D 擠出厚邊立體畫框 */
+    .frame-3d-bezel {
+      position: relative;
+      background: linear-gradient(145deg, #217568 0%, #0d463e 50%, #062823 100%);
+      padding: 16px;
+      border-radius: 14px;
+      border: 3px solid var(--gold);
+      /* 多層實體厚度擠出陰影 + 地面投影 */
+      box-shadow:
+        1px 1px 0 #8c6d1f,
+        2px 3px 0 #735816,
+        4px 5px 0 #59430e,
+        6px 8px 0 #072924,
+        8px 11px 0 #051f1b,
+        10px 14px 0 #031411,
+        0 28px 50px rgba(0, 0, 0, 0.75),
+        inset 0 2px 5px rgba(255, 255, 255, 0.45);
+      transform-style: preserve-3d;
+      transition: transform 0.18s ease-out;
+    }
+
+    /* 畫框右側與底部高光立體斜面 */
+    .frame-3d-bezel::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border: 1.5px solid rgba(243, 226, 169, 0.55);
+      border-radius: 9px;
+      pointer-events: none;
+    }
+
+    /* 內凹卡紙畫框（Shadowbox 景深） */
+    .frame-3d-mat {
+      background: #f6f3ea;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #cbbba0;
+      box-shadow:
+        inset 0 6px 14px rgba(0, 0, 0, 0.38),
+        inset 0 -2px 6px rgba(255, 255, 255, 0.8);
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(12px);
+    }
+
+    /* 玻璃鏡面斜角反光 */
+    .frame-3d-mat::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(122deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0) 52%);
+      pointer-events: none;
+    }
+
+    .frame-3d-mat img {
+      width: 100%;
+      height: 315px;
+      object-fit: contain;
+      background: #ffffff;
+      border-radius: 4px;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+    }
+
+    .slide-badge-3d {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(9, 56, 50, 0.92);
+      color: var(--gold-light);
+      border: 1px solid var(--gold);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      z-index: 3;
+    }
+
+    .zoom-hint-chip {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.82);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Source Attribution Bar directly below 3D Frame */
+    .showcase-caption-box {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .showcase-title-group h3 {
+      font-size: 1.08rem;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .showcase-title-group p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .source-pill {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid #9fd2c9;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    /* Auto-play Progress Bar */
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: #d5e2df;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.1s linear;
+    }
+
+    /* Thumbnail / Quick-Jump Dots */
+    .slide-indicators {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .indicator-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .indicator-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(15, 110, 98, 0.25);
+    }
+
+    /* =========================================================
+       Lower Thematic Sections + 3D Framed Static Cards
+       ========================================================= */
+    .card-3d-framed {
+      background: linear-gradient(145deg, #1d6b5f, #093630);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      border: 2.5px solid var(--gold);
+      box-shadow:
+        3px 4px 0 #6e5414,
+        6px 8px 0 #06221e,
+        0 14px 28px rgba(9, 56, 50, 0.24),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4);
+      cursor: zoom-in;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card-3d-framed:hover {
+      transform: translateY(-4px) rotateX(2deg) rotateY(-2deg);
+      box-shadow:
+        4px 6px 0 #6e5414,
+        8px 11px 0 #06221e,
+        0 20px 36px rgba(9, 56, 50, 0.32);
+    }
+
+    .card-3d-inner {
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-3d-inner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .image-source {
+      background: #f4f8f7;
+      padding: 9px 12px;
+      font-size: 0.82rem;
+      color: var(--primary-dark);
+      border-top: 1px solid #dce6e3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Timeline Layout */
+    .timeline-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .timeline-track {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .phase-card {
+      border-left: 5px solid var(--border);
+      background: #fbfcfb;
+      padding: 16px 20px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .phase-card.active {
+      border-left-color: var(--primary);
+      background: linear-gradient(90deg, #f3faf8 0%, #ffffff 100%);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .phase-year {
+      display: inline-block;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 2px 10px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      background: var(--bg-subtle);
+      color: var(--primary-dark);
+    }
+
+    .phase-card.active .phase-year {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .phase-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .phase-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    /* Split grids */
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .housing-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .kpi-num {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .kpi-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* =========================================================
+       3D 放大賞析視窗（支援播放中同步放大 + 局部 2 倍鏡檢視）
+       ========================================================= */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%, rgba(16, 56, 51, 0.96) 0%, rgba(5, 18, 16, 0.98) 100%);
+      z-index: 1000;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+      perspective: 1500px;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      z-index: 10;
+    }
+
+    .lb-btn {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lb-btn:hover {
+      background: rgba(255, 255, 255, 0.26);
+    }
+
+    .lb-btn.active-gold {
+      background: var(--gold);
+      color: #0b2623;
+      border-color: var(--gold-light);
+      font-weight: 800;
+    }
+
+    .lb-btn.close-btn {
+      background: #dc2626;
+      border-color: #f87171;
+    }
+
+    /* 放大視窗內的重裝 3D 立體畫框 */
+    .lightbox-3d-frame {
+      width: min(940px, 94vw);
+      background: linear-gradient(145deg, #217568 0%, #0d463e 50%, #062823 100%);
+      padding: 18px;
+      border-radius: 16px;
+      border: 3.5px solid var(--gold);
+      box-shadow:
+        2px 2px 0 #8c6d1f,
+        5px 6px 0 #59430e,
+        9px 12px 0 #051f1b,
+        13px 17px 0 #020d0b,
+        0 34px 70px rgba(0, 0, 0, 0.85),
+        inset 0 2px 6px rgba(255, 255, 255, 0.45);
+      transform: rotateX(2deg) rotateY(-2deg);
+      transition: transform 0.2s ease-out;
+    }
+
+    .lightbox-3d-mat {
+      background: #f6f3ea;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid #cbbba0;
+      box-shadow: inset 0 6px 16px rgba(0, 0, 0, 0.42);
+      overflow: hidden;
+      position: relative;
+      cursor: zoom-in;
+    }
+
+    .lightbox-3d-mat.zoomed-mode {
+      cursor: move;
+    }
+
+    .lightbox-content {
+      width: 100%;
+      max-height: 66vh;
+      object-fit: contain;
+      background: #ffffff;
+      border-radius: 6px;
+      display: block;
+      transition: transform 0.25s ease;
+      transform-origin: center center;
+    }
+
+    .lightbox-3d-mat.zoomed-mode .lightbox-content {
+      transform: scale(1.85);
+    }
+
+    .lightbox-caption-bar {
+      margin-top: 14px;
+      max-width: min(940px, 94vw);
+      width: 100%;
+      background: rgba(9, 56, 50, 0.92);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: #ffffff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lightbox-caption-bar strong {
+      font-size: 1rem;
+      color: var(--gold-light);
+    }
+
+    .lightbox-source-badge {
+      background: var(--gold);
+      color: #072924;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* RWD */
+    @media (max-width: 992px) {
+      .timeline-layout,
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+      .stage-3d-viewport {
+        height: 390px;
+      }
+      .frame-3d-mat img {
+        height: 255px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --side-x: 32%;
+      }
+      .hero {
+        padding: 26px 20px;
+      }
+      .panel {
+        padding: 18px;
+      }
+      .stage-3d-viewport {
+        height: 320px;
+      }
+      .frame-3d-bezel {
+        padding: 10px;
+      }
+      .frame-3d-mat {
+        padding: 7px;
+      }
+      .frame-3d-mat img {
+        height: 195px;
+      }
+      .lightbox-3d-frame {
+        padding: 10px;
+      }
+      .lightbox-3d-mat {
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Return Home Button -->
+    <nav class="top-nav-bar" aria-label="頁面導覽">
+      <button type="button" class="btn-back-home" onclick="returnToHome()">🏠 回首頁</button>
+    </nav>
+
+    <!-- Hero Header (001.jpg - 書封) -->
+    <header class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">桃園市政府・發表 15 年城市轉型專書</span>
+        <h1>從發展城市走向生活城市：<br />2040 桃園空間轉型互動藍圖</h1>
+        <p class="hero-subtitle">
+          以 2040 年為「規畫的時間尺」，落實<strong>「從國門到家門」</strong>願景，透過「串聯、轉型、歸屬」三個 5 年階段，推動交通、產業與居住正義的永續宜居城市。
+        </p>
+        <div class="vision-tags">
+          <span class="vision-tag">可及：把時間還給生活</span>
+          <span class="vision-tag">宜居：高品質環境走進日常</span>
+          <span class="vision-tag">可負擔：平等的居住資源</span>
+        </div>
+      </div>
+      <div class="hero-cover">
+        <div class="book-3d-wrap" onclick="openLightboxAt(0)">
+          <img class="book-img" src="./001.jpg" alt="下一個桃園 書封" />
+        </div>
+        <p class="cover-caption">《下一個桃園》專書書封 (001.jpg)<br /><strong>（圖／桃園市都發局）</strong></p>
+      </div>
+    </header>
+
+    <!-- 3D 立體框架自動播放展演館 -->
+    <section class="panel showcase-panel" aria-label="3D立體框架自動播放展演">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🎞 《下一個桃園》3D 立體畫框自動展演</h2>
+          <p class="section-desc">四張規劃圖置於立體鑲金畫框中輪播，播放期間可隨時點擊<strong>「放大觀看」</strong>進入大視窗細看</p>
+        </div>
+        <div class="playback-controls">
+          <button type="button" class="btn-nav" id="prev-slide-btn" aria-label="上一張">◀ 上一張</button>
+          <button type="button" class="btn-autoplay" id="autoplay-btn" aria-pressed="false">
+            <span id="autoplay-icon">▶</span>
+            <span id="autoplay-text">自動播放 (4張圖)</span>
+          </button>
+          <button type="button" class="btn-nav" id="next-slide-btn" aria-label="下一張">下一張 ▶</button>
+          <button type="button" class="btn-zoom-modal" id="open-zoom-btn">🔍 放大觀看 (3D大畫框)</button>
+        </div>
+      </div>
+
+      <!-- 3D Perspective Stage -->
+      <div class="stage-3d-viewport" id="stage-3d">
+        <div class="stage-3d-floor"></div>
+        <div class="carousel-3d-track" id="carousel-3d-track">
+          <!-- Slide 0: 001.jpg -->
+          <div class="slide-3d-item" data-index="0">
+            <div class="frame-3d-bezel">
+              <div class="frame-3d-mat">
+                <span class="slide-badge-3d">01 / 04｜專書書封 (001.jpg)</span>
+                <img src="./001.jpg" alt="《下一個桃園：十五年城市轉型計畫》書封" />
+                <span class="zoom-hint-chip">🔍 點擊畫框放大觀看</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 1: 002.jpg -->
+          <div class="slide-3d-item" data-index="1">
+            <div class="frame-3d-bezel">
+              <div class="frame-3d-mat">
+                <span class="slide-badge-3d">02 / 04｜TOD＋ 策略工具箱 (002.jpg)</span>
+                <img src="./002.jpg" alt="TOD＋策略工具箱" />
+                <span class="zoom-hint-chip">🔍 點擊畫框放大觀看</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: 003.jpg -->
+          <div class="slide-3d-item" data-index="2">
+            <div class="frame-3d-bezel">
+              <div class="frame-3d-mat">
+                <span class="slide-badge-3d">03 / 04｜TOD 場站與社宅配置 (003.jpg)</span>
+                <img src="./003.jpg" alt="TOD場站與社會住宅空間配置" />
+                <span class="zoom-hint-chip">🔍 點擊畫框放大觀看</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: 004.jpg -->
+          <div class="slide-3d-item" data-index="3">
+            <div class="frame-3d-bezel">
+              <div class="frame-3d-mat">
+                <span class="slide-badge-3d">04 / 04｜鐵路地下化各站定位 (004.jpg)</span>
+                <img src="./004.jpg" alt="鐵路地下化沿線各站定位" />
+                <span class="zoom-hint-chip">🔍 點擊畫框放大觀看</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 動態圖說與明確出處來源標示 -->
+      <div class="showcase-caption-box">
+        <div class="showcase-title-group">
+          <h3 id="showcase-title">001.jpg｜《下一個桃園：十五年城市轉型計畫》專書書封</h3>
+          <p id="showcase-desc">勾勒 2040 年桃園城市空間藍圖，實踐「從國門到家門」願景與「可及、宜居、可負擔」三大核心條件。</p>
+        </div>
+        <div class="source-pill" id="showcase-source">出處來源：桃園市都發局（圖／桃園市都發局）</div>
+      </div>
+
+      <!-- 自動播放進度條 -->
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <!-- 四張圖快速切換標籤 -->
+      <div class="slide-indicators" role="tablist" aria-label="選擇展示圖片">
+        <button type="button" class="indicator-btn active" data-goto="0">1. 下一個桃園書封 (001)</button>
+        <button type="button" class="indicator-btn" data-goto="1">2. TOD＋策略工具箱 (002)</button>
+        <button type="button" class="indicator-btn" data-goto="2">3. TOD場站與社宅配置 (003)</button>
+        <button type="button" class="indicator-btn" data-goto="3">4. 鐵路地下化各站定位 (004)</button>
+      </div>
+    </section>
+
+    <!-- 三個五年進程與 004.jpg -->
+    <section class="panel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">⏱ 2026–2040 三個 5 年轉型進程</h2>
+          <p class="section-desc">透過大眾運輸場站與軌道建設，分階段銜接城市生活空間</p>
+        </div>
+      </div>
+
+      <div class="timeline-layout">
+        <div class="timeline-track">
+          <div class="phase-card active" onclick="highlightTimeline(0)">
+            <span class="phase-year">2026–2030｜首部曲</span>
+            <h3 class="phase-title">串聯階段：打通國門與交通動脈</h3>
+            <p class="phase-desc">捷運工程、桃園航空城與重大交通建設加速推進，建立對外國門與市內各生活圈的連結基礎。</p>
+          </div>
+          <div class="phase-card" onclick="highlightTimeline(1)">
+            <span class="phase-year">2031–2035｜二部曲</span>
+            <h3 class="phase-title">轉型階段：軌道成形與空間重組</h3>
+            <p class="phase-desc">捷運路網、鐵路地下化及整體開發區陸續成形，配合大眾運輸導向（TOD）重新配置土地與居住機能。</p>
+          </div>
+          <div class="phase-card" onclick="highlightTimeline(2)">
+            <span class="phase-year">2036–2040｜三部曲</span>
+            <h3 class="phase-title">歸屬階段：全齡共享的高品質生活</h3>
+            <p class="phase-desc">完善的交通、產業空間與五大公共設施全面融入日常，讓不同世代與背景的市民找到歸屬感。</p>
+          </div>
+        </div>
+
+        <!-- 004.jpg 3D Framed Card -->
+        <div class="card-3d-framed" onclick="openLightboxAt(3)">
+          <div class="card-3d-inner">
+            <img src="./004.jpg" alt="鐵路地下化沿線各站定位" />
+            <div class="image-source">
+              <strong>鐵路地下化沿線各站定位 (004.jpg)</strong>
+              <span>（圖／桃園市都發局）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Split Grids for 003.jpg and 002.jpg -->
+    <div class="split-grid">
+      <!-- Left: 社會住宅 003.jpg -->
+      <section class="panel" style="margin-bottom:0;">
+        <h2 class="section-title">🏢 「站站都有家」社宅空間配置</h2>
+        <p class="section-desc" style="margin-bottom: 14px;">逾 7 成社宅位於場站周邊，A20、A21 及體育園區捐建可負擔住宅優先提供育兒家庭與青年</p>
+
+        <div class="housing-content">
+          <div class="kpi-card">
+            <div class="kpi-num">86 處</div>
+            <div class="kpi-label">全桃園規劃社宅基地</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-num">2.3萬+ 戶</div>
+            <div class="kpi-label">社宅與可負擔住宅總量</div>
+          </div>
+        </div>
+
+        <!-- 003.jpg 3D Framed Card -->
+        <div class="card-3d-framed" onclick="openLightboxAt(2)">
+          <div class="card-3d-inner">
+            <img src="./003.jpg" alt="TOD場站與社會住宅空間配置" />
+            <div class="image-source">
+              <strong>TOD場站與社會住宅空間配置 (003.jpg)</strong>
+              <span>（圖／桃園市都發局）</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: TOD+ 工具箱 002.jpg -->
+      <section class="panel" style="margin-bottom:0;">
+        <h2 class="section-title">🛠 TOD＋ 策略工具箱</h2>
+        <p class="section-desc" style="margin-bottom: 14px;">結合圖書館、公園、運動設施、活動中心與托老托幼，透過人本交通串聯親子、青年與長者日常</p>
+
+        <!-- 002.jpg 3D Framed Card -->
+        <div class="card-3d-framed" onclick="openLightboxAt(1)">
+          <div class="card-3d-inner">
+            <img src="./002.jpg" alt="TOD＋策略工具箱" />
+            <div class="image-source">
+              <strong>TOD＋策略工具箱 (002.jpg)</strong>
+              <span>（圖／桃園市都發局）</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 3D 放大賞析視窗（支援播放中同步輪播 + 細節 2 倍鏡） -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="3D立體畫框放大檢視">
+      <div class="lightbox-toolbar">
+        <button type="button" class="lb-btn" id="lb-prev-btn">◀ 上一張</button>
+        <button type="button" class="lb-btn" id="lb-autoplay-btn">▶ 繼續自動播放</button>
+        <button type="button" class="lb-btn" id="lb-next-btn">下一張 ▶</button>
+        <button type="button" class="lb-btn" id="lb-detail-zoom-btn">🔍 細節 2 倍放大鏡</button>
+        <button type="button" class="lb-btn close-btn" id="lb-close-btn">✕ 關閉放大視窗</button>
+      </div>
+
+      <div class="lightbox-3d-frame" id="lb-3d-frame">
+        <div class="lightbox-3d-mat" id="lb-3d-mat">
+          <img class="lightbox-content" id="lightbox-img" src="./001.jpg" alt="3D立體畫框大圖預覽" />
+        </div>
+      </div>
+
+      <div class="lightbox-caption-bar">
+        <div>
+          <strong id="lb-title">001.jpg｜《下一個桃園：十五年城市轉型計畫》專書書封</strong>
+          <div id="lb-desc" style="font-size:0.86rem; color:#e2e8f0; margin-top:2px;"></div>
+        </div>
+        <span class="lightbox-source-badge" id="lb-source">出處來源：桃園市都發局（圖／桃園市都發局）</span>
+      </div>
+    </div>
+
+    <footer>
+      資料與圖片來源：桃園市政府都市發展局《下一個桃園：十五年城市轉型計畫》專書報導（圖／桃園市都發局）
+    </footer>
+  </div>
+
+  <script>
+    // =========================================================
+    // 0. 回首頁功能（關閉當前分頁並跳轉回 index.html）
+    // =========================================================
+    function returnToHome() {
+      try {
+        window.close();
+      } catch (e) {}
+      window.location.href = "./index.html";
+    }
+
+    // =========================================================
+    // 1. 四張圖片資料設定（含明確出處來源）
+    // =========================================================
+    const galleryItems = [
+      {
+        src: "./001.jpg",
+        title: "001.jpg｜《下一個桃園：十五年城市轉型計畫》專書書封",
+        desc: "勾勒 2040 年桃園城市空間藍圖，實踐「從國門到家門」願景與「可及、宜居、可負擔」三大核心條件。",
+        source: "出處來源：桃園市都發局（圖／桃園市都發局）"
+      },
+      {
+        src: "./002.jpg",
+        title: "002.jpg｜TOD＋ 策略工具箱",
+        desc: "整合圖書館、公園、運動設施、活動中心及托老托幼等公共服務，透過人本交通系統串聯場站生活圈。",
+        source: "出處來源：桃園市都發局（圖／桃園市都發局）"
+      },
+      {
+        src: "./003.jpg",
+        title: "003.jpg｜TOD 場站與社會住宅空間配置",
+        desc: "落實「站站都有家」策略，規劃 86 處社宅基地、逾 2.3 萬戶（逾 7 成鄰近場站），並於 A20、A21 及體育園區捐建可負擔住宅。",
+        source: "出處來源：桃園市都發局（圖／桃園市都發局）"
+      },
+      {
+        src: "./004.jpg",
+        title: "004.jpg｜鐵路地下化沿線各站定位",
+        desc: "配合 2031–2035 轉型階段鐵路地下化與捷運路網成形，重塑沿線車站定位與人本步行環境。",
+        source: "出處來源：桃園市都發局（圖／桃園市都發局）"
+      }
+    ];
+
+    let currentIndex = 0;
+    let isAutoPlaying = false;
+    let isDetailZoomed = false;
+    let autoPlayTimer = null;
+    let progressTimer = null;
+    let progressValue = 0;
+    const INTERVAL_MS = 3800;
+
+    const slides = document.querySelectorAll(".slide-3d-item");
+    const indicators = document.querySelectorAll(".indicator-btn");
+    const showcaseTitle = document.getElementById("showcase-title");
+    const showcaseDesc = document.getElementById("showcase-desc");
+    const showcaseSource = document.getElementById("showcase-source");
+    const autoplayBtn = document.getElementById("autoplay-btn");
+    const autoplayIcon = document.getElementById("autoplay-icon");
+    const autoplayText = document.getElementById("autoplay-text");
+    const progressFill = document.getElementById("progress-fill");
+
+    // Lightbox 相關元素
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lbTitle = document.getElementById("lb-title");
+    const lbDesc = document.getElementById("lb-desc");
+    const lbSource = document.getElementById("lb-source");
+    const lbAutoplayBtn = document.getElementById("lb-autoplay-btn");
+    const lbDetailZoomBtn = document.getElementById("lb-detail-zoom-btn");
+    const lb3dFrame = document.getElementById("lb-3d-frame");
+    const lb3dMat = document.getElementById("lb-3d-mat");
+
+    // 同步更新主舞台與放大視窗的 3D 畫框內容
+    function render3DCarousel() {
+      const total = slides.length;
+      slides.forEach((slide, i) => {
+        const diff = (i - currentIndex + total) % total;
+        const bezel = slide.querySelector(".frame-3d-bezel");
+        bezel.style.transform = "";
+
+        if (diff === 0) {
+          // 正前方主視覺 3D 畫框（微傾角度凸顯立體厚邊）
+          slide.style.transform = "translate3d(0, -4px, 60px) rotateX(3deg) rotateY(-3deg) scale(1)";
+          slide.style.opacity = "1";
+          slide.style.zIndex = "10";
+          slide.style.filter = "brightness(1)";
+        } else if (diff === 1) {
+          // 右側 3D 透視畫框
+          slide.style.transform = "translate3d(var(--side-x), 4px, -150px) rotateY(-38deg) scale(0.82)";
+          slide.style.opacity = "0.78";
+          slide.style.zIndex = "5";
+          slide.style.filter = "brightness(0.85)";
+        } else if (diff === total - 1) {
+          // 左側 3D 透視畫框
+          slide.style.transform = "translate3d(calc(var(--side-x) * -1), 4px, -150px) rotateY(38deg) scale(0.82)";
+          slide.style.opacity = "0.78";
+          slide.style.zIndex = "5";
+          slide.style.filter = "brightness(0.85)";
+        } else {
+          // 後方景深畫框
+          slide.style.transform = "translate3d(0, 8px, -300px) rotateY(180deg) scale(0.65)";
+          slide.style.opacity = "0.2";
+          slide.style.zIndex = "1";
+          slide.style.filter = "brightness(0.65)";
+        }
+      });
+
+      const item = galleryItems[currentIndex];
+      // 更新主舞台資訊
+      showcaseTitle.textContent = item.title;
+      showcaseDesc.textContent = item.desc;
+      showcaseSource.textContent = item.source;
+
+      // 同步更新 3D 放大視窗內容（播放中放大時會即時切換！）
+      lightboxImg.src = item.src;
+      lbTitle.textContent = `${item.title}（${currentIndex + 1} / ${total}）`;
+      lbDesc.textContent = item.desc;
+      lbSource.textContent = item.source;
+
+      // 若處於細節 2 倍放大狀態，切換圖片時重置平移中心
+      lightboxImg.style.transformOrigin = "center center";
+
+      indicators.forEach((btn, idx) => {
+        btn.classList.toggle("active", idx === currentIndex);
+      });
+    }
+
+    function syncAutoPlayButtonsUI() {
+      if (isAutoPlaying) {
+        autoplayBtn.classList.add("playing");
+        autoplayBtn.setAttribute("aria-pressed", "true");
+        autoplayIcon.textContent = "⏸";
+        autoplayText.textContent = "暫停自動播放";
+
+        lbAutoplayBtn.classList.add("active-gold");
+        lbAutoplayBtn.textContent = "⏸ 暫停輪播";
+      } else {
+        autoplayBtn.classList.remove("playing");
+        autoplayBtn.setAttribute("aria-pressed", "false");
+        autoplayIcon.textContent = "▶";
+        autoplayText.textContent = "自動播放 (4張圖)";
+
+        lbAutoplayBtn.classList.remove("active-gold");
+        lbAutoplayBtn.textContent = "▶ 啟動自動播放";
+      }
+    }
+
+    function goToSlide(index) {
+      currentIndex = (index + galleryItems.length) % galleryItems.length;
+      progressValue = 0;
+      progressFill.style.width = "0%";
+      render3DCarousel();
+    }
+
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      goToSlide(currentIndex - 1);
+    }
+
+    function startAutoPlay() {
+      if (isAutoPlaying) return;
+      isAutoPlaying = true;
+      syncAutoPlayButtonsUI();
+
+      progressValue = 0;
+      progressTimer = setInterval(() => {
+        progressValue += 100 / (INTERVAL_MS / 50);
+        if (progressValue >= 100) progressValue = 100;
+        progressFill.style.width = progressValue + "%";
+      }, 50);
+
+      autoPlayTimer = setInterval(() => {
+        nextSlide();
+      }, INTERVAL_MS);
+    }
+
+    function stopAutoPlay() {
+      isAutoPlaying = false;
+      syncAutoPlayButtonsUI();
+      clearInterval(autoPlayTimer);
+      clearInterval(progressTimer);
+      progressValue = 0;
+      progressFill.style.width = "0%";
+    }
+
+    function toggleAutoPlay() {
+      if (isAutoPlaying) {
+        stopAutoPlay();
+      } else {
+        nextSlide();
+        startAutoPlay();
+      }
+    }
+
+    autoplayBtn.addEventListener("click", toggleAutoPlay);
+    lbAutoplayBtn.addEventListener("click", toggleAutoPlay);
+
+    document.getElementById("prev-slide-btn").addEventListener("click", () => {
+      prevSlide();
+    });
+
+    document.getElementById("next-slide-btn").addEventListener("click", () => {
+      nextSlide();
+    });
+
+    document.getElementById("lb-prev-btn").addEventListener("click", () => {
+      prevSlide();
+    });
+
+    document.getElementById("lb-next-btn").addEventListener("click", () => {
+      nextSlide();
+    });
+
+    indicators.forEach(btn => {
+      btn.addEventListener("click", () => {
+        goToSlide(Number(btn.dataset.goto));
+      });
+    });
+
+    // 點擊主舞台 3D 畫框：側邊轉正、中央直接開啟 3D 放大視窗（且保留自動播放狀態！）
+    slides.forEach((slide, idx) => {
+      slide.addEventListener("click", () => {
+        if (idx !== currentIndex) {
+          goToSlide(idx);
+        } else {
+          openLightboxAt(idx);
+        }
+      });
+
+      // 滑鼠移動產生 3D 畫框立體傾斜互動
+      slide.addEventListener("mousemove", (e) => {
+        if (idx !== currentIndex) return;
+        const rect = slide.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        const bezel = slide.querySelector(".frame-3d-bezel");
+        bezel.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 14}deg)`;
+      });
+
+      slide.addEventListener("mouseleave", () => {
+        const bezel = slide.querySelector(".frame-3d-bezel");
+        bezel.style.transform = "";
+      });
+    });
+
+    // =========================================================
+    // 2. 3D 放大賞析視窗與 2 倍細節放大鏡
+    // =========================================================
+    function openLightboxAt(index) {
+      goToSlide(index);
+      lightbox.classList.add("active");
+      syncAutoPlayButtonsUI();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("active");
+      setDetailZoom(false);
+    }
+
+    function setDetailZoom(enable) {
+      isDetailZoomed = enable;
+      lb3dMat.classList.toggle("zoomed-mode", isDetailZoomed);
+      lbDetailZoomBtn.classList.toggle("active-gold", isDetailZoomed);
+      lbDetailZoomBtn.textContent = isDetailZoomed ? "🔍 還原標準大小" : "🔍 細節 2 倍放大鏡";
+      if (!isDetailZoomed) {
+        lightboxImg.style.transformOrigin = "center center";
+      }
+    }
+
+    document.getElementById("open-zoom-btn").addEventListener("click", () => {
+      openLightboxAt(currentIndex);
+    });
+
+    document.getElementById("lb-close-btn").addEventListener("click", closeLightbox);
+
+    lbDetailZoomBtn.addEventListener("click", () => {
+      setDetailZoom(!isDetailZoomed);
+    });
+
+    // 點擊放大視窗內的圖片可切換 1x / 2x 局部放大
+    lb3dMat.addEventListener("click", () => {
+      setDetailZoom(!isDetailZoomed);
+    });
+
+    // 滑鼠在 3D 放大畫框上移動：一般模式微傾 3D 畫框，2 倍鏡模式隨游標平移檢視細節
+    lb3dMat.addEventListener("mousemove", (e) => {
+      const rect = lb3dMat.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width;
+      const relY = (e.clientY - rect.top) / rect.height;
+
+      if (isDetailZoomed) {
+        lightboxImg.style.transformOrigin = `${relX * 100}% ${relY * 100}%`;
+        lb3dFrame.style.transform = "rotateX(0deg) rotateY(0deg)";
+      } else {
+        const tiltX = (relX - 0.5) * 10;
+        const tiltY = -(relY - 0.5) * 8;
+        lb3dFrame.style.transform = `rotateY(${tiltX}deg) rotateX(${tiltY}deg)`;
+      }
+    });
+
+    lb3dMat.addEventListener("mouseleave", () => {
+      if (!isDetailZoomed) {
+        lb3dFrame.style.transform = "rotateX(2deg) rotateY(-2deg)";
+      }
+    });
+
+    // 點擊黑色背景關閉放大視窗（點畫框與工具列不會誤關）
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    // 支援鍵盤左右鍵與 ESC 鍵
+    document.addEventListener("keydown", (e) => {
+      if (!lightbox.classList.contains("active")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowRight") nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+    });
+
+    // 初始化 3D 舞台
+    render3DCarousel();
+
+    // =========================================================
+    // 3. 互動時間軸功能
+    // =========================================================
+    function highlightTimeline(index) {
+      const cards = document.querySelectorAll(".phase-card");
+      cards.forEach((card, i) => {
+        card.classList.toggle("active", i === index);
+      });
+    }
+  </script>
+</body>
+</html>
